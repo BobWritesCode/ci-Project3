@@ -25,13 +25,16 @@ def get_leaderboard_data():
     clear_terminal()
     highscore = SHEET.worksheet('leaderboard')
     data = highscore.get_all_values()
-    print('\n************************************')
-    print('Top 10 Highscores for classic mode')
+    print('************************************')
+    print('Top 10 highscores for classic mode')
     print('************************************\n')
     print(f"{data[0][0]:<30}{data[0][1]:<40}")
     print('------------------------------------')
     for x in data[1:10]:
         print(f"{x[0]:<30}{x[1]:<40}")
+
+    input("\nPress Enter to return to main menu...")
+    main_menu()
 
 
 def main_menu():
@@ -46,6 +49,8 @@ def main_menu():
     print(f'a great hotdog empire?!')
     print(f'')
 
+    user_choice = 0
+
     while True:
         print(f'Choose from the following options:')
         print('------------------------------------')
@@ -56,8 +61,11 @@ def main_menu():
         print('------------------------------------')
         user_choice = input("\nInput choice: ")
         if validate_input(user_choice):
-            print('Choice is valid!')
             break
+    
+    print(user_choice)
+    if user_choice == '3':
+        get_leaderboard_data()
 
 
 def validate_input(value):
