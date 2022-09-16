@@ -13,7 +13,12 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize (SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Hotdog_Tycoon_Data')
+GAMETITLE = 'Hotdog Tycoon' #Name change pending
 
-highscore = SHEET.worksheet('leaderboard')
-data = highscore.get_all_values()
-print(data)
+def main():
+  '''
+  Main functions to run once code has loaded
+  '''
+
+print(f'Preparing to start {GAMETITLE}.')
+main()
