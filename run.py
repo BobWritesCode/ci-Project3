@@ -2,6 +2,7 @@
 
 import gspread
 from google.oauth2.service_account import Credentials
+import os
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -18,7 +19,7 @@ GAMETITLE = 'Hotdog Tycoon' #Name change pending
 
 def get_leaderboard_data():
     '''
-    Gets leaderbaord data from Google sheet
+    Gets leaderbaord data from Google sheet and displays in terminal
     '''
     highscore = SHEET.worksheet('leaderboard')
     data = highscore.get_all_values()
@@ -31,13 +32,32 @@ def get_leaderboard_data():
       print(f"{x[0]:<30}{x[1]:<40}")
 
 
+def main_menu():
+    '''
+    Display main menu and options
+    '''
+    print('************************************')
+    print(f'Welcome to {GAMETITLE}!')
+    print('************************************\n')
+    print(f'Can you prove that you are able to take a small hotdog stand and turn it into')
+    print(f'a great hotdog empire?!')
+    print(f'')
+    print(f'Choose from the following options:')
+    print('------------------------------------')
+    print(f'1. New Game')
+    print(f'2. Retrieve a previous game')
+    print(f'3. View leaderboard')
+    print(f'4. Credits')
+    print('------------------------------------')
+    username = input("\nInput choice: ")
+
 
 def main():
     '''
     Main functions to run once code has loaded
     '''
-    get_leaderboard_data()
+    main_menu()
 
 
-print(f'Preparing to start {GAMETITLE}.')
+print(f'Preparing to start {GAMETITLE}...\n')
 main()
