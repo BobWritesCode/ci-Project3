@@ -36,6 +36,7 @@ def main_menu():
     '''
     Display main menu and options
     '''
+    clear_terminal()
     print('************************************')
     print(f'Welcome to {GAMETITLE}!')
     print('************************************\n')
@@ -49,8 +50,11 @@ def main_menu():
     print(f'3. View leaderboard')
     print(f'4. Credits')
     print('------------------------------------')
-    username = input("\nInput choice: ")
+    user_choice = input("\nInput choice: ")
 
+
+def clear_terminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def main():
     '''
