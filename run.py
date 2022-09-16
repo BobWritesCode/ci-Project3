@@ -64,8 +64,27 @@ def main_menu():
             break
     
     print(user_choice)
-    if user_choice == '3':
+    if user_choice == '1':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...")
+        main_menu()
+    elif user_choice == '2':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...")
+        main_menu()
+    elif user_choice == '3':
         get_leaderboard_data()
+    elif user_choice == '4':
+        credits()
+
+
+def credits():
+    '''
+    Display credits on screen
+    '''
+    
+    input("\nPress Enter to return to main menu...")
+    main_menu()
 
 
 def validate_input(value):
@@ -98,7 +117,9 @@ def error_message(data):
     Function to provide appropriate error message
     '''
     if data == "invalid input":
-        print(f'Invalid input: please try again.\n')
+        print(f'\nInvalid input: please try again.\n')
+    elif data == "Coming soon":
+        print(f'\nThis feature is not implemented yet and will be coming soon.\n')
     else:
         print('Error')
 
