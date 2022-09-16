@@ -45,16 +45,15 @@ def main_menu():
     print(f'Can you prove that you are able to take a small hotdog stand and turn it into')
     print(f'a great hotdog empire?!')
     print(f'')
-    print(f'Choose from the following options:')
-    print('------------------------------------')
-    print(f'1. New Game')
-    print(f'2. Retrieve a previous game')
-    print(f'3. View leaderboard')
-    print(f'4. Credits')
-    print('------------------------------------')
-
 
     while True:
+        print(f'Choose from the following options:')
+        print('------------------------------------')
+        print(f'1. New Game')
+        print(f'2. Retrieve a previous game')
+        print(f'3. View leaderboard')
+        print(f'4. Credits')
+        print('------------------------------------')
         user_choice = input("\nInput choice: ")
         if validate_input(user_choice):
             print('Choice is valid!')
@@ -71,17 +70,29 @@ def validate_input(value):
         try:
             int_value = int(value)
         except:
-            print(f'Invalid input: please try again.\n')
+            clear_terminal()
+            error_message("invalid input")
             return False
         if int_value >= 1 and int_value <= 4:
           return True
         else:
             raise ValueError()
     except ValueError as e:
-        print(f'Invalid input: please try again.\n')
+        clear_terminal()
+        error_message("invalid input")
         return False
 
     return True
+
+
+def error_message(data):
+    '''
+    Function to provide appropriate error message
+    '''
+    if data == "invalid input":
+        print(f'Invalid input: please try again.\n')
+    else:
+        print('Error')
 
 
 def clear_terminal():
