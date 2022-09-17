@@ -18,7 +18,7 @@ GSPREAD_CLIENT = gspread.authorize (SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Hotdog_Tycoon_Data')
 
 
-def get_leaderboard_data():
+def show_leaderboard_data():
     '''
     Gets leaderbaord data from Google sheet and displays in terminal
     '''
@@ -45,6 +45,8 @@ def main_menu():
     print('************************************')
     print(f'Welcome to {GAMETITLE}!')
     print('************************************\n')
+    print(f'MAIN MENU')
+    print('------------------------------------\n')
     print(f'Can you prove that you are able to take a small hotdog stand and turn it into')
     print(f'a great hotdog empire?!')
     print(f'')
@@ -73,16 +75,20 @@ def main_menu():
         input("Press Enter to return to main menu...")
         main_menu()
     elif user_choice == '3':
-        get_leaderboard_data()
+        show_leaderboard_data()
     elif user_choice == '4':
-        credits()
+        show_credits()
 
 
-def credits():
+def show_credits():
     '''
     Display credits on screen
     '''
-    
+    clear_terminal()
+    print(f'Credits:')
+    print('------------------------------------')
+    print(f'{"Code by:":<20}{"Warwick Hart":<40}')
+    print(f'{"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}')
     input("\nPress Enter to return to main menu...")
     main_menu()
 
