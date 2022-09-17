@@ -19,6 +19,7 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize (SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Hotdog_Tycoon_Data')
 
+STARTING_CASH = 1000
 
 def show_leaderboard_data():
     '''
@@ -89,7 +90,31 @@ def new_game():
     print(f'new account.\n')
     user_name = create_user_name()
     user_id = create_user_id(user_name)
+    background_story()
 
+
+def background_story():
+    '''
+    Tell the user the background story
+    '''
+    clear_terminal()
+    print('------------------------------------')
+    print('Background')
+    print('------------------------------------\n')
+    
+    print(f'You have hit some really hard times lately and nearly lost everything.')
+    print(f'Your down to your last £{STARTING_CASH}. Luckily your friend has told')
+    print(f'you about a sure way to earn some quick cash... HOTDOGS!')
+    print(f'He has told you where you can do to buy your first hotdog cart and')
+    print(f'where you can set up for cheap. Everything else though is up to you.')
+    
+    input('\nPress Enter to continue...')
+
+    print(f'\nYou make your way down to the local hotdog supplies market and have a')
+    print(f'look around. Most of what you see is outside your budget but see there')
+    print(f'are a few things around to get you started....')
+
+    input('\nPress Enter to continue...')
 
 def create_user_name():
     while True:
@@ -105,6 +130,7 @@ def create_user_name():
                         return user_name
                     else:
                         break
+
 
 def create_user_id(user_name):
     '''
@@ -128,6 +154,7 @@ def create_user_id(user_name):
     print(f'\n{user_name}, your new user ID is: {user_id}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
     return user_id
+
 
 def show_credits():
     '''
@@ -166,11 +193,13 @@ def validate_input(value):
 
     return True
 
+
 def validate_yes_no(value):
     '''
     Checks to make sure user typed expected response
     '''
     return value.lower() in ['y','ye','yes','n','no']
+
 
 def error_message(data):
     '''
@@ -196,5 +225,6 @@ def main():
     Main functions to run once code has loaded
     '''
     main_menu()
+
 
 main()
