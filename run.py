@@ -5,6 +5,8 @@ print(f'Preparing to start {GAMETITLE}...\n')
 import gspread
 from google.oauth2.service_account import Credentials
 import os
+import string
+import random
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -67,9 +69,7 @@ def main_menu():
     
     print(user_choice)
     if user_choice == '1':
-        error_message("Coming soon")
-        input("Press Enter to return to main menu...")
-        main_menu()
+        new_game()
     elif user_choice == '2':
         error_message("Coming soon")
         input("Press Enter to return to main menu...")
@@ -79,6 +79,38 @@ def main_menu():
     elif user_choice == '4':
         show_credits()
 
+
+def new_game():
+    '''
+    Create new user and set up for a new game
+    '''
+    clear_terminal()
+    create_user_id()
+
+
+def create_user_id():
+    '''
+    Creates user ID and checks to make sure not already in user
+    before showing user.
+    '''
+    user_id = ''
+    print(f'Welcome to your new game. The first thing we need to do is set you up with a new account')
+    print(f'new account.\n')
+    print(f'Please wait why your new user ID is created...')
+    while True:
+        user_id = "".join(string.ascii_uppercase[random.randrange(0,25)] for x in range(6))
+        user_data = SHEET.worksheet('user_data')
+        cell_list = user_data.findall(user_id)
+        if len(cell_list) == 0:
+            break
+    clear_terminal()
+    print(f'Welcome to your new game. The first thing we need to do is set you up with a new account')
+    print(f'new account.\n')
+    print('------------------------------------')
+    print('USER ID CREATED')
+    print('------------------------------------')
+    print(f'\nYour new user ID is: {user_id}\n')
+    print(f'Please keep this safe as this is how you can retrieve your progress')
 
 def show_credits():
     '''
