@@ -85,17 +85,33 @@ def new_game():
     Create new user and set up for a new game
     '''
     clear_terminal()
-    create_user_id()
+    print(f'Welcome to your new game. The first thing we need to do is set you up with a')
+    print(f'new account.\n')
+    user_name = create_user_name()
+    user_id = create_user_id(user_name)
 
 
-def create_user_id():
+def create_user_name():
+    while True:
+        user_name = input(f'What name would you like to use?\n')
+        print('')
+        if user_name:
+            while True:
+                print(f'Hello {user_name}\n')
+                yes_no = input('Would you like to change your name? (yes / no) \n')
+                print('')
+                if validate_yes_no(yes_no):
+                    if yes_no.lower() in ['n','no']:
+                        return user_name
+                    else:
+                        break
+
+def create_user_id(user_name):
     '''
     Creates user ID and checks to make sure not already in user
     before showing user.
     '''
     user_id = ''
-    print(f'Welcome to your new game. The first thing we need to do is set you up with a new account')
-    print(f'new account.\n')
     print(f'Please wait why your new user ID is created...')
     while True:
         user_id = "".join(string.ascii_uppercase[random.randrange(0,25)] for x in range(6))
@@ -104,13 +120,14 @@ def create_user_id():
         if len(cell_list) == 0:
             break
     clear_terminal()
-    print(f'Welcome to your new game. The first thing we need to do is set you up with a new account')
+    print(f'Welcome to your new game. The first thing we need to do is set you up with a new')
     print(f'new account.\n')
     print('------------------------------------')
     print('USER ID CREATED')
     print('------------------------------------')
-    print(f'\nYour new user ID is: {user_id}\n')
+    print(f'\n{user_name}, your new user ID is: {user_id}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
+    return user_id
 
 def show_credits():
     '''
@@ -149,6 +166,11 @@ def validate_input(value):
 
     return True
 
+def validate_yes_no(value):
+    '''
+    Checks to make sure user typed expected response
+    '''
+    return value.lower() in ['y','ye','yes','n','no']
 
 def error_message(data):
     '''
