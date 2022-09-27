@@ -7,6 +7,8 @@ from google.oauth2.service_account import Credentials
 import os
 import string
 import random
+import constants
+import utils
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -19,7 +21,6 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize (SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Hotdog_Tycoon_Data')
 
-STARTING_CASH = 1000
 
 def show_leaderboard_data():
     '''
@@ -35,7 +36,6 @@ def show_leaderboard_data():
     print('------------------------------------')
     for x in data[1:10]:
         print(f"{x[0]:<30}{x[1]:<40}")
-
     input("\nPress Enter to return to main menu...")
     main_menu()
 
@@ -45,29 +45,15 @@ def main_menu():
     Display main menu and options
     '''
     clear_terminal()
-    print('************************************')
-    print(colored(0, 206, 242, f'Welcome to {GAMETITLE}!'))
-    print('************************************\n')
-    print(f'MAIN MENU')
-    print('------------------------------------\n')
-    print(f'Can you prove that you are able to take a small hotdog stand and turn it into')
-    print(f'a great hotdog empire?!')
-    print(f'')
-
+    print(utils.main_menu_header(255,0,0,'Welcome to Hotdog Tycoon'))
     user_choice = 0
 
     while True:
-        print(f'Choose from the following options:')
-        print('------------------------------------')
-        print(f'1. New Game')
-        print(f'2. Retrieve a previous game')
-        print(f'3. View leaderboard')
-        print(f'4. Credits')
-        print('------------------------------------')
+        print(constants.MAIN_MENU_OPTIONS)
         user_choice = input("\nInput choice: ")
         if validate_input(user_choice):
             break
-    
+
     print(user_choice)
     if user_choice == '1':
         new_game()
@@ -98,25 +84,14 @@ def background_story():
     Tell the user the background story
     '''
     clear_terminal()
-    print('------------------------------------')
-    print('Background')
-    print('------------------------------------\n')
-    
-    print(f'You have hit some really hard times lately and nearly lost everything.')
-    print(f'Your down to your last £{STARTING_CASH}. Luckily your friend has told')
-    print(f'you about a sure way to earn some quick cash... HOTDOGS!')
-    print(f'He has told you where you can do to buy your first hotdog cart and')
-    print(f'where you can set up for cheap. Everything else though is up to you.')
-    
+    print(constants.BACKGROUND_STORY)
     input('\nPress Enter to continue...')
 
-    print(f'\nYou make your way down to the local hotdog supplies market and have a')
-    print(f'look around. Most of what you see is outside your budget but see there')
-    print(f'are a few things around to get you started....')
-
-    input('\nPress Enter to continue...')
 
 def create_user_name():
+    '''
+    Allow user to create their own name for the game
+    '''
     while True:
         user_name = input(f'What name would you like to use?\n')
         print('')
@@ -151,7 +126,7 @@ def create_user_id(user_name):
     print('------------------------------------')
     print('USER ID CREATED')
     print('------------------------------------')
-    print(f'\n{user_name}, your new user ID is: {colored(0, 207, 0, user_id)}\n')
+    print(f'\n{user_name}, your new user ID is: {utils.colored(0, 207, 0, user_id)}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
     input('\nPress Enter to continue...')
     return user_id
@@ -221,20 +196,12 @@ def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-# Credit: https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3
-def colored(r, g, b, text):
-    '''
-    Allows to change text colour
-    '''
-    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
-
-
 def main():
     '''
     Main functions to run once code has loaded
     '''
     #Setting default text color
-    print(colored(0, 0, 0, 'text'))
+    print(utils.colored(0, 0, 0, 'text'))
     main_menu()
 
 
