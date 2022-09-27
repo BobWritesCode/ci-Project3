@@ -137,10 +137,7 @@ def show_credits():
     Display credits on screen
     '''
     clear_terminal()
-    print(f'Credits:')
-    print('------------------------------------')
-    print(f'{"Code by:":<20}{"Warwick Hart":<40}')
-    print(f'{"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}')
+    print(constants.CREDITS)
     input("\nPress Enter to return to main menu...")
     main_menu()
 
