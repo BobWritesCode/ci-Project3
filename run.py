@@ -46,7 +46,7 @@ def main_menu():
     '''
     clear_terminal()
     print('************************************')
-    print(f'Welcome to {GAMETITLE}!')
+    print(colored(0, 206, 242, f'Welcome to {GAMETITLE}!'))
     print('************************************\n')
     print(f'MAIN MENU')
     print('------------------------------------\n')
@@ -151,8 +151,9 @@ def create_user_id(user_name):
     print('------------------------------------')
     print('USER ID CREATED')
     print('------------------------------------')
-    print(f'\n{user_name}, your new user ID is: {user_id}\n')
+    print(f'\n{user_name}, your new user ID is: {colored(0, 207, 0, user_id)}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
+    input('\nPress Enter to continue...')
     return user_id
 
 
@@ -220,10 +221,20 @@ def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
+# Credit: https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3
+def colored(r, g, b, text):
+    '''
+    Allows to change text colour
+    '''
+    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
+
+
 def main():
     '''
     Main functions to run once code has loaded
     '''
+    #Setting default text color
+    print(colored(0, 0, 0, 'text'))
     main_menu()
 
 
