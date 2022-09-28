@@ -90,6 +90,9 @@ def background_story():
 
 
 def set_up_new_character():
+    '''
+    Function sets all new character stats to default values
+    '''
     stats = {
         "cash" : float(constants.STARTING_CASH),
         "reputation" : float(0),
@@ -120,7 +123,8 @@ def set_up_new_character():
             },
         },
     }
-    print(stats)
+    purchase_menu(stats)
+
 
 def create_user_name():
     '''
