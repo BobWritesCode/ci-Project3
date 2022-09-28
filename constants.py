@@ -32,3 +32,15 @@ Choose from the following options:
 4. Credits
 ------------------------------------
 """
+
+DAILY_MENU_OPTIONS = """
+Choose from the following options:
+------------------------------------
+1. Purchase location
+2. Purchase / upgrade cart(s)
+3. Set selling prices
+4. Hire / upgrade cart(s)
+5. Purchase stock
+6. Change Recipes
+------------------------------------
+"""

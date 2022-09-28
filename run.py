@@ -54,7 +54,6 @@ def main_menu():
         if validate_input(user_choice):
             break
 
-    print(user_choice)
     if user_choice == '1':
         new_game()
     elif user_choice == '2':
@@ -123,7 +122,43 @@ def set_up_new_character():
             },
         },
     }
-    purchase_menu(stats)
+    daily_menu(stats)
+
+
+def daily_menu(stats):
+    '''
+    Daily player menu to purchase upgrades and make changes to recipes
+    '''
+    clear_terminal()
+    print(constants.DAILY_MENU_OPTIONS)
+    user_choice = input("\nInput choice: ")
+    
+    if user_choice == '1':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...") 
+        daily_menu(stats)       
+    elif user_choice == '2':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...")
+        daily_menu(stats)
+    elif user_choice == '3':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...")
+        daily_menu(stats)
+    elif user_choice == '4':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...")
+        daily_menu(stats)
+    elif user_choice == '5':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...")
+        daily_menu(stats)
+    elif user_choice == '6':
+        error_message("Coming soon")
+        input("Press Enter to return to main menu...")
+        daily_menu(stats)
+
+
 
 
 def create_user_name():
