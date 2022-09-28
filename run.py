@@ -58,12 +58,13 @@ def main_menu():
         new_game()
     elif user_choice == '2':
         error_message("Coming soon")
-        input("Press Enter to return to main menu...")
         main_menu()
     elif user_choice == '3':
         show_leaderboard_data()
     elif user_choice == '4':
         show_credits()
+    elif user_choice == '0':
+        main_menu()
 
 
 def new_game():
@@ -102,26 +103,31 @@ def set_up_new_character():
         "secret_sauce" : int(0),
         "location" : {
             "1" : {
+                "purchased" : False,
                 "cart_lvl" : int(0),
-                "staff_lvl" : int(0),
+                "staff_lvl" : int(0)
             },
             "2" : {
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0),
+                "purchased" : True,
+                "cart_lvl" : int(1),
+                "staff_lvl" : int(0)
             },
             "3" : {
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0),
+                "purchased" : True,
+                "cart_lvl" : int(2),
+                "staff_lvl" : int(0)
             },
             "4" : {
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0),
+                "purchased" : True,
+                "cart_lvl" : int(3),
+                "staff_lvl" : int(0)
             },
             "5" : {
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0),
-            },
-        },
+                "purchased" : True,
+                "cart_lvl" : int(4),
+                "staff_lvl" : int(0)
+            }
+        }
     }
     daily_menu(stats)
 
@@ -139,26 +145,23 @@ def daily_menu(stats):
             break
     
     if user_choice == '1':
-        purchase_cart_menu(stats)       
-    elif user_choice == '2':
         error_message("Coming soon")
-        input("Press Enter to return to main menu...")
         daily_menu(stats)
+    elif user_choice == '2':
+        purchase_cart_menu(stats) 
     elif user_choice == '3':
         error_message("Coming soon")
-        input("Press Enter to return to main menu...")
         daily_menu(stats)
     elif user_choice == '4':
         error_message("Coming soon")
-        input("Press Enter to return to main menu...")
         daily_menu(stats)
     elif user_choice == '5':
         error_message("Coming soon")
-        input("Press Enter to return to main menu...")
         daily_menu(stats)
     elif user_choice == '6':
         error_message("Coming soon")
-        input("Press Enter to return to main menu...")
+        daily_menu(stats)
+    elif user_choice == '0':
         daily_menu(stats)
 
 
@@ -166,12 +169,14 @@ def purchase_cart_menu(stats):
     '''
     Purchase cart menu for player
     '''
-    clear_terminal()
     LOC_NAME = constants.LOCATION_NAMES
     CART_PRICE = constants.CART_COSTS
     
     while True:
+        clear_terminal()
         print('Purchase or upgrade carts at your hotdog pitch locations')
+        print('------------------------------------')
+        print(f'Current Cash: £{stats["cash"]}')
         print('------------------------------------')
         for x, y in enumerate(LOC_NAME, start=1):
             cart_level = stats['location'][str(x)]['cart_lvl']
@@ -179,24 +184,57 @@ def purchase_cart_menu(stats):
             str_part_1 = f'{x}. {y}'
 
             if cart_level == 0 :
-                str_part_2 = '- Not currently owned '
+                text = 'Not currently owned'
+                str_part_2 = utils.colored(255, 0, 0, text)
             else:
-                str_part_2 = f'- Current level is {cart_level}'
+                text = f'Current level is {cart_level}'
+                str_part_2 = utils.colored(0, 255, 255, text)
 
-            if  cart_level == 0:
-                str_part_3 = f'- PURCHASE for £ {CART_PRICE[cart_level]}'
+            if stats['location'][str(x)]['purchased'] == False:
+                text = f'Purchase location first'
+                str_part_3 = utils.colored(255, 0, 0, text)
+            elif cart_level == 0:
+                text = f'PURCHASE for £ {CART_PRICE[cart_level]}'
+                str_part_3 = utils.colored(50, 205, 50, text)
             elif cart_level == '5':
-                str_part_3 = '- No further upgrades'
+                text = 'No further upgrades'
+                str_part_3 = utils.colored(255, 165, 0, text)
             else:
-                str_part_3 = f'- UPGRADE for £{CART_PRICE[cart_level]}'
+                text = f'UPGRADE for £{CART_PRICE[cart_level]}'
+                str_part_3 = utils.colored(50, 205, 50, text)
 
-            print(f'{str_part_1:<16}' + f'{str_part_2:<22}' + f'{str_part_3:<18}')
-
+            print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<23}' + ' - ' f'{str_part_3:<18}')
+        print('')
+        print('0. Go back.')
         print('')
         user_choice = input("\nInput choice: ")
 
         if validate_input(user_choice, 5):
-            break
+            if int(user_choice) > 0:
+                # Make sure location has been purchased first
+                if stats['location'][str(user_choice)]['purchased'] == True:
+                    # Check if remaining cash will above 0 after purchase, if so continue, else loop
+                    cart_level = stats['location'][str(user_choice)]['cart_lvl']
+                    remaining_cash = stats["cash"] - CART_PRICE[cart_level]
+
+                    if remaining_cash >= 0:
+                        new_cart_lvl = cart_level + 1
+                        stats['location'][str(user_choice)]['cart_lvl'] = new_cart_lvl
+                        stats["cash"] = remaining_cash
+                        loc = int(user_choice) - 1
+                        text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]}.'
+                        print(utils.colored(50, 205, 50, text))
+                        text = f'Remaining cash £{remaining_cash}'
+                        print(utils.colored(0, 255, 255, text))
+                        input("Press Enter to continue...")
+                    else:
+                        error_message("Not enough funds")
+                else:
+                    error_message("Purchase Land")
+            else:
+                break
+            
+    daily_menu(stats)
 
 
 def create_user_name():
@@ -264,17 +302,13 @@ def validate_input(value, max_value):
             int_value = int(value)
         except:
             error_message("invalid input")
-            input("Press Enter to try again...")
-            clear_terminal()
             return False
-        if int_value >= 1 and int_value <= int(max_value):
+        if int_value >= 0 and int_value <= int(max_value):
           return True
         else:
             raise ValueError()
     except ValueError as e:        
         error_message("invalid input")
-        input("Press Enter to try again...")
-        clear_terminal()
         return False
 
     return True
@@ -297,9 +331,17 @@ def error_message(data):
     elif data == "Coming soon":
         text = utils.colored(255, 165, 0, 'This feature is not implemented yet and will be coming soon.')
         print(f'{text}')
+    elif data == "Not enough funds":
+        text = utils.colored(255, 165, 0, 'You do not have enough funds to do this.')
+        print(f'{text}')
+    elif data == "Purchase Land":
+        text = utils.colored(255, 165, 0, 'You need to purchase this location first.')
+        print(f'{text}')
     else:
         text = utils.colored(255, 0, 0, 'Error.')
         print(f'{text}')
+    input("Press Enter to retry...")
+    clear_terminal()
 
 
 def clear_terminal():
@@ -317,5 +359,5 @@ def main():
     print(utils.colored(0, 0, 0, 'text'))
     main_menu()
 
-#set_up_new_character()
-main()
+set_up_new_character()
+#main()
