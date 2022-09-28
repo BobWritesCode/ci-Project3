@@ -1,6 +1,6 @@
 def main_menu_header(r, g, b, text):
-  colored_text = colored(r, g, b, text)
-  return f"""
+    colored_text = colored(r, g, b, text)
+    return f"""
 ************************************
 {colored_text}
 ************************************

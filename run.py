@@ -45,7 +45,7 @@ def main_menu():
     Display main menu and options
     '''
     clear_terminal()
-    print(utils.main_menu_header(255,0,0,'Welcome to Hotdog Tycoon'))
+    print(utils.main_menu_header(255, 0, 0,'Welcome to Hotdog Tycoon'))
     user_choice = 0
 
     while True:
@@ -86,7 +86,41 @@ def background_story():
     clear_terminal()
     print(constants.BACKGROUND_STORY)
     input('\nPress Enter to continue...')
+    set_up_new_character()
 
+
+def set_up_new_character():
+    stats = {
+        "cash" : float(constants.STARTING_CASH),
+        "reputation" : float(0),
+        "hotdogs" : int(0),
+        "buns" : int(0),
+        "onions" : int(0),
+        "secret_sauce" : int(0),
+        "location" : {
+            "1" : {
+                "cart_lvl" : int(0),
+                "staff_lvl" : int(0),
+            },
+            "2" : {
+                "cart_lvl" : int(0),
+                "staff_lvl" : int(0),
+            },
+            "3" : {
+                "cart_lvl" : int(0),
+                "staff_lvl" : int(0),
+            },
+            "4" : {
+                "cart_lvl" : int(0),
+                "staff_lvl" : int(0),
+            },
+            "5" : {
+                "cart_lvl" : int(0),
+                "staff_lvl" : int(0),
+            },
+        },
+    }
+    print(stats)
 
 def create_user_name():
     '''
@@ -201,5 +235,5 @@ def main():
     print(utils.colored(0, 0, 0, 'text'))
     main_menu()
 
-
-main()
+set_up_new_character()
+#main()
