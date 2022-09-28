@@ -16,6 +16,8 @@ look around. Most of what you see is outside your budget but see there
 are a few things around to get you started....
 """
 
+CART_COSTS = [200, 400, 600, 1000, 1600]
+
 CREDITS = f"""
 Credits:
 ------------------------------------
@@ -44,3 +46,5 @@ Choose from the following options:
 6. Change Recipes
 ------------------------------------
 """
+
+LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Stadium"]

@@ -93,6 +93,7 @@ def set_up_new_character():
     Function sets all new character stats to default values
     '''
     stats = {
+        "day" : 0,
         "cash" : float(constants.STARTING_CASH),
         "reputation" : float(0),
         "hotdogs" : int(0),
@@ -134,9 +135,7 @@ def daily_menu(stats):
     user_choice = input("\nInput choice: ")
     
     if user_choice == '1':
-        error_message("Coming soon")
-        input("Press Enter to return to main menu...") 
-        daily_menu(stats)       
+        purchase_cart_menu(stats)       
     elif user_choice == '2':
         error_message("Coming soon")
         input("Press Enter to return to main menu...")
@@ -159,6 +158,40 @@ def daily_menu(stats):
         daily_menu(stats)
 
 
+def purchase_cart_menu(stats):
+    '''
+    Purchase cart menu for player
+    '''
+    clear_terminal()
+    LOC_NAME = constants.LOCATION_NAMES
+    CART_PRICE = constants.CART_COSTS
+    print('Purchase or upgrade carts at your hotdog pitch locations')
+    print('------------------------------------')
+    for x, y in enumerate(LOC_NAME, start=1):
+        cart_level = stats['location'][str(x)]['cart_lvl']
+
+        str_part_1 = f'{x}. {y}'
+
+        if cart_level == 0 :
+            str_part_2 = '- Not currently owned '
+        else:
+            str_part_2 = f'- Current level is {cart_level}'
+
+        if  cart_level == 0:
+            str_part_3 = f'- PURCHASE for £ {CART_PRICE[cart_level]}'
+        elif cart_level == '5':
+            str_part_3 = '- No further upgrades'
+        else:
+            str_part_3 = f'- UPGRADE for £{CART_PRICE[cart_level]}'
+
+        print(f'{str_part_1:<16}' + f'{str_part_2:<22}' + f'{str_part_3:<18}')
+
+    print('')
+    user_choice = input("\nInput choice: ")
+
+    while True:
+        if validate_input(user_choice):
+            break
 
 
 def create_user_name():
