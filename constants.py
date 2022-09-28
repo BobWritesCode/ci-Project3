@@ -48,3 +48,5 @@ Choose from the following options:
 """
 
 LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Stadium"]
+
+LOCATION_COSTS = [200, 400, 600, 1000, 1600]
