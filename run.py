@@ -45,13 +45,13 @@ def main_menu():
     Display main menu and options
     '''
     clear_terminal()
-    print(utils.main_menu_header(255, 0, 0,'Welcome to Hotdog Tycoon'))
-    user_choice = 0
 
     while True:
+        print(utils.main_menu_header(255, 0, 0,'Welcome to Hotdog Tycoon'))
+        user_choice = 0
         print(constants.MAIN_MENU_OPTIONS)
         user_choice = input("\nInput choice: ")
-        if validate_input(user_choice):
+        if validate_input(user_choice, 4):
             break
 
     if user_choice == '1':
@@ -131,8 +131,12 @@ def daily_menu(stats):
     Daily player menu to purchase upgrades and make changes to recipes
     '''
     clear_terminal()
-    print(constants.DAILY_MENU_OPTIONS)
-    user_choice = input("\nInput choice: ")
+    while True:
+        print(constants.DAILY_MENU_OPTIONS)
+        user_choice = input("\nInput choice: ")
+
+        if validate_input(user_choice, 6):
+            break
     
     if user_choice == '1':
         purchase_cart_menu(stats)       
@@ -165,32 +169,33 @@ def purchase_cart_menu(stats):
     clear_terminal()
     LOC_NAME = constants.LOCATION_NAMES
     CART_PRICE = constants.CART_COSTS
-    print('Purchase or upgrade carts at your hotdog pitch locations')
-    print('------------------------------------')
-    for x, y in enumerate(LOC_NAME, start=1):
-        cart_level = stats['location'][str(x)]['cart_lvl']
-
-        str_part_1 = f'{x}. {y}'
-
-        if cart_level == 0 :
-            str_part_2 = '- Not currently owned '
-        else:
-            str_part_2 = f'- Current level is {cart_level}'
-
-        if  cart_level == 0:
-            str_part_3 = f'- PURCHASE for £ {CART_PRICE[cart_level]}'
-        elif cart_level == '5':
-            str_part_3 = '- No further upgrades'
-        else:
-            str_part_3 = f'- UPGRADE for £{CART_PRICE[cart_level]}'
-
-        print(f'{str_part_1:<16}' + f'{str_part_2:<22}' + f'{str_part_3:<18}')
-
-    print('')
-    user_choice = input("\nInput choice: ")
-
+    
     while True:
-        if validate_input(user_choice):
+        print('Purchase or upgrade carts at your hotdog pitch locations')
+        print('------------------------------------')
+        for x, y in enumerate(LOC_NAME, start=1):
+            cart_level = stats['location'][str(x)]['cart_lvl']
+
+            str_part_1 = f'{x}. {y}'
+
+            if cart_level == 0 :
+                str_part_2 = '- Not currently owned '
+            else:
+                str_part_2 = f'- Current level is {cart_level}'
+
+            if  cart_level == 0:
+                str_part_3 = f'- PURCHASE for £ {CART_PRICE[cart_level]}'
+            elif cart_level == '5':
+                str_part_3 = '- No further upgrades'
+            else:
+                str_part_3 = f'- UPGRADE for £{CART_PRICE[cart_level]}'
+
+            print(f'{str_part_1:<16}' + f'{str_part_2:<22}' + f'{str_part_3:<18}')
+
+        print('')
+        user_choice = input("\nInput choice: ")
+
+        if validate_input(user_choice, 5):
             break
 
 
@@ -248,7 +253,7 @@ def show_credits():
     main_menu()
 
 
-def validate_input(value):
+def validate_input(value, max_value):
     '''
     Inside the try, converts input string value into integer.
     Raises ValueError if strings cannot be converted into int,
@@ -258,16 +263,18 @@ def validate_input(value):
         try:
             int_value = int(value)
         except:
-            clear_terminal()
             error_message("invalid input")
+            input("Press Enter to try again...")
+            clear_terminal()
             return False
-        if int_value >= 1 and int_value <= 4:
+        if int_value >= 1 and int_value <= int(max_value):
           return True
         else:
             raise ValueError()
-    except ValueError as e:
-        clear_terminal()
+    except ValueError as e:        
         error_message("invalid input")
+        input("Press Enter to try again...")
+        clear_terminal()
         return False
 
     return True
@@ -285,11 +292,14 @@ def error_message(data):
     Function to provide appropriate error message
     '''
     if data == "invalid input":
-        print(f'\nInvalid input: please try again.\n')
+        text = utils.colored(255, 0, 0, 'Invalid input: please try again.')
+        print(f'{text}')
     elif data == "Coming soon":
-        print(f'\nThis feature is not implemented yet and will be coming soon.\n')
+        text = utils.colored(255, 165, 0, 'This feature is not implemented yet and will be coming soon.')
+        print(f'{text}')
     else:
-        print('Error')
+        text = utils.colored(255, 0, 0, 'Error.')
+        print(f'{text}')
 
 
 def clear_terminal():
@@ -307,5 +317,5 @@ def main():
     print(utils.colored(0, 0, 0, 'text'))
     main_menu()
 
-set_up_new_character()
-#main()
+#set_up_new_character()
+main()
