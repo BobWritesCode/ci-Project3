@@ -1,8 +1,14 @@
+# FUNCTION TO USER COLOR TEXT IN CONSTANTS
+
 def colored(r, g, b, text):
     '''
     Allows to change text colour
     '''
     return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
+
+text_choose_from_options = colored(0, 255, 255, 'Choose from the following options:')
+
+# CONSTANTS START HERE
 
 CART_COSTS = [200, 400, 600, 1000, 1600]
 
@@ -43,8 +49,9 @@ Credits:
 {"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}
 """
 
-MAIN_MENU_OPTIONS = """
-Choose from the following options:
+
+MAIN_MENU_OPTIONS = f"""
+{text_choose_from_options}
 ------------------------------------
 1. New Game
 2. Retrieve a previous game
@@ -53,8 +60,9 @@ Choose from the following options:
 ------------------------------------
 """
 
-DAILY_MENU_OPTIONS = """
-Choose from the following options:
+
+DAILY_MENU_OPTIONS = f"""
+{text_choose_from_options}
 ------------------------------------
 1. Purchase location
 2. Purchase / upgrade cart(s)
@@ -67,10 +75,9 @@ Choose from the following options:
 ------------------------------------
 """
 
-text = colored(0, 255, 255, 'Choose from the following options:')
 text2 = colored(255,255,0, '0. Go Back')
 PURCHASE_STOCK_OPTIONS = f"""
-{text}
+{text_choose_from_options}
 ------------------------------------
 1. Pack of Hotdog buns (pack of 8) £{STOCK_COSTS['bun'][2]}.00
 2. Pack of Hotdogs (pack of 6) £{STOCK_COSTS['hotdog'][2]}.00
