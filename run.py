@@ -36,6 +36,7 @@ def show_leaderboard_data():
     print('------------------------------------')
     for x in data[1:10]:
         print(f"{x[0]:<30}{x[1]:<40}")
+    # Get player input
     input("\nPress Enter to return to main menu...")
     main_menu()
 
@@ -50,6 +51,7 @@ def main_menu():
         print(utils.main_menu_header(255, 0, 0,'Welcome to Hotdog Tycoon'))
         user_choice = 0
         print(constants.MAIN_MENU_OPTIONS)
+        # Get player input
         user_choice = input("\nInput choice: ")
         if validate_input(user_choice, 4):
             break
@@ -85,6 +87,7 @@ def background_story():
     '''
     clear_terminal()
     print(constants.BACKGROUND_STORY)
+    # Get player input
     input('\nPress Enter to continue...')
     set_up_new_character()
 
@@ -93,14 +96,15 @@ def set_up_new_character():
     '''
     Function sets all new character stats to default values
     '''
+
     stats = {
         "day" : 0,
         "cash" : float(constants.STARTING_CASH),
         "reputation" : float(0),
-        "hotdogs" : int(0),
-        "buns" : int(0),
-        "onions" : int(0),
-        "secret_sauce" : int(0),
+        "hotdog" : int(0),
+        "bun" : int(0),
+        "onion" : int(0),
+        "sauce" : int(0),
         "location" : {
             "1" : {
                 "purchased" : False,
@@ -136,9 +140,11 @@ def daily_menu(stats):
     '''
     Daily player menu to purchase upgrades and make changes to recipes
     '''
+
     clear_terminal()
     while True:
         print(constants.DAILY_MENU_OPTIONS)
+        # Get player input
         user_choice = input("\nInput choice: ")
 
         if validate_input(user_choice, 6):
@@ -152,8 +158,7 @@ def daily_menu(stats):
         error_message("Coming soon")
         daily_menu(stats)
     elif user_choice == '4':
-        error_message("Coming soon")
-        daily_menu(stats)
+        purchase_stock_menu(stats)
     elif user_choice == '5':
         error_message("Coming soon")
         daily_menu(stats)
@@ -168,6 +173,7 @@ def purchase_location(stats):
     '''
     Purchase location menu for player
     '''
+
     LOC_NAME = constants.LOCATION_NAMES
     LOC_COST = constants.LOCATION_COSTS
     while True:
@@ -185,13 +191,14 @@ def purchase_location(stats):
                 str_part_3 = utils.colored(0, 255, 255, text)
                 print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<53}' + ' - ' f'{str_part_3:<30}')
             else:
-                str_part_2 = utils.colored(255, 165, 0, "Already Purchased")
+                str_part_2 = utils.colored(255, 165, 0, "Purchased")
                 print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<52}' + '- ')
 
         print('')
         print('0. Go back.')
         print('')
 
+        # Get player input
         user_choice = input("\nInput choice: ")
         if validate_input(user_choice, 5):
             if int(user_choice) > 0:
@@ -206,6 +213,7 @@ def purchase_location(stats):
                         stats["cash"] = remaining_cash
                         text = f'Remaining cash £{remaining_cash}'
                         print(utils.colored(0, 255, 255, text))
+                        # Get player input
                         input("Press Enter to continue...")
                     else:
                         error_message("Not enough funds")
@@ -221,6 +229,7 @@ def purchase_cart_menu(stats):
     '''
     Purchase cart menu for player
     '''
+
     LOC_NAME = constants.LOCATION_NAMES
     CART_PRICE = constants.CART_COSTS
     
@@ -230,14 +239,15 @@ def purchase_cart_menu(stats):
         print('------------------------------------')
         print(f'Current Cash: £{stats["cash"]}')
         print('------------------------------------')
+
         for x, y in enumerate(LOC_NAME, start=1):
             cart_level = stats['location'][str(x)]['cart_lvl']
-
             str_part_1 = f'{x}. {y}'
 
             if cart_level == 0 :
                 text = 'Not currently owned'
                 str_part_2 = utils.colored(255, 0, 0, text)
+
             else:
                 text = f'Current level is {cart_level}'
                 str_part_2 = utils.colored(0, 255, 255, text)
@@ -245,12 +255,15 @@ def purchase_cart_menu(stats):
             if stats['location'][str(x)]['purchased'] == False:
                 text = f'Purchase location first'
                 str_part_3 = utils.colored(255, 0, 0, text)
+
             elif cart_level == 0:
                 text = f'PURCHASE for £ {CART_PRICE[cart_level]}'
                 str_part_3 = utils.colored(50, 205, 50, text)
+
             elif cart_level == '5':
                 text = 'No further upgrades'
                 str_part_3 = utils.colored(255, 165, 0, text)
+
             else:
                 text = f'UPGRADE for £{CART_PRICE[cart_level]}'
                 str_part_3 = utils.colored(50, 205, 50, text)
@@ -260,11 +273,14 @@ def purchase_cart_menu(stats):
         print('')
         print('0. Go back.')
         print('')
+        # Get player input
         user_choice = input("\nInput choice: ")
 
         if validate_input(user_choice, 5):
+
             if int(user_choice) > 0:
                 # Make sure location has been purchased first
+
                 if stats['location'][str(user_choice)]['purchased'] == True:
                     # Check if remaining cash will above 0 after purchase, if so continue, else loop
                     cart_level = stats['location'][str(user_choice)]['cart_lvl']
@@ -280,31 +296,139 @@ def purchase_cart_menu(stats):
                         text = f'Remaining cash £{remaining_cash}'
                         print(utils.colored(0, 255, 255, text))
                         input("Press Enter to continue...")
+
                     else:
                         error_message("Not enough funds")
+
                 else:
                     error_message("Purchase Land")
+
             else:
                 break
             
     daily_menu(stats)
 
 
+def purchase_stock_menu(stats):
+    '''
+    Purchase stock menu
+    '''
+
+    while True:
+        clear_terminal()
+        str = utils.colored(0, 255, 255, "Purchase consumable stock to purchase")
+        print(f'{str}')
+        print('------------------------------------')
+        print(f'Current Cash: £{stats["cash"]}')
+        print('')
+        str = utils.colored(0, 255, 255, "Your currently have this many portions of each item:")
+        print(f'{str}')
+        print('------------------------------------')
+        print(f'{stats["bun"]} x Hotdog bun(s)')
+        print(f'{stats["hotdog"]} x Hotdog sausage(s)')
+        print(f'{stats["onion"]} x Onion(s)')
+        print(f'{stats["sauce"]} x Special sauce(s)')
+
+        # Show menu options
+        print(constants.PURCHASE_STOCK_OPTIONS)
+        str = utils.colored(255, 165, 0, "Input choice: ")
+        # Get player input
+        user_choice = input(f'{str} ')
+        print('')
+
+        if validate_input(user_choice, 4):
+
+            if int(user_choice) == 0:
+                break
+
+            else:
+                if user_choice == '1':
+                    item = 'bun'
+                elif user_choice == '2':
+                    item = 'hotdog'
+                elif user_choice == '3':
+                    item = 'onion'
+                elif user_choice == '4':
+                    item = 'sauce'
+
+                item_name = constants.STOCK_COSTS[item][0]
+                item_qty = constants.STOCK_COSTS[item][1]
+                item_cost = constants.STOCK_COSTS[item][2]
+
+                str = utils.colored(50, 205, 50, f"{item_name} ({item_qty} portions)")
+
+                print(f'You selected {str} for £{item_cost}.00')
+
+                str = utils.colored(255, 165, 0, "How many would you like to purchase?")
+                # Get player input
+                user_choice_qty = input(f'\n{str}')
+                print('')
+
+                cost = int(item_cost) * int(user_choice_qty)
+                new_qty = int(user_choice_qty) * int(item_qty)
+
+                print('Checkout:')
+                
+                str1 = utils.colored(50, 205, 50, item_name)
+                str2 = utils.colored(50, 205, 50, user_choice_qty)
+                str3 = utils.colored(50, 205, 50, new_qty)
+                str4 = utils.colored(50, 205, 50, f'£{cost}.00')
+
+                print(f'{"Item:":<10}{str1:<10}')
+                print(f'{"Qty:":<10}{str2:<10}')
+                print(f'{"Portions:":<10}{str3:<10}')
+                print(f'{"TOTAL:":<10}{str4:<10}')
+                print('')
+
+                str = utils.colored(255, 165, 0, "Would you like to make this purchase? (type: yes) ")
+                # Get player input
+                yes_no = input(f'{str}\n')
+
+                print('')
+
+                if validate_yes_no(yes_no):
+
+                    if yes_no.lower() in ['y','yes']:
+                        # Check if remaining cash will above 0 after purchase, if so continue, else loop
+                        remaining_cash = stats["cash"] - cost
+
+                        if remaining_cash >= 0:
+                            # Update player stock with purchased items
+                            stats[item] = int(stats[item]) + int(new_qty)
+                            print(utils.colored(50, 205, 50, 'Purchase Succesful'))
+                            # Update player cash
+                            stats["cash"] = remaining_cash
+                            text = f'Remaining cash £{remaining_cash}'
+                            print(utils.colored(0, 255, 255, text))
+                            # Get player input
+                            input("Press Enter to continue...")
+
+                        else:
+                            error_message("Not enough funds")
+
+    daily_menu(stats)
+
 def create_user_name():
     '''
     Allow user to create their own name for the game
     '''
     while True:
+        # Get player input
         user_name = input(f'What name would you like to use?\n')
         print('')
+
         if user_name:
+
             while True:
                 print(f'Hello {user_name}\n')
                 yes_no = input('Would you like to change your name? (yes / no) \n')
                 print('')
+
                 if validate_yes_no(yes_no):
+
                     if yes_no.lower() in ['n','no']:
                         return user_name
+
                     else:
                         break
 
@@ -330,6 +454,7 @@ def create_user_id(user_name):
     print('------------------------------------')
     print(f'\n{user_name}, your new user ID is: {utils.colored(0, 207, 0, user_id)}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
+    # Get player input
     input('\nPress Enter to continue...')
     return user_id
 
@@ -340,6 +465,7 @@ def show_credits():
     '''
     clear_terminal()
     print(constants.CREDITS)
+    # Get player input
     input("\nPress Enter to return to main menu...")
     main_menu()
 
@@ -396,6 +522,7 @@ def error_message(data):
     else:
         text = utils.colored(255, 0, 0, 'Error.')
         print(f'{text}')
+    # Get player input
     input("Press Enter to retry...")
     clear_terminal()
 
@@ -411,9 +538,10 @@ def main():
     '''
     Main functions to run once code has loaded
     '''
-    #Setting default text color
-    print(utils.colored(0, 0, 0, 'text'))
     main_menu()
+
+#Setting default text color
+print(utils.colored(0, 0, 0, 'text'))
 
 set_up_new_character()
 #main()

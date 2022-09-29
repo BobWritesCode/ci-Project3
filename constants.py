@@ -1,4 +1,24 @@
+def colored(r, g, b, text):
+    '''
+    Allows to change text colour
+    '''
+    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
+
+CART_COSTS = [200, 400, 600, 1000, 1600]
+
+LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Stadium"]
+
+LOCATION_COSTS = [200, 400, 600, 1000, 1600]
+
 STARTING_CASH = 1000
+
+STOCK_COSTS = {
+  # id : [name, portions, cost]
+  'bun' : ['Pack of Hotdog Buns', 8, 1], 
+  'hotdog' : ['Pack of Hotdog Sausage', 6, 2], 
+  'onion' : ['Onion', 10, 1], 
+  'sauce' : ['Jar of Special Sauce', 20, 5]
+}
 
 BACKGROUND_STORY = f"""
 ------------------------------------
@@ -15,8 +35,6 @@ You make your way down to the local hotdog supplies market and have a
 look around. Most of what you see is outside your budget but see there
 are a few things around to get you started....
 """
-
-CART_COSTS = [200, 400, 600, 1000, 1600]
 
 CREDITS = f"""
 Credits:
@@ -40,13 +58,24 @@ Choose from the following options:
 ------------------------------------
 1. Purchase location
 2. Purchase / upgrade cart(s)
-3. Set selling prices
-4. Hire / upgrade cart(s)
-5. Purchase stock
-6. Change Recipes
+3. Hire / upgrade staff
+4. Purchase stock
+5. Change Recipes
+6. Set selling prices
+
+7. Start trading (and save)
 ------------------------------------
 """
 
-LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Stadium"]
+text = colored(0, 255, 255, 'Choose from the following options:')
+text2 = colored(255,255,0, '0. Go Back')
+PURCHASE_STOCK_OPTIONS = f"""
+{text}
+------------------------------------
+1. Pack of Hotdog buns (pack of 8) £{STOCK_COSTS['bun'][2]}.00
+2. Pack of Hotdogs (pack of 6) £{STOCK_COSTS['hotdog'][2]}.00
+3. Onion (Makes 10 portions) £{STOCK_COSTS['onion'][2]}.00
+4. Jar of Special Sauce (20 portions) £{STOCK_COSTS['sauce'][2]}.00
 
-LOCATION_COSTS = [200, 400, 600, 1000, 1600]
+{text2}
+"""
