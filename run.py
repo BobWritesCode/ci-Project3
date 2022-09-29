@@ -37,7 +37,8 @@ def show_leaderboard_data():
     for x in data[1:10]:
         print(f"{x[0]:<30}{x[1]:<40}")
     # Get player input
-    input("\nPress Enter to return to main menu...")
+    text = utils.colored(255, 165, 0, "Press Enter to return to main menu...")
+    input(f'\n{text}')
     main_menu()
 
 
@@ -52,7 +53,8 @@ def main_menu():
         user_choice = 0
         print(constants.MAIN_MENU_OPTIONS)
         # Get player input
-        user_choice = input("\nInput choice: ")
+        text = utils.colored(255, 165, 0, "Input choice:")
+        user_choice = input(f'\n{text}')
         if validate_input(user_choice, 4):
             break
 
@@ -88,7 +90,8 @@ def background_story():
     clear_terminal()
     print(constants.BACKGROUND_STORY)
     # Get player input
-    input('\nPress Enter to continue...')
+    text = utils.colored(255, 165, 0, "Press Enter to continue...")
+    user_choice = input(f'\n{text}')
     set_up_new_character()
 
 
@@ -145,7 +148,8 @@ def daily_menu(stats):
     while True:
         print(constants.DAILY_MENU_OPTIONS)
         # Get player input
-        user_choice = input("\nInput choice: ")
+        text = utils.colored(255, 165, 0, "Input choice:")
+        user_choice = input(f'\n{text}')
 
         if validate_input(user_choice, 6):
             break
@@ -199,9 +203,13 @@ def purchase_location(stats):
         print('')
 
         # Get player input
-        user_choice = input("\nInput choice: ")
+        text = utils.colored(255, 165, 0, "Input choice:")
+        user_choice = input(f'\n{text}')
+
         if validate_input(user_choice, 5):
+
             if int(user_choice) > 0:
+
                 if stats['location'][str(user_choice)]['purchased'] == False:
                     # Check if remaining cash will above 0 after purchase, if so continue, else loop
                     remaining_cash = stats["cash"] - LOC_COST[int(user_choice)-1]
@@ -214,7 +222,8 @@ def purchase_location(stats):
                         text = f'Remaining cash £{remaining_cash}'
                         print(utils.colored(0, 255, 255, text))
                         # Get player input
-                        input("Press Enter to continue...")
+                        text = utils.colored(255, 165, 0, "Press Enter to continue...")
+                        input(f'{text}')
                     else:
                         error_message("Not enough funds")
                 else:
@@ -274,7 +283,8 @@ def purchase_cart_menu(stats):
         print('0. Go back.')
         print('')
         # Get player input
-        user_choice = input("\nInput choice: ")
+        text = utils.colored(255, 165, 0, "Input choice:")
+        user_choice = input(f'\n{text}')
 
         if validate_input(user_choice, 5):
 
@@ -295,7 +305,9 @@ def purchase_cart_menu(stats):
                         print(utils.colored(50, 205, 50, text))
                         text = f'Remaining cash £{remaining_cash}'
                         print(utils.colored(0, 255, 255, text))
-                        input("Press Enter to continue...")
+                        # Get player input
+                        text = utils.colored(255, 165, 0, "Press Enter to continue...")
+                        input(f'{text}')
 
                     else:
                         error_message("Not enough funds")
@@ -331,9 +343,9 @@ def purchase_stock_menu(stats):
 
         # Show menu options
         print(constants.PURCHASE_STOCK_OPTIONS)
-        str = utils.colored(255, 165, 0, "Input choice: ")
         # Get player input
-        user_choice = input(f'{str} ')
+        text = utils.colored(255, 165, 0, "Input choice: ")
+        user_choice = input(f'{text} ')
         print('')
 
         if validate_input(user_choice, 4):
@@ -359,9 +371,9 @@ def purchase_stock_menu(stats):
 
                 print(f'You selected {str} for £{item_cost}.00')
 
-                str = utils.colored(255, 165, 0, "How many would you like to purchase?")
                 # Get player input
-                user_choice_qty = input(f'\n{str}')
+                text = utils.colored(255, 165, 0, "How many would you like to purchase?")
+                user_choice_qty = input(f'\n{text}')
                 print('')
 
                 cost = int(item_cost) * int(user_choice_qty)
@@ -380,8 +392,8 @@ def purchase_stock_menu(stats):
                 print(f'{"TOTAL:":<10}{str4:<10}')
                 print('')
 
-                str = utils.colored(255, 165, 0, "Would you like to make this purchase? (type: yes) ")
                 # Get player input
+                str = utils.colored(255, 165, 0, "Would you like to make this purchase? (type: yes) ")
                 yes_no = input(f'{str}\n')
 
                 print('')
@@ -401,7 +413,8 @@ def purchase_stock_menu(stats):
                             text = f'Remaining cash £{remaining_cash}'
                             print(utils.colored(0, 255, 255, text))
                             # Get player input
-                            input("Press Enter to continue...")
+                            text = utils.colored(255, 165, 0, "Press Enter to continue...")
+                            input(f'{text}\n')
 
                         else:
                             error_message("Not enough funds")
@@ -414,14 +427,17 @@ def create_user_name():
     '''
     while True:
         # Get player input
-        user_name = input(f'What name would you like to use?\n')
+        text = utils.colored(255, 165, 0, "What name would you like to use?")
+        user_name = input(f'{text}\n')
         print('')
 
         if user_name:
 
             while True:
                 print(f'Hello {user_name}\n')
-                yes_no = input('Would you like to change your name? (yes / no) \n')
+                # Get player input
+                text = utils.colored(255, 165, 0, "Would you like to change your name? (yes / no) ")
+                yes_no  = input(f'{text}\n')
                 print('')
 
                 if validate_yes_no(yes_no):
@@ -455,7 +471,8 @@ def create_user_id(user_name):
     print(f'\n{user_name}, your new user ID is: {utils.colored(0, 207, 0, user_id)}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
     # Get player input
-    input('\nPress Enter to continue...')
+    text = utils.colored(255, 165, 0, "Press Enter to continue...")
+    input(f'{text}\n')
     return user_id
 
 
@@ -466,7 +483,8 @@ def show_credits():
     clear_terminal()
     print(constants.CREDITS)
     # Get player input
-    input("\nPress Enter to return to main menu...")
+    text = utils.colored(255, 165, 0, "Press Enter to return to main menu...")
+    input(f'\n{text}')
     main_menu()
 
 
@@ -523,7 +541,8 @@ def error_message(data):
         text = utils.colored(255, 0, 0, 'Error.')
         print(f'{text}')
     # Get player input
-    input("Press Enter to retry...")
+    text = utils.colored(255, 165, 0, "Press Enter to retry...")
+    input(f'{text}')
     clear_terminal()
 
 
@@ -543,5 +562,5 @@ def main():
 #Setting default text color
 print(utils.colored(0, 0, 0, 'text'))
 
-set_up_new_character()
-#main()
+#set_up_new_character()
+main()
