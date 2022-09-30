@@ -18,6 +18,8 @@ LOCATION_COSTS = [200, 400, 600, 1000, 1600]
 
 STAFF_COSTS = [200, 400, 600, 1000, 1600]
 
+STOCK_OPTIONS = ['bun', 'sausage', 'onion', 'sauce']
+
 STARTING_CASH = 1000
 
 STOCK_COSTS = {
@@ -57,7 +59,7 @@ MAIN_MENU_OPTIONS = f"""
 2. Retrieve a previous game
 3. View leaderboard
 4. Credits
-------------------------------------"""
+"""
 
 
 DAILY_MENU_OPTIONS = f"""
@@ -71,7 +73,6 @@ DAILY_MENU_OPTIONS = f"""
 6. Set selling prices
 7. Start trading (and save)
 8. Print Stats
-------------------------------------
 """
 
 PURCHASE_STOCK_OPTIONS = f"""

@@ -108,6 +108,12 @@ def set_up_new_character():
         "bun" : int(0),
         "onion" : int(0),
         "sauce" : int(0),
+        "recipe" : {
+            "bun" : int(1),
+            "sausage" : int(1),
+            "onion" : int(2),
+            "sauce" : int(1)
+        },
         "location" : {
             "1" : {
                 "purchased" : False,
@@ -163,8 +169,7 @@ def daily_menu(stats):
     elif user_choice == '4':
         purchase_stock_menu(stats)
     elif user_choice == '5':
-        error_message("Coming soon")
-        daily_menu(stats)
+        change_recipe_menu(stats)
     elif user_choice == '6':
         error_message("Coming soon")
         daily_menu(stats)
@@ -335,13 +340,7 @@ def purchase_stock_menu(stats):
         print('------------------------------------')
         print(f'Current Cash: £{stats["cash"]}\n')
 
-        text = utils.colored(0, 255, 255, "Your currently have this many portions of each item:")
-        print(f'{text}')
-        print('------------------------------------')
-        print(f'{stats["bun"]} x Hotdog bun(s)')
-        print(f'{stats["hotdog"]} x Hotdog sausage(s)')
-        print(f'{stats["onion"]} x Onion(s)')
-        print(f'{stats["sauce"]} x Special sauce(s)')
+        print_portions_in_stock(stats)
 
         # Show menu options
         print(constants.PURCHASE_STOCK_OPTIONS)
@@ -417,9 +416,8 @@ def purchase_stock_menu(stats):
                             stats["cash"] = remaining_cash
                             text = f'Remaining cash £{remaining_cash}'
                             print(utils.colored(0, 255, 255, text))
-                            # Get player input
-                            text = utils.colored(255, 165, 0, "Press Enter to continue...")
-                            input(f'{text}\n')
+
+                            print_continue()
 
                         else:
                             error_message("Not enough funds")
@@ -510,6 +508,75 @@ def puchase_staff_menu(stats):
                 break
                 
     daily_menu(stats)
+
+
+def change_recipe_menu(stats):
+    '''
+    Player is able to change recipe menu
+    '''
+    while True:
+        clear_terminal()
+        bun = stats['recipe']['bun']
+        sausage = stats['recipe']['sausage']
+        onion = stats['recipe']['onion']
+        sauce = stats['recipe']['sauce']
+
+        text = utils.colored(0, 255, 255, "Make changes to your recipe")
+        print(f'{text}')
+        print('------------------------------------\n')
+
+        print_portions_in_stock(stats)
+
+        print(utils.colored(0, 255, 255, "\nCurrent Recipe:"))
+        print('------------------------------------')
+        text1 = utils.colored(0, 255, 255, "Ingrediant")
+        text2 = utils.colored(0, 255, 255, "Portions per serving")
+        print(f'{text1:<12}{"|":<2}{text2:<0}')
+        print('------------------------------------')
+        print(f'{"1. Buns":<12}{"|":<2}{f"{bun}":<0}')
+        print(f'{"2. Sausages":<12}{"|":<2}{f"{sausage}":<0}')
+        print(f'{"3. Onions":<12}{"|":<2}{f"{onion}":<0}')
+        print(f'{"4. Sauce":<12}{"|":<2}{f"{sauce}":<0}')
+
+        print_go_back()
+
+        print('\nTo update your recipe type the ingrediant and amount i.e. "3 4" will update onion to 4 potions per serving.\n')
+        
+        # Get player input
+        text = utils.colored(255, 165, 0, "Enter change i.e. 3 4 (max 999):")
+        user_choice = input(f'{text}')
+        user_choice = user_choice.split()
+
+        if validate_recipe_change(user_choice):
+            if int(user_choice[0]) == 0:
+                break
+            stock_choosen = constants.STOCK_OPTIONS[int(user_choice[0])-1]
+            stats['recipe'][stock_choosen] = int(user_choice[1])
+            text = utils.colored(50, 205, 50, f'Updated {stock_choosen.capitalize()} to {user_choice[1]} per serving.')
+            print(text)
+
+            print_continue()
+
+    daily_menu(stats)
+
+
+def validate_recipe_change(data):
+    '''
+    Check user input for recipe change is valid
+    '''
+    if len(data) == 1 and int(data[0]) == 0:
+        return True
+
+    if len(data) != 2:
+        text = utils.colored(255, 0, 0, 'Too little or too many values.')
+        print(f'{text}')
+        text = utils.colored(255, 165, 0, "Press Enter to continue...")
+        input(f'{text}')
+    else:
+        if validate_input(data[0], 999) and validate_input(data[1], 999): 
+            return True
+    
+    return False
 
 
 def create_user_name():
@@ -644,12 +711,33 @@ def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
+def print_portions_in_stock(stats):
+    '''
+    Print how many portions from ingridants player currently has
+    '''
+    text = utils.colored(0, 255, 255, "Your current stock:")
+    print(f'{text}')
+    print('------------------------------------')
+    print(f'{stats["bun"]} x Hotdog bun(s)')
+    print(f'{stats["hotdog"]} x Hotdog sausage(s)')
+    print(f'{stats["onion"]} x Onion(s)')
+    print(f'{stats["sauce"]} x Special sauce(s)')
+
+
+def print_continue():
+    '''
+    Print "Press Enter to continue" in color
+    '''
+    text = utils.colored(255, 165, 0, "Press Enter to continue...")
+    input(f'{text}\n')
+
 def print_go_back():
     '''
     Print 0. Go Back in yellow
     '''
     text = utils.colored(255,255,0, f'\n0. Go Back')
     print(text)
+
 
 def main():
     '''
@@ -660,5 +748,5 @@ def main():
 #Setting default text color
 print(utils.colored(0, 0, 0, 'text'))
 
-#set_up_new_character()
-main()
+set_up_new_character()
+#main()
