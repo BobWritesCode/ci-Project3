@@ -16,6 +16,8 @@ LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Stadium"
 
 LOCATION_COSTS = [200, 400, 600, 1000, 1600]
 
+STAFF_COSTS = [200, 400, 600, 1000, 1600]
+
 STARTING_CASH = 1000
 
 STOCK_COSTS = {
@@ -39,15 +41,13 @@ where you can set up for cheap. Everything else though is up to you.
 
 You make your way down to the local hotdog supplies market and have a
 look around. Most of what you see is outside your budget but see there
-are a few things around to get you started....
-"""
+are a few things around to get you started...."""
 
 CREDITS = f"""
 Credits:
 ------------------------------------
 {"Code by:":<20}{"Warwick Hart":<40}
-{"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}
-"""
+{"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}"""
 
 
 MAIN_MENU_OPTIONS = f"""
@@ -57,8 +57,7 @@ MAIN_MENU_OPTIONS = f"""
 2. Retrieve a previous game
 3. View leaderboard
 4. Credits
-------------------------------------
-"""
+------------------------------------"""
 
 
 DAILY_MENU_OPTIONS = f"""
@@ -70,19 +69,15 @@ DAILY_MENU_OPTIONS = f"""
 4. Purchase stock
 5. Change Recipes
 6. Set selling prices
-
 7. Start trading (and save)
+8. Print Stats
 ------------------------------------
 """
 
-text2 = colored(255,255,0, '0. Go Back')
 PURCHASE_STOCK_OPTIONS = f"""
 {text_choose_from_options}
 ------------------------------------
 1. Pack of Hotdog buns (pack of 8) £{STOCK_COSTS['bun'][2]}.00
 2. Pack of Hotdogs (pack of 6) £{STOCK_COSTS['hotdog'][2]}.00
 3. Onion (Makes 10 portions) £{STOCK_COSTS['onion'][2]}.00
-4. Jar of Special Sauce (20 portions) £{STOCK_COSTS['sauce'][2]}.00
-
-{text2}
-"""
+4. Jar of Special Sauce (20 portions) £{STOCK_COSTS['sauce'][2]}.00"""
