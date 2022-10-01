@@ -36,9 +36,7 @@ def show_leaderboard_data():
     print('------------------------------------')
     for x in data[1:10]:
         print(f"{x[0]:<30}{x[1]:<40}")
-    # Get player input
-    text = utils.colored(255, 165, 0, "Press Enter to return to main menu...")
-    input(f'\n{text}')
+    print_press_enter_to("Press Enter to return to main menu...")
     main_menu()
 
 
@@ -89,9 +87,7 @@ def background_story():
     '''
     clear_terminal()
     print(constants.BACKGROUND_STORY)
-    # Get player input
-    text = utils.colored(255, 165, 0, "Press Enter to continue...")
-    user_choice = input(f'\n{text}')
+    print_press_enter_to("Press Enter to continue...")
     set_up_new_character()
 
 
@@ -99,7 +95,6 @@ def set_up_new_character():
     '''
     Function sets all new character stats to default values
     '''
-
     stats = {
         "day" : 0,
         "cash" : float(constants.STARTING_CASH),
@@ -114,6 +109,7 @@ def set_up_new_character():
             "onion" : int(2),
             "sauce" : int(1)
         },
+        "selling_price" : float(3.50),
         "location" : {
             "1" : {
                 "purchased" : False,
@@ -149,7 +145,6 @@ def daily_menu(stats):
     '''
     Daily player menu to purchase upgrades and make changes to recipes
     '''
-
     clear_terminal()
     while True:
         print(constants.DAILY_MENU_OPTIONS)
@@ -171,8 +166,7 @@ def daily_menu(stats):
     elif user_choice == '5':
         change_recipe_menu(stats)
     elif user_choice == '6':
-        error_message("Coming soon")
-        daily_menu(stats)
+        set_selling_price(stats)
     elif user_choice == '7':
         error_message("Coming soon")
         daily_menu(stats)
@@ -230,9 +224,7 @@ def purchase_location(stats):
                         stats["cash"] = remaining_cash
                         text = f'Remaining cash £{remaining_cash}'
                         print(utils.colored(0, 255, 255, text))
-                        # Get player input
-                        text = utils.colored(255, 165, 0, "Press Enter to continue...")
-                        input(f'{text}')
+                        print_press_enter_to("Press Enter to continue...")
                     else:
                         error_message("Not enough funds")
                 else:
@@ -313,9 +305,7 @@ def purchase_cart_menu(stats):
                         print(utils.colored(50, 205, 50, text))
                         text = f'Remaining cash £{remaining_cash}'
                         print(utils.colored(0, 255, 255, text))
-                        # Get player input
-                        text = utils.colored(255, 165, 0, "Press Enter to continue...")
-                        input(f'{text}')
+                        print_press_enter_to("Press Enter to continue...")
 
                     else:
                         error_message("Not enough funds")
@@ -361,7 +351,7 @@ def purchase_stock_menu(stats):
                 if user_choice == '1':
                     item = 'bun'
                 elif user_choice == '2':
-                    item = 'hotdog'
+                    item = 'sausage'
                 elif user_choice == '3':
                     item = 'onion'
                 elif user_choice == '4':
@@ -417,7 +407,7 @@ def purchase_stock_menu(stats):
                             text = f'Remaining cash £{remaining_cash}'
                             print(utils.colored(0, 255, 255, text))
 
-                            print_continue()
+                            print_press_enter_to("Press Enter to continue...")
 
                         else:
                             error_message("Not enough funds")
@@ -494,9 +484,7 @@ def puchase_staff_menu(stats):
                         print(utils.colored(50, 205, 50, text))
                         text = f'Remaining cash £{remaining_cash}'
                         print(utils.colored(0, 255, 255, text))
-                        # Get player input
-                        text = utils.colored(255, 165, 0, "Press Enter to continue...")
-                        input(f'{text}')
+                        print_press_enter_to("Press Enter to continue...")
 
                     else:
                         error_message("Not enough funds")
@@ -555,9 +543,80 @@ def change_recipe_menu(stats):
             text = utils.colored(50, 205, 50, f'Updated {stock_choosen.capitalize()} to {user_choice[1]} per serving.')
             print(text)
 
-            print_continue()
+            print_press_enter_to("Press Enter to continue...")
 
     daily_menu(stats)
+
+
+def set_selling_price(stats):
+    '''
+    Allow user to set selling price of hotdogs
+    '''
+    while True:
+        clear_terminal()
+        curr_price = stats["selling_price"]
+        text = utils.colored(0, 255, 255, "Set the selling price of your product")
+        print(f'{text}')
+        print('------------------------------------')
+        production_cost = cost_to_make(stats)
+        text = utils.colored(50, 205, 50, "£"+ str(round(production_cost, 2)))
+        print(f'\nThe current cost for to make your your product is {text}')
+        text = utils.colored(50, 205, 50, "£"+"{:.2f}".format(stats["selling_price"]))
+        print(f'\nCurrent selling price is {text}')
+        net_profit = round(curr_price - production_cost, 2)
+        if net_profit >= 0:
+            text = utils.colored(50, 205, 50, "Profit per serving is:")
+            print(f'\n{text}£{net_profit}')
+        else:
+            text = utils.colored(255, 0, 0, "Loss per serving is: ")
+            print(f'\n{text}£{net_profit}')
+
+        print_go_back()
+        text = utils.colored(255, 165, 0, "Enter new price: £")
+        new_price = input(f'\n{text}')
+
+        if validate_price_change(new_price):
+            if float(new_price) == 0:
+                break
+            new_price = round(float(new_price) , 2)
+            stats["selling_price"] = float(new_price)
+            text = utils.colored(50, 205, 50, f'\nUpdated selling price to £{new_price}')
+            print(text)
+            print_press_enter_to("Press Enter to continue...")
+        
+    daily_menu(stats)
+
+
+def cost_to_make(stats):
+    '''
+    Works out the cost of making each hotdog
+    '''
+    bun = stats['recipe']['bun'] * constants.STOCK_COSTS['bun'][2] / constants.STOCK_COSTS['bun'][1]
+    sausage = stats['recipe']['sausage'] * constants.STOCK_COSTS['sausage'][2] / constants.STOCK_COSTS['sausage'][1]
+    onion = stats['recipe']['onion'] * constants.STOCK_COSTS['onion'][2] / constants.STOCK_COSTS['onion'][1]
+    sauce = stats['recipe']['sauce'] * constants.STOCK_COSTS['sauce'][2] / constants.STOCK_COSTS['sauce'][1]
+    return (bun + sausage + onion + sauce)
+
+
+def validate_price_change(data):
+    '''
+    Check user input valid value for price change
+    '''
+    try:
+        try:
+            float_value = float(data)
+        except:
+            error_message("invalid input")
+            return False
+        if float_value >= 0:
+          return True
+        else:
+            raise ValueError()
+    except ValueError as e:        
+        error_message("invalid input")
+        return False
+
+    return True
 
 
 def validate_recipe_change(data):
@@ -570,8 +629,7 @@ def validate_recipe_change(data):
     if len(data) != 2:
         text = utils.colored(255, 0, 0, 'Too little or too many values.')
         print(f'{text}')
-        text = utils.colored(255, 165, 0, "Press Enter to continue...")
-        input(f'{text}')
+        print_press_enter_to("Press Enter to continue...")
     else:
         if validate_input(data[0], 999) and validate_input(data[1], 999): 
             return True
@@ -628,9 +686,7 @@ def create_user_id(user_name):
     print('------------------------------------')
     print(f'\n{user_name}, your new user ID is: {utils.colored(0, 207, 0, user_id)}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
-    # Get player input
-    text = utils.colored(255, 165, 0, "Press Enter to continue...")
-    input(f'{text}\n')
+    print_press_enter_to("Press Enter to continue...")
     return user_id
 
 
@@ -640,9 +696,7 @@ def show_credits():
     '''
     clear_terminal()
     print(constants.CREDITS)
-    # Get player input
-    text = utils.colored(255, 165, 0, "Press Enter to return to main menu...")
-    input(f'\n{text}')
+    print_press_enter_to("Press Enter to return to main menu...")
     main_menu()
 
 
@@ -687,7 +741,7 @@ def error_message(data):
         text = utils.colored(255, 165, 0, 'This feature is not implemented yet and will be coming soon.')
         print(f'{text}')
     elif data == "Not enough funds":
-        text = utils.colored(255, 165, 0, 'You do not have enough funds to do this.')
+        text = utils.colored(255, 0, 0, 'You do not have enough funds to do this.')
         print(f'{text}')
     elif data == "Purchase Land":
         text = utils.colored(255, 165, 0, 'You need to purchase this location first.')
@@ -698,9 +752,7 @@ def error_message(data):
     else:
         text = utils.colored(255, 0, 0, 'Error.')
         print(f'{text}')
-    # Get player input
-    text = utils.colored(255, 165, 0, "Press Enter to retry...")
-    input(f'{text}')
+    print_press_enter_to("Press Enter to retry...")
     clear_terminal()
 
 
@@ -724,12 +776,13 @@ def print_portions_in_stock(stats):
     print(f'{stats["sauce"]} x Special sauce(s)')
 
 
-def print_continue():
+def print_press_enter_to(text):
     '''
-    Print "Press Enter to continue" in color
+    Print "Press Enter....
     '''
-    text = utils.colored(255, 165, 0, "Press Enter to continue...")
-    input(f'{text}\n')
+    text = utils.colored(255, 165, 0, f'\n{text}')
+    input(f'{text}')
+
 
 def print_go_back():
     '''

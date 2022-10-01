@@ -24,8 +24,8 @@ STARTING_CASH = 1000
 
 STOCK_COSTS = {
   # id : [name, portions, cost]
-  'bun' : ['Pack of Hotdog Buns', 8, 1], 
-  'hotdog' : ['Pack of Hotdog Sausage', 6, 2], 
+  'bun' : ['Pack of Hotdog Buns', 6, 1], 
+  'sausage' : ['Pack of Hotdog Sausage', 8, 2], 
   'onion' : ['Onion', 10, 1], 
   'sauce' : ['Jar of Special Sauce', 20, 5]
 }
@@ -79,6 +79,6 @@ PURCHASE_STOCK_OPTIONS = f"""
 {text_choose_from_options}
 ------------------------------------
 1. Pack of Hotdog buns (pack of 8) £{STOCK_COSTS['bun'][2]}.00
-2. Pack of Hotdogs (pack of 6) £{STOCK_COSTS['hotdog'][2]}.00
+2. Pack of Hotdogs (pack of 6) £{STOCK_COSTS['sausage'][2]}.00
 3. Onion (Makes 10 portions) £{STOCK_COSTS['onion'][2]}.00
 4. Jar of Special Sauce (20 portions) £{STOCK_COSTS['sauce'][2]}.00"""
