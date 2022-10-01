@@ -73,6 +73,7 @@ DAILY_MENU_OPTIONS = f"""
 6. Set selling prices
 7. Start trading (and save)
 8. Print Stats
+0. Save and quit
 """
 
 PURCHASE_STOCK_OPTIONS = f"""

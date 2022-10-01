@@ -1,5 +1,5 @@
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
-GAMETITLE = 'Hotdog Tycoon' #Name change pending
+GAMETITLE = 'Hotdog Empire Tycoon' #Name change pending
 print(f'Preparing to start {GAMETITLE}...\n')
 
 import gspread
@@ -78,24 +78,27 @@ def new_game():
     print(f'new account.\n')
     user_name = create_user_name()
     user_id = create_user_id(user_name)
-    background_story()
+    stats = set_up_new_character(user_id, user_name)
+    background_story(stats)
 
 
-def background_story():
+def background_story(stats):
     '''
     Tell the user the background story
     '''
     clear_terminal()
     print(constants.BACKGROUND_STORY)
     print_press_enter_to("Press Enter to continue...")
-    set_up_new_character()
+    daily_menu(stats)
 
 
-def set_up_new_character():
+def set_up_new_character(user_id, name):
     '''
     Function sets all new character stats to default values
     '''
     stats = {
+        "user_id" : user_id,
+        "name" : name,
         "day" : 0,
         "cash" : float(constants.STARTING_CASH),
         "reputation" : float(0),
@@ -138,7 +141,8 @@ def set_up_new_character():
             }
         }
     }
-    daily_menu(stats)
+    save_data(stats, False, True)
+    return stats
 
 
 def daily_menu(stats):
@@ -151,10 +155,8 @@ def daily_menu(stats):
         # Get player input
         text = utils.colored(255, 165, 0, "Input choice:")
         user_choice = input(f'{text}')
-
         if validate_input(user_choice, 8):
             break
-    
     if user_choice == '1':
         purchase_location(stats)
     elif user_choice == '2':
@@ -174,14 +176,58 @@ def daily_menu(stats):
         print(stats)
         daily_menu(stats)
     elif user_choice == '0':
-        daily_menu(stats)
+        save_data(stats, True, False)
+
+
+def save_data(stats, exit, first_save):
+    '''
+    Save player data to database.
+    The for loop looks through the coloumn 1 data from Google sheets.
+    If it finds a match it updates that row.
+    Else creates a new row with data.
+    If "exit = True" go to main menu after save.
+    '''
+    data_to_save = []
+    data_to_save = convert_dict_to_array(stats, data_to_save)
+    worksheet = SHEET.worksheet("user_data")
+    col_array = worksheet.col_values(1)
+    i = 0
+    found = False
+    if not first_save:
+        for k in col_array:
+            i+=1
+            if k == stats['user_id']:
+                j = 0
+                for y in data_to_save:
+                    j+=1
+                    worksheet.update_cell(i, j, data_to_save[j-1])
+                    text = "Data saved"
+                    print(utils.colored(50, 205, 50, text))
+                    found = True
+                break
+    if not found or first_save:
+        worksheet.append_row(data_to_save)
+        print_press_enter_to("Press Enter to continue...")
+    if exit:
+        main()
+
+
+def convert_dict_to_array(data, data_to_save):
+    '''
+    Convert dict game data to an array so it can be saved to Google Sheet
+    '''
+    for i in data:
+        if type(data[f'{i}']) is dict:
+            convert_dict_to_array(data[f'{i}'], data_to_save)
+        else:
+            data_to_save.append(data[f"{i}"])
+    return data_to_save
 
 
 def purchase_location(stats):
     '''
     Purchase location menu for player
     '''
-
     LOC_NAME = constants.LOCATION_NAMES
     LOC_COST = constants.LOCATION_COSTS
     while True:
@@ -210,13 +256,10 @@ def purchase_location(stats):
         user_choice = input(f'\n{text}')
 
         if validate_input(user_choice, 5):
-
             if int(user_choice) > 0:
-
                 if stats['location'][str(user_choice)]['purchased'] == False:
                     # Check if remaining cash will above 0 after purchase, if so continue, else loop
                     remaining_cash = stats["cash"] - LOC_COST[int(user_choice)-1]
-
                     if remaining_cash >= 0:
                         stats['location'][str(user_choice)]['purchased'] = True
                         text = f'Your purchased {LOC_NAME[int(user_choice)-1]} for £{LOC_COST[int(user_choice)-1]}'
@@ -686,7 +729,6 @@ def create_user_id(user_name):
     print('------------------------------------')
     print(f'\n{user_name}, your new user ID is: {utils.colored(0, 207, 0, user_id)}\n')
     print(f'Please keep this safe as this is how you can retrieve your progress')
-    print_press_enter_to("Press Enter to continue...")
     return user_id
 
 
@@ -801,5 +843,4 @@ def main():
 #Setting default text color
 print(utils.colored(0, 0, 0, 'text'))
 
-set_up_new_character()
-#main()
+main()
