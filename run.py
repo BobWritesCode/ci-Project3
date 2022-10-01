@@ -102,7 +102,7 @@ def set_up_new_character(user_id, name):
         "day" : 0,
         "cash" : float(constants.STARTING_CASH),
         "reputation" : float(0),
-        "hotdog" : int(0),
+        "sausage" : int(0),
         "bun" : int(0),
         "onion" : int(0),
         "sauce" : int(0),
@@ -171,9 +171,6 @@ def daily_menu(stats):
         set_selling_price(stats)
     elif user_choice == '7':
         error_message("Coming soon")
-        daily_menu(stats)
-    elif user_choice == '8':
-        print(stats)
         daily_menu(stats)
     elif user_choice == '0':
         save_data(stats, True, False)
@@ -383,7 +380,6 @@ def purchase_stock_menu(stats):
         # Get player input
         text = utils.colored(255, 165, 0, "Input choice: ")
         user_choice = input(f'\n{text} ')
-        print('')
 
         if validate_input(user_choice, 4):
 
@@ -411,12 +407,11 @@ def purchase_stock_menu(stats):
                 # Get player input
                 text = utils.colored(255, 165, 0, "How many would you like to purchase?")
                 user_choice_qty = input(f'\n{text}')
-                print('')
 
                 cost = int(item_cost) * int(user_choice_qty)
                 new_qty = int(user_choice_qty) * int(item_qty)
 
-                print('Checkout:')
+                print('\nCheckout:')
                 
                 str1 = utils.colored(50, 205, 50, item_name)
                 str2 = utils.colored(50, 205, 50, user_choice_qty)
@@ -433,8 +428,6 @@ def purchase_stock_menu(stats):
                 text = utils.colored(255, 165, 0, "Would you like to make this purchase? (type: yes) ")
                 yes_no = input(f'{text}\n')
 
-                print('')
-
                 if validate_yes_no(yes_no):
 
                     if yes_no.lower() in ['y','yes']:
@@ -444,7 +437,7 @@ def purchase_stock_menu(stats):
                         if remaining_cash >= 0:
                             # Update player stock with purchased items
                             stats[item] = int(stats[item]) + int(new_qty)
-                            print(utils.colored(50, 205, 50, 'Purchase Succesful'))
+                            print(utils.colored(50, 205, 50, 'Purchase Successful'))
                             # Update player cash
                             stats["cash"] = remaining_cash
                             text = f'Remaining cash £{remaining_cash}'
@@ -813,7 +806,7 @@ def print_portions_in_stock(stats):
     print(f'{text}')
     print('------------------------------------')
     print(f'{stats["bun"]} x Hotdog bun(s)')
-    print(f'{stats["hotdog"]} x Hotdog sausage(s)')
+    print(f'{stats["sausage"]} x Hotdog sausage(s)')
     print(f'{stats["onion"]} x Onion(s)')
     print(f'{stats["sauce"]} x Special sauce(s)')
 

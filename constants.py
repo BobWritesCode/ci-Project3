@@ -79,7 +79,7 @@ DAILY_MENU_OPTIONS = f"""
 PURCHASE_STOCK_OPTIONS = f"""
 {text_choose_from_options}
 ------------------------------------
-1. Pack of Hotdog buns (pack of 8) £{STOCK_COSTS['bun'][2]}.00
-2. Pack of Hotdogs (pack of 6) £{STOCK_COSTS['sausage'][2]}.00
-3. Onion (Makes 10 portions) £{STOCK_COSTS['onion'][2]}.00
-4. Jar of Special Sauce (20 portions) £{STOCK_COSTS['sauce'][2]}.00"""
+1. Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) £{STOCK_COSTS['bun'][2]}.00
+2. Pack of Hotdogs (pack of {STOCK_COSTS['sausage'][1]}) £{STOCK_COSTS['sausage'][2]}.00
+3. Onion (Makes {STOCK_COSTS['onion'][1]} portions) £{STOCK_COSTS['onion'][2]}.00
+4. Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) £{STOCK_COSTS['sauce'][2]}.00"""
