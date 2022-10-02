@@ -230,13 +230,20 @@ def run_day(stats, PM):
     end_of_day = False
     hour = 8
     minute = 00
-    total_locations = len(constants.LOCATION_NAMES)
     cust_count = []
-    for i in range(total_locations):
-        cust_count.append(0)
+    open_locations= []
+    for i in range(len(constants.LOCATION_NAMES)):
+        if  ( stats["location"][f"{i+1}"]["purchased"] and 
+        stats["location"][f"{i+1}"]["cart_lvl"] > 0 and
+        stats["location"][f"{i+1}"]["staff_lvl"] > 0
+        ):
+            cust_count.append(0)
+            open_locations.append(i)
+            total_locations = len(open_locations)
     while not end_of_day:
         cust_chance = []
         portions = get_portions_avaliable(stats)
+        print(portions)
         footfall = constants.LOCATION_FOOTFALL
         for i in range(total_locations):
             rep_modifier = (stats["reputation"] + 2) / 2
@@ -246,6 +253,11 @@ def run_day(stats, PM):
                 x = randrange(floor(cust_chance[i]))
                 if x <= 100:
                     cust_count[i] += 1
+                    portions -= 1
+                    if portions == 0:
+                        print(f'Sold out at {hour}:{minute}')
+                        stats = deduct_stock(stats, portions)
+                        break
             minute += 1
             if minute == 60: 
                 minute = 00
@@ -264,6 +276,17 @@ def run_day(stats, PM):
                     break
     stats["day"]+=1
     daily_menu(stats)
+
+
+def deduct_stock(stats, portions):
+    '''
+    Deduct any stock that has been sold and return stats back to calling function
+    '''
+    stats["sausage"] -= stats["recipe"]["sausage"] * portions
+    stats["bun"] -= stats["recipe"]["bun"] * portions
+    stats["onion"] -= stats["recipe"]["onion"] * portions
+    stats["sauce"] -= stats["recipe"]["sauce"] * portions
+    return stats
 
 
 def get_portions_avaliable(stats):
