@@ -57,8 +57,7 @@ def main_menu():
     if user_choice == '1':
         new_game()
     elif user_choice == '2':
-        error_message("Coming soon")
-        main_menu()
+        retrieve_save()
     elif user_choice == '3':
         show_leaderboard_data()
     elif user_choice == '4':
@@ -76,7 +75,9 @@ def new_game():
     print(f'new account.\n')
     user_name = create_user_name()
     user_id = create_user_id(user_name)
-    stats = set_up_new_character(user_id, user_name)
+    data = [user_id, user_name]
+    stats = set_up_character(data , True)
+    save_data(stats, True)
     background_story(stats)
 
 
@@ -90,56 +91,96 @@ def background_story(stats):
     daily_menu(stats)
 
 
-def set_up_new_character(user_id, name):
+def set_up_character(data, new_player):
     '''
     Function sets all new character stats to default values
     '''
+    if new_player:
+        user_id = data[0]
+        name = data[1]
+        data = [
+            user_id,                        #0
+            name,                           #1
+            0,                              #2
+            float(constants.STARTING_CASH), #3
+            float(0),                       #4
+            int(0),                         #5
+            int(0),                         #6
+            int(0),                         #7
+            int(0),                         #8
+            int(1),                         #9
+            int(1),                         #10
+            int(2),                         #11
+            int(1),                         #12
+            float(3.50),                    #13
+            False,                        #14
+            int(0),                         #15
+            int(0),                         #16
+            False,                        #17
+            int(0),                         #18
+            int(0),                         #19
+            False,                        #20
+            int(0),                         #21
+            int(0),                         #22
+            False,                        #23
+            int(0),                         #24
+            int(0),                         #25
+            False,                        #26
+            int(0),                         #27
+            int(0),                         #28
+            False                         #29
+        ]
+    else:
+        to_check = [14,17,20,23,26,29]
+        for i in to_check:
+            data[i] = False if data[i] == "FALSE" else True
+
     stats = {
-        "user_id" : user_id,
-        "name" : name,
-        "day" : 0,
-        "cash" : float(constants.STARTING_CASH),
-        "reputation" : float(0),
-        "sausage" : int(0),
-        "bun" : int(0),
-        "onion" : int(0),
-        "sauce" : int(0),
+        "user_id" : data[0],                #0
+        "name" : data[1],                   #1
+        "day" : data[2],                    #2
+        "cash" : float(data[3]),            #3
+        "reputation" : float(data[4]),      #4
+        "sausage" : int(data[5]),           #5
+        "bun" : int(data[6]),               #6
+        "onion" : int(data[7]),             #7
+        "sauce" : int(data[8]),             #8
         "recipe" : {
-            "bun" : int(1),
-            "sausage" : int(1),
-            "onion" : int(2),
-            "sauce" : int(1)
+            "bun" : int(data[9]),           #9
+            "sausage" : int(data[10]),      #10
+            "onion" : int(data[11]),        #11
+            "sauce" : int(data[12])         #12
         },
-        "selling_price" : float(3.50),
+        "selling_price" : float(data[13]),  #13
         "location" : {
             "1" : {
-                "purchased" : False,
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0)
+                "purchased" : data[14],     #14
+                "cart_lvl" : int(data[15]), #15
+                "staff_lvl" : int(data[16]) #16
             },
             "2" : {
-                "purchased" : False,
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0)
+                "purchased" : data[17],      #17
+                "cart_lvl" : int(data[18]),  #18
+                "staff_lvl" : int(data[19])  #19
             },
             "3" : {
-                "purchased" : False,
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0)
+                "purchased" : data[20],      #20
+                "cart_lvl" : int(data[21]),  #21
+                "staff_lvl" : int(data[22])  #23
             },
             "4" : {
-                "purchased" : False,
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0)
+                "purchased" : data[23],      #23
+                "cart_lvl" : int(data[24]),  #24
+                "staff_lvl" : int(data[25])  #25
             },
             "5" : {
-                "purchased" : False,
-                "cart_lvl" : int(0),
-                "staff_lvl" : int(0)
+                "purchased" : data[26],      #26
+                "cart_lvl" : int(data[27]),  #27
+                "staff_lvl" : int(data[28])  #28
             }
-        }
+        },
+        "game_over" : data[29]               #29
     }
-    save_data(stats, True)
     return stats
 
 
@@ -152,7 +193,7 @@ def daily_menu(stats):
         print(constants.DAILY_MENU_OPTIONS)
         # Get player input
         text = utils.colored(255, 165, 0, "Input choice:")
-        user_choice = input(f'{text}')
+        user_choice = input(f'\n{text}')
         if validate_input(user_choice, 8):
             break
     if user_choice == '1':
@@ -168,7 +209,7 @@ def daily_menu(stats):
     elif user_choice == '6':
         set_selling_price(stats)
     elif user_choice == '7':
-        error_message("Coming soon")
+        print_error_message("Coming soon")
         daily_menu(stats)
     elif user_choice == '0':
         save_data(stats, False)
@@ -206,6 +247,46 @@ def save_data(stats, first_save):
     if not found or first_save:
         worksheet.append_row(data_to_save)
     print_press_enter_to("Press Enter to continue...")
+
+
+def retrieve_save():
+    '''
+    Retrieve saved game data and resume game from where last left off.
+    '''
+    worksheet = SHEET.worksheet("user_data")
+    col_array = worksheet.col_values(1)
+    max_i = len(col_array)
+    found = False
+    while not found:
+        clear_terminal()
+        text = utils.colored(0, 255, 255, "Retrieve a previous game")
+        print(f'{text}')
+        print('------------------------------------')
+        print('\nYou will need your game ID to retrieve a previous game.')
+        print_go_back()
+        text = utils.colored(255, 165, 0, "Enter Game ID:")
+        user_input = input(f'\n{text}')
+        i = 0
+        # Cycle through rows in Google sheet until GAME ID finds a Match
+        text = utils.colored(0, 255, 255, "SEARCHING...")
+        print(f'\n{text}')
+        for cell_value in col_array:
+            i+=1
+            if cell_value == user_input:
+                found = True
+                text = utils.colored(0, 255, 255, "GAME FOUND...")
+                print(f'\n{text}')
+                # Copy data from row where GAME ID matches
+                data = worksheet.row_values(i)
+                stats = set_up_character(data, False)
+                text = utils.colored(50, 205, 50, "GAME LOADED.")
+                print(f'\n{text}')
+                print_press_enter_to("Press Enter to continue...")
+                daily_menu(stats)
+                break
+        # If no GAME ID match then show error.
+        if not found:
+            print_error_message("No game found")
 
 
 def convert_dict_to_array(data, data_to_save):
@@ -260,9 +341,9 @@ def purchase_location(stats):
                         print(utils.colored(0, 255, 255, text))
                         print_press_enter_to("Press Enter to continue...")
                     else:
-                        error_message("Not enough funds")
+                        print_error_message("Not enough funds")
                 else:
-                    error_message('Already Purchase')
+                    print_error_message('Already Purchase')
             else:
                 break
 
@@ -325,9 +406,9 @@ def purchase_cart_menu(stats):
                         print(utils.colored(0, 255, 255, text))
                         print_press_enter_to("Press Enter to continue...")
                     else:
-                        error_message("Not enough funds")
+                        print_error_message("Not enough funds")
                 else:
-                    error_message("Purchase Land")
+                    print_error_message("Purchase Land")
             else:
                 break
     daily_menu(stats)
@@ -395,7 +476,7 @@ def purchase_stock_menu(stats):
                                 print(utils.colored(0, 255, 255, text))
                                 print_press_enter_to("Press Enter to continue...")
                             else:
-                                error_message("Not enough funds")
+                                print_error_message("Not enough funds")
                         else:
                                 print(utils.colored(255, 0, 0, 'Purchase Aborted'))
                                 print_press_enter_to("Press Enter to continue...")
@@ -458,9 +539,9 @@ def puchase_staff_menu(stats):
                         print(utils.colored(0, 255, 255, text))
                         print_press_enter_to("Press Enter to continue...")
                     else:
-                        error_message("Not enough funds")
+                        print_error_message("Not enough funds")
                 else:
-                    error_message("Purchase Land")
+                    print_error_message("Purchase Land")
             else:
                 break
     daily_menu(stats)
@@ -562,14 +643,14 @@ def validate_price_change(data):
         try:
             float_value = float(data)
         except:
-            error_message("invalid input")
+            print_error_message("invalid input")
             return False
         if float_value >= 0:
           return True
         else:
             raise ValueError()
     except ValueError as e:        
-        error_message("invalid input")
+        print_error_message("invalid input")
         return False
     return True
 
@@ -657,14 +738,14 @@ def validate_input(value, max_value):
         try:
             int_value = int(value)
         except:
-            error_message("invalid input")
+            print_error_message("invalid input")
             return False
         if int_value >= 0 and int_value <= int(max_value):
           return True
         else:
             raise ValueError()
     except ValueError as e:        
-        error_message("invalid input")
+        print_error_message("invalid input")
         return False
     return True
 
@@ -678,32 +759,19 @@ def validate_yes_no(value):
     if value.lower() in ['y','ye','yes','n','no']:
         return True
     else:
-        error_message("invalid input")
+        print_error_message("invalid input")
         return False
 
 
-def error_message(data):
+def print_error_message(data):
     '''
     Function to provide appropriate error message
     '''
-    if data == "invalid input":
-        text = utils.colored(255, 0, 0, 'Invalid input: please try again.')
-        print(f'{text}')
-    elif data == "Coming soon":
-        text = utils.colored(255, 165, 0, 'This feature is not implemented yet and will be coming soon.')
-        print(f'{text}')
-    elif data == "Not enough funds":
-        text = utils.colored(255, 0, 0, 'You do not have enough funds to do this.')
-        print(f'{text}')
-    elif data == "Purchase Land":
-        text = utils.colored(255, 165, 0, 'You need to purchase this location first.')
-        print(f'{text}')
-    elif data == "Already purchase":
-        text = utils.colored(255, 165, 0, 'You already have this, make another selection.')
-        print(f'{text}')
+    if data:
+        text = utils.colored(255, 0, 0, data)
     else:
         text = utils.colored(255, 0, 0, 'Error.')
-        print(f'{text}')
+    print(f'{text}')
     print_press_enter_to("Press Enter to retry...")
     clear_terminal()
 

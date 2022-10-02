@@ -51,16 +51,15 @@ Credits:
 {"Code by:":<20}{"Warwick Hart":<40}
 {"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}"""
 
-
 MAIN_MENU_OPTIONS = f"""
 {text_choose_from_options}
 ------------------------------------
 1. New Game
 2. Retrieve a previous game
 3. View leaderboard
-4. Credits
-"""
+4. Credits"""
 
+text_save = colored(255,255,0, '0. Save and quit')
 
 DAILY_MENU_OPTIONS = f"""
 {text_choose_from_options}
@@ -72,9 +71,8 @@ DAILY_MENU_OPTIONS = f"""
 5. Change Recipes
 6. Set selling prices
 7. Start trading (and save)
-8. Print Stats
-0. Save and quit
-"""
+
+{text_save}"""
 
 PURCHASE_STOCK_OPTIONS = f"""
 {text_choose_from_options}
