@@ -101,7 +101,7 @@ def set_up_character(data, new_player):
         data = [
             user_id,                        #0
             name,                           #1
-            0,                              #2
+            1,                              #2
             float(constants.STARTING_CASH), #3
             float(0),                       #4
             int(0),                         #5
@@ -138,7 +138,7 @@ def set_up_character(data, new_player):
     stats = {
         "user_id" : data[0],                #0
         "name" : data[1],                   #1
-        "day" : int(data[2]),                    #2
+        "day" : int(data[2]),               #2
         "cash" : float(data[3]),            #3
         "reputation" : float(data[4]),      #4
         "sausage" : int(data[5]),           #5
@@ -232,38 +232,43 @@ def run_day(stats, PM):
     cust_count = []
     open_locations= []
     sold = 0
+    t_sold = 0
+    total_daily_sales = 0.0
     for i in range(len(constants.LOCATION_NAMES)):
         if  ( stats["location"][f"{i+1}"]["purchased"] and 
         stats["location"][f"{i+1}"]["cart_lvl"] > 0 and
         stats["location"][f"{i+1}"]["staff_lvl"] > 0
         ):
             cust_count.append(0)
-            open_locations.append(i)
+            open_locations.append(constants.LOCATION_NAMES[i])
             total_locations = len(open_locations)
     trading = True
     while trading:
         cust_chance = []
         portions = get_portions_avaliable(stats)
-        print(portions)
         footfall = constants.LOCATION_FOOTFALL
         for i in range(total_locations):
             rep_modifier = (stats["reputation"] + 2) / 2
             cust_chance.append((540 / (footfall[i] * rep_modifier))*100)
         while True:
-            for i in range (total_locations):
+            for i in range(total_locations):
                 x = randrange(floor(cust_chance[i]))
                 if x <= 100:
                     cust_count[i] += 1
                     portions -= 1
+                    total_daily_sales += stats["selling_price"]
                     if portions == 0:
                         break
             if portions == 0:
                 print(f'Sold out at {hour}:{minute}')
-                for x in cust_count:
-                    sold = sold + int(x)
+                for i in cust_count:
+                    sold = sold + int(i)
+                t_sold += sold
                 stats = deduct_stock(stats, sold)
-                print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
-                print_press_enter_to("DAY OVER - Sold out of stock")
+                print("\nDAY OVER - Sold out of stock")
+                print('\nEnd of day sales report:')
+                sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
+                print_press_enter_to("End of day")
                 trading = False
                 break
             minute += 1
@@ -272,28 +277,42 @@ def run_day(stats, PM):
                 hour += 1
                 if not PM and hour == 12:
                     PM = True
-                    for i in range(total_locations):
-                        for x in cust_count:
-                            sold = sold + int(x)
-                        stats = deduct_stock(stats, sold)
-                        print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
-                        #Half day reset (z, cust_count and sold)
-                        z = 0
-                        for y in cust_count:
-                            cust_count[z] = 0
-                        sold = 0
+                    for i in cust_count:
+                        sold = sold + int(i)
+                    t_sold += sold
+                    stats = deduct_stock(stats, sold)
+                    print('\nLunch time sales report:')
+                    sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
                     print_press_enter_to("12 noon break.")
+                    for i in range(total_locations):
+                        cust_count[i] = 0
+                    sold = 0
                     break
                 elif PM and hour == 17:
                     trading = False
-                    for i in range(total_locations):
-                        for x in cust_count:
-                            sold = sold + int(x)
-                        stats = deduct_stock(stats, sold)
-                        print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
+                    for i in cust_count:
+                        sold = sold + int(i)
+                    t_sold += sold
+                    stats = deduct_stock(stats, sold)
+                    print('\nEnd of day sales report:')
+                    sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
+                    print_press_enter_to("End of day")
                     break
     stats["day"]+=1
     daily_menu(stats)
+
+
+def sales_report(stats, cust_count, total_daily_sales, open_locations, sold):
+    '''
+    Print sales report to terminal
+    '''
+    print('------------------------------------')
+    for i in range(len(cust_count)):
+        print(f'{open_locations[i]} - {cust_count[i]}')
+    print('------------------------------------')
+    print(f'Total daily units sold: {sold}')
+    print(f'Total daily sales value: £{total_daily_sales}')
+    print_press_enter_to("Press Enter to continue...")
 
 
 def deduct_stock(stats, sold):
