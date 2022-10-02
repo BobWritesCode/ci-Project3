@@ -227,11 +227,11 @@ def run_day(stats, PM):
     Each minute is a chance for something to happen.
     '''
     expected_cost = constants.LOCATION_EXP_COST[0]
-    end_of_day = False
     hour = 8
     minute = 00
     cust_count = []
     open_locations= []
+    sold = 0
     for i in range(len(constants.LOCATION_NAMES)):
         if  ( stats["location"][f"{i+1}"]["purchased"] and 
         stats["location"][f"{i+1}"]["cart_lvl"] > 0 and
@@ -240,7 +240,8 @@ def run_day(stats, PM):
             cust_count.append(0)
             open_locations.append(i)
             total_locations = len(open_locations)
-    while not end_of_day:
+    trading = True
+    while trading:
         cust_chance = []
         portions = get_portions_avaliable(stats)
         print(portions)
@@ -255,9 +256,16 @@ def run_day(stats, PM):
                     cust_count[i] += 1
                     portions -= 1
                     if portions == 0:
-                        print(f'Sold out at {hour}:{minute}')
-                        stats = deduct_stock(stats, portions)
                         break
+            if portions == 0:
+                print(f'Sold out at {hour}:{minute}')
+                for x in cust_count:
+                    sold = sold + int(x)
+                stats = deduct_stock(stats, sold)
+                print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
+                print_press_enter_to("DAY OVER - Sold out of stock")
+                trading = False
+                break
             minute += 1
             if minute == 60: 
                 minute = 00
@@ -265,27 +273,32 @@ def run_day(stats, PM):
                 if not PM and hour == 12:
                     PM = True
                     for i in range(total_locations):
+                        for x in cust_count:
+                            sold = sold + int(x)
+                        stats = deduct_stock(stats, sold)
                         print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
                     print_press_enter_to("Part of day over")
                     break
                 elif PM and hour == 17:
-                    end_of_day = True
+                    trading = False
                     for i in range(total_locations):
+                        for x in cust_count:
+                            sold = sold + int(x)
+                        stats = deduct_stock(stats, sold)
                         print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
-                    print_press_enter_to("Day over")
                     break
     stats["day"]+=1
     daily_menu(stats)
 
 
-def deduct_stock(stats, portions):
+def deduct_stock(stats, sold):
     '''
     Deduct any stock that has been sold and return stats back to calling function
     '''
-    stats["sausage"] -= stats["recipe"]["sausage"] * portions
-    stats["bun"] -= stats["recipe"]["bun"] * portions
-    stats["onion"] -= stats["recipe"]["onion"] * portions
-    stats["sauce"] -= stats["recipe"]["sauce"] * portions
+    stats["sausage"] -= stats["recipe"]["sausage"] * sold
+    stats["bun"] -= stats["recipe"]["bun"] * sold
+    stats["onion"] -= stats["recipe"]["onion"] * sold
+    stats["sauce"] -= stats["recipe"]["sauce"] * sold
     return stats
 
 
