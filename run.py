@@ -223,13 +223,24 @@ def run_day(stats, AMPM):
     '''
     Runs the game code for each day.
     '''
-    portions = get_portions_avaliable(stats)
     expected_cost = constants.LOCATION_EXP_COST[0]
     while not AMPM:
+        portions = get_portions_avaliable(stats)
         footfall = constants.LOCATION_FOOTFALL
         rep_modifier = (stats["reputation"] + 2) / 2
-        customers_served = footfall[0] * rep_modifier
-        print(customers_served)
+        footfall = float(footfall[0]) * float(rep_modifier)
+        hour = 9
+        minute = 00
+        while True:
+            print(f'{hour}:{minute}')
+            minute += 1
+            if minute == 60: 
+                minute = 00
+                hour += 1
+                if not AMPM and hour == 12:
+                    break
+                elif AMPM and hour == 17:
+                    break
 
         print_press_enter_to("Part of day over")
         AMPM = True
@@ -245,20 +256,14 @@ def get_portions_avaliable(stats):
     bun = stats["bun"]
     onion = stats["onion"]
     sauce = stats["sauce"]
-
     r_sauasge = stats["recipe"]["sausage"]
     r_bun = stats["recipe"]["bun"]
     r_onion = stats["recipe"]["onion"]
     r_sauce = stats["recipe"]["sauce"]
-
     portions = sausage / r_sauasge
     if (bun / r_bun) < portions : portions = (bun / r_bun)
     if (onion / r_onion) < portions : portions = (onion / r_onion)
     if (sauce / r_sauce) < portions : portions = (sauce / r_sauce)
-
-    print(floor(portions))
-
-    print_press_enter_to("Continue")
     return floor(portions)
 
 
