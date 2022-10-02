@@ -10,6 +10,7 @@ import random
 import constants
 import utils
 from math import floor
+from random import randrange
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -219,31 +220,48 @@ def daily_menu(stats):
         main()
 
 
-def run_day(stats, AMPM):
+def run_day(stats, PM):
     '''
     Runs the game code for each day.
+    Day runs from 8 am until 5pm. 540 minutes in total.
+    Each minute is a chance for something to happen.
     '''
     expected_cost = constants.LOCATION_EXP_COST[0]
-    while not AMPM:
+    end_of_day = False
+    hour = 8
+    minute = 00
+    total_locations = len(constants.LOCATION_NAMES)
+    cust_count = []
+    for i in range(total_locations):
+        cust_count.append(0)
+    while not end_of_day:
+        cust_chance = []
         portions = get_portions_avaliable(stats)
         footfall = constants.LOCATION_FOOTFALL
-        rep_modifier = (stats["reputation"] + 2) / 2
-        footfall = float(footfall[0]) * float(rep_modifier)
-        hour = 9
-        minute = 00
+        for i in range(total_locations):
+            rep_modifier = (stats["reputation"] + 2) / 2
+            cust_chance.append((540 / (footfall[i] * rep_modifier))*100)
         while True:
-            print(f'{hour}:{minute}')
+            for i in range (total_locations):
+                x = randrange(floor(cust_chance[i]))
+                if x <= 100:
+                    cust_count[i] += 1
             minute += 1
             if minute == 60: 
                 minute = 00
                 hour += 1
-                if not AMPM and hour == 12:
+                if not PM and hour == 12:
+                    PM = True
+                    for i in range(total_locations):
+                        print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
+                    print_press_enter_to("Part of day over")
                     break
-                elif AMPM and hour == 17:
+                elif PM and hour == 17:
+                    end_of_day = True
+                    for i in range(total_locations):
+                        print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
+                    print_press_enter_to("Day over")
                     break
-
-        print_press_enter_to("Part of day over")
-        AMPM = True
     stats["day"]+=1
     daily_menu(stats)
 
