@@ -277,7 +277,12 @@ def run_day(stats, PM):
                             sold = sold + int(x)
                         stats = deduct_stock(stats, sold)
                         print(f'{constants.LOCATION_NAMES[i]} - {cust_count[i]}')
-                    print_press_enter_to("Part of day over")
+                        #Half day reset (z, cust_count and sold)
+                        z = 0
+                        for y in cust_count:
+                            cust_count[z] = 0
+                        sold = 0
+                    print_press_enter_to("12 noon break.")
                     break
                 elif PM and hour == 17:
                     trading = False
