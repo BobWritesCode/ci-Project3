@@ -9,6 +9,7 @@ import string
 import random
 import constants
 import utils
+from math import floor
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -47,9 +48,7 @@ def main_menu():
     clear_terminal()
     while True:
         print(utils.main_menu_header(255, 0, 0,'Welcome to Hotdog Tycoon'))
-        user_choice = 0
         print(constants.MAIN_MENU_OPTIONS)
-        # Get player input
         text = utils.colored(255, 165, 0, "Input choice:")
         user_choice = input(f'\n{text}')
         if validate_input(user_choice, 4):
@@ -138,7 +137,7 @@ def set_up_character(data, new_player):
     stats = {
         "user_id" : data[0],                #0
         "name" : data[1],                   #1
-        "day" : data[2],                    #2
+        "day" : int(data[2]),                    #2
         "cash" : float(data[3]),            #3
         "reputation" : float(data[4]),      #4
         "sausage" : int(data[5]),           #5
@@ -190,6 +189,11 @@ def daily_menu(stats):
     '''
     clear_terminal()
     while True:
+        text = utils.colored(0, 255, 255, "Daily preparation")
+        print(f'{text}')
+        print('------------------------------------')
+        print(f'Day: {stats["day"]} out of 10')
+        print(f'Current Cash: £{stats["cash"]}\n')
         print(constants.DAILY_MENU_OPTIONS)
         # Get player input
         text = utils.colored(255, 165, 0, "Input choice:")
@@ -209,11 +213,53 @@ def daily_menu(stats):
     elif user_choice == '6':
         set_selling_price(stats)
     elif user_choice == '7':
-        print_error_message("Coming soon")
-        daily_menu(stats)
+        run_day(stats, False)
     elif user_choice == '0':
         save_data(stats, False)
         main()
+
+
+def run_day(stats, AMPM):
+    '''
+    Runs the game code for each day.
+    '''
+    portions = get_portions_avaliable(stats)
+    expected_cost = constants.LOCATION_EXP_COST[0]
+    while not AMPM:
+        footfall = constants.LOCATION_FOOTFALL
+        rep_modifier = (stats["reputation"] + 2) / 2
+        customers_served = footfall[0] * rep_modifier
+        print(customers_served)
+
+        print_press_enter_to("Part of day over")
+        AMPM = True
+    stats["day"]+=1
+    daily_menu(stats)
+
+
+def get_portions_avaliable(stats):
+    '''
+    Return how many portions of hotdogs are avaliable based on stock and recipe
+    '''
+    sausage = stats["sausage"]
+    bun = stats["bun"]
+    onion = stats["onion"]
+    sauce = stats["sauce"]
+
+    r_sauasge = stats["recipe"]["sausage"]
+    r_bun = stats["recipe"]["bun"]
+    r_onion = stats["recipe"]["onion"]
+    r_sauce = stats["recipe"]["sauce"]
+
+    portions = sausage / r_sauasge
+    if (bun / r_bun) < portions : portions = (bun / r_bun)
+    if (onion / r_onion) < portions : portions = (onion / r_onion)
+    if (sauce / r_sauce) < portions : portions = (sauce / r_sauce)
+
+    print(floor(portions))
+
+    print_press_enter_to("Continue")
+    return floor(portions)
 
 
 def save_data(stats, first_save):

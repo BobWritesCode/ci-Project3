@@ -12,6 +12,10 @@ text_choose_from_options = colored(0, 255, 255, 'Choose from the following optio
 
 CART_COSTS = [200, 400, 600, 1000, 1600]
 
+LOCATION_EXP_COST = [3.0, 3.5, 4.0, 5.0, 7.0]
+
+LOCATION_FOOTFALL = [20,60,180,720,2160]
+
 LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Stadium"]
 
 LOCATION_COSTS = [200, 400, 600, 1000, 1600]
