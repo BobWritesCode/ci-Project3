@@ -225,8 +225,7 @@ def print_current_balance(stats):
     '''
     Print cash statment
     '''
-    text = f'£{floor(stats["cash"]*100)/100}\n'
-    return text
+    return f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}'
 
 
 def run_day(stats, PM):
