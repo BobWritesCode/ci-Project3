@@ -10,6 +10,7 @@ import random
 import constants
 import utils
 from math import floor
+from math import ceil
 from random import randrange
 
 SCOPE = [
@@ -253,12 +254,13 @@ def run_day(stats, PM):
         while True:
             for i in range(total_locations):
                 x = randrange(floor(cust_chance[i]))
-                if x <= 100:
+                while x <= 100:
                     cust_count[i] += 1
                     portions -= 1
                     total_daily_sales += stats["selling_price"]
-                    if portions == 0:
-                        break
+                    if portions == 0: break
+                    x = randrange(floor(cust_chance[i]))
+                if portions == 0: break
             if portions == 0:
                 print(f'Sold out at {hour}:{minute}')
                 for i in cust_count:
@@ -558,7 +560,7 @@ def purchase_stock_menu(stats):
         print_go_back()
         text = utils.colored(255, 165, 0, "Input choice: ")
         user_choice = input(f'\n{text}')
-        if validate_input(user_choice, 4):
+        if validate_input(user_choice, 5):
             if int(user_choice) == 0:
                 break
             else:
@@ -570,25 +572,67 @@ def purchase_stock_menu(stats):
                     item = 'onion'
                 elif user_choice == '4':
                     item = 'sauce'
-                item_name = constants.STOCK_COSTS[item][0]
-                item_qty = constants.STOCK_COSTS[item][1]
-                item_cost = constants.STOCK_COSTS[item][2]
-                text = utils.colored(50, 205, 50, f"{item_name} ({item_qty} portions)")
-                print(f'You selected {text} for £{item_cost}.00')
+                elif user_choice == '5':
+                    item = 'sauce'
+                if user_choice != '5':
+                    item_name = constants.STOCK_COSTS[item][0]
+                    item_qty = constants.STOCK_COSTS[item][1]
+                    item_cost = constants.STOCK_COSTS[item][2]
+                    text = utils.colored(50, 205, 50, f"{item_name} ({item_qty} portions)")
+                    print(f'You selected {text} for £{item_cost}.00')
+                else:
+                    text = utils.colored(50, 205, 50, f"This option will order the minimum amount of ingridants to fullfill the amount of Hotdogs you want to sell.")
+                    print(text)
                 text = utils.colored(255, 165, 0, "How many would you like to purchase?")
                 user_choice_qty = input(f'\n{text}')
                 if validate_input(user_choice_qty, 999999):
-                    cost = int(item_cost) * int(user_choice_qty)
-                    new_qty = int(user_choice_qty) * int(item_qty)
-                    print('\nCheckout:')
-                    str1 = utils.colored(50, 205, 50, item_name)
-                    str2 = utils.colored(50, 205, 50, user_choice_qty)
-                    str3 = utils.colored(50, 205, 50, new_qty)
-                    str4 = utils.colored(50, 205, 50, f'£{cost}.00')
-                    print(f'{"Item:":<10}{str1:<10}')
-                    print(f'{"Qty:":<10}{str2:<10}')
-                    print(f'{"Portions:":<10}{str3:<10}')
-                    print(f'{"TOTAL:":<10}{str4:<10}')
+                    cost = 0
+                    if user_choice == '5':
+                        x = len(constants.STOCK_OPTIONS)
+                        basket = { #Create empty basket
+                            "stock" : [],
+                            "recipe" : [],
+                            "portions" : [],
+                            "cost" : [],
+                            "total_qty_r" : [], # Total Qty Required
+                            "total_qty_c" : []  # Total cost for item
+                        }
+                        for i in range(x):
+                            y = constants.STOCK_OPTIONS[i]
+                            basket["stock"].append(stats[y])
+                            basket["recipe"].append(stats['recipe'][y])
+                            basket["portions"].append(constants.STOCK_COSTS[y][1])
+                            basket["cost"].append(constants.STOCK_COSTS[y][2])
+                            basket["total_qty_r"].append(ceil((int(user_choice_qty) - ( basket["stock"][i] / basket["recipe"][i] ))/ basket["portions"][i] * basket["recipe"][i]))
+                            if basket["total_qty_r"][i] < 0 : basket["total_qty_r"][i] = 0
+                            basket["total_qty_c"].append(basket["total_qty_r"][i] * basket["cost"][i])
+                            cost += basket["total_qty_c"][i]
+                        text = utils.colored(0, 255, 255, "\nCheckout:")
+                        print(f'{text}')
+                        print(f'{"Item:":<10}{"Qty":<10}{"Portions":<10}{"SUB TOTAL:":<10}')
+                        print('------------------------------------')
+                        for i in range (x):
+                            text1 = constants.STOCK_OPTIONS[i]
+                            text2 = basket["total_qty_r"][i]
+                            text3 = basket["portions"][i]*basket["total_qty_r"][i]
+                            text4 = "{:.2f}".format(basket["total_qty_c"][i])
+                            print(f'{text1:<10} {text2:<10} {text3:<10} £{text4:<10}')
+                        print('------------------------------------')
+                        text = "{:.2f}".format(cost)
+                        text = utils.colored(50, 205, 50, f"£{text}")
+                        print(f'TOTAL COST: {text}')
+                    else:
+                        cost = int(item_cost) * int(user_choice_qty)
+                        new_qty = int(user_choice_qty) * int(item_qty)
+                        print('\nCheckout:')
+                        str1 = utils.colored(50, 205, 50, item_name)
+                        str2 = utils.colored(50, 205, 50, user_choice_qty)
+                        str3 = utils.colored(50, 205, 50, new_qty)
+                        str4 = utils.colored(50, 205, 50, f'£{cost}.00')
+                        print(f'{"Item:":<10}{str1:<10}')
+                        print(f'{"Qty:":<10}{str2:<10}')
+                        print(f'{"Portions:":<10}{str3:<10}')
+                        print(f'{"TOTAL:":<10}{str4:<10}')
                     text = utils.colored(255, 165, 0, "Would you like to make this purchase? (type: yes) ")
                     yes_no = input(f'\n{text}\n')
                     if validate_yes_no(yes_no):
@@ -597,7 +641,14 @@ def purchase_stock_menu(stats):
                             remaining_cash = stats["cash"] - cost
                             if remaining_cash >= 0:
                                 # Update player stock with purchased items
-                                stats[item] = int(stats[item]) + int(new_qty)
+                                if user_choice == '5':
+                                    z = 0
+                                    for i in constants.STOCK_OPTIONS:
+                                        stats[i] += basket["portions"][z] * basket["total_qty_r"][z]
+                                        z += 1
+                                else:
+                                    # Update player stock with purchased items
+                                    stats[item] += int(new_qty)
                                 print(utils.colored(50, 205, 50, 'Purchase Successful'))
                                 # Update player cash
                                 stats["cash"] = remaining_cash
