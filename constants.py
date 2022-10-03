@@ -56,7 +56,7 @@ MAIN_MENU_OPTIONS = f"""
 3. View leaderboard
 4. Credits"""
 
-text_save = colored(255,255,0, '0. Save and quit')
+text = colored(255,255,0, '0. Save and quit')
 
 DAILY_MENU_OPTIONS = f"""
 {text_choose_from_options}
@@ -69,7 +69,9 @@ DAILY_MENU_OPTIONS = f"""
 6. Set selling prices
 7. Start trading (and save)
 
-{text_save}"""
+{text}"""
+
+text = colored(255, 105, 180, '5. Buy X portions of recipe hotdogs')
 
 PURCHASE_STOCK_OPTIONS = f"""
 {text_choose_from_options}
@@ -79,4 +81,4 @@ PURCHASE_STOCK_OPTIONS = f"""
 3. Onion (Makes {STOCK_COSTS['onion'][1]} portions) £{STOCK_COSTS['onion'][2]}.00
 4. Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) £{STOCK_COSTS['sauce'][2]}.00
 
-5. Buy X portions of recipe hotdogs"""
+{text}"""

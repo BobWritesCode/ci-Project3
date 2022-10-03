@@ -192,10 +192,10 @@ def daily_menu(stats):
     clear_terminal()
     while True:
         text = utils.colored(0, 255, 255, "Daily preparation")
-        print(f'{text}')
+        print(text)
         print('------------------------------------')
+        print(f'Current balance {print_current_balance(stats)}')
         print(f'Day: {stats["day"]} out of 10')
-        print(f'Current Cash: £{stats["cash"]}\n')
         print(constants.DAILY_MENU_OPTIONS)
         # Get player input
         text = utils.colored(255, 165, 0, "Input choice:")
@@ -219,6 +219,14 @@ def daily_menu(stats):
     elif user_choice == '0':
         save_data(stats, False)
         main()
+
+
+def print_current_balance(stats):
+    '''
+    Print cash statment
+    '''
+    text = f'£{floor(stats["cash"]*100)/100}\n'
+    return text
 
 
 def run_day(stats, PM):
@@ -246,6 +254,7 @@ def run_day(stats, PM):
     trading = True
     while trading:
         cust_chance = []
+        product_cost = cost_to_make(stats)
         portions = get_portions_avaliable(stats)
         footfall = constants.LOCATION_FOOTFALL
         for i in range(total_locations):
@@ -257,7 +266,8 @@ def run_day(stats, PM):
                 while x <= 100:
                     cust_count[i] += 1
                     portions -= 1
-                    total_daily_sales += stats["selling_price"]
+                    total_daily_sales += stats["selling_price"] - product_cost
+                    stats["cash"] += stats["selling_price"] - product_cost
                     if portions == 0: break
                     x = randrange(floor(cust_chance[i]))
                 if portions == 0: break
@@ -313,7 +323,7 @@ def sales_report(stats, cust_count, total_daily_sales, open_locations, sold):
         print(f'{open_locations[i]} - {cust_count[i]}')
     print('------------------------------------')
     print(f'Total daily units sold: {sold}')
-    print(f'Total daily sales value: £{total_daily_sales}')
+    print(f'Total daily sales value: £{floor(total_daily_sales*100)/100}')
     print_press_enter_to("Press Enter to continue...")
 
 
@@ -443,7 +453,7 @@ def purchase_location(stats):
         text = utils.colored(0, 255, 255, "Purchase hotdog pitch locations")
         print(f'{text}')
         print('------------------------------------')
-        print(f'Current Cash: £{stats["cash"]}\n')
+        print(f'Current balance {print_current_balance(stats)}')
         for x, y in enumerate(LOC_NAME, start=1):
             str_part_1 = f'{x}. {y}'
             if stats['location'][str(x)]['purchased'] == False:
@@ -468,7 +478,7 @@ def purchase_location(stats):
                         text = f'Your purchased {LOC_NAME[int(user_choice)-1]} for £{LOC_COST[int(user_choice)-1]}'
                         print(utils.colored(50, 205, 50, text))
                         stats["cash"] = remaining_cash
-                        text = f'Remaining cash £{remaining_cash}'
+                        text = f'Remaining balance {print_current_balance(stats)}'
                         print(utils.colored(0, 255, 255, text))
                         print_press_enter_to("Press Enter to continue...")
                     else:
@@ -492,7 +502,7 @@ def purchase_cart_menu(stats):
         text = utils.colored(0, 255, 255, "Purchase or upgrade carts at your hotdog pitch locations")
         print(f'{text}')
         print('------------------------------------')
-        print(f'Current Cash: £{stats["cash"]}\n')
+        print(f'Current balance {print_current_balance(stats)}\n')
         for x, y in enumerate(LOC_NAME, start=1):
             cart_level = stats['location'][str(x)]['cart_lvl']
             str_part_1 = f'{x}. {y}'
@@ -533,7 +543,7 @@ def purchase_cart_menu(stats):
                         loc = int(user_choice) - 1
                         text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} for £{CART_PRICE[cart_level]}.'
                         print(utils.colored(50, 205, 50, text))
-                        text = f'Remaining cash £{remaining_cash}'
+                        text = f'Remaining balance {print_current_balance(stats)}'
                         print(utils.colored(0, 255, 255, text))
                         print_press_enter_to("Press Enter to continue...")
                     else:
@@ -554,7 +564,7 @@ def purchase_stock_menu(stats):
         text = utils.colored(0, 255, 255, "Purchase consumable stock to purchase")
         print(f'{text}')
         print('------------------------------------')
-        print(f'Current Cash: £{stats["cash"]}\n')
+        print(f'Current balance {print_current_balance(stats)}\n')
         print_portions_in_stock(stats)
         print(constants.PURCHASE_STOCK_OPTIONS)
         print_go_back()
@@ -652,7 +662,7 @@ def purchase_stock_menu(stats):
                                 print(utils.colored(50, 205, 50, 'Purchase Successful'))
                                 # Update player cash
                                 stats["cash"] = remaining_cash
-                                text = f'Remaining cash £{remaining_cash}'
+                                text = f'Remaining balance {print_current_balance(stats)}'
                                 print(utils.colored(0, 255, 255, text))
                                 print_press_enter_to("Press Enter to continue...")
                             else:
@@ -674,7 +684,7 @@ def puchase_staff_menu(stats):
         text = utils.colored(0, 255, 255, "Hire and train staff for your hotdog pitch locations")
         print(f'{text}')
         print('------------------------------------')
-        print(f'Current Cash: £{stats["cash"]}\n')
+        print(f'Current balance {print_current_balance(stats)}\n')
         for x, y in enumerate(LOC_NAME, start=1):
             staff_level = stats['location'][str(x)]['staff_lvl']
             str_part_1 = f'{x}. {y}'
@@ -715,7 +725,7 @@ def puchase_staff_menu(stats):
                         loc = int(user_choice) - 1
                         text = f'Staff level {new_staff_lvl} purchased for {LOC_NAME[loc]} for £{STAFF_PRICE[staff_level]}.'
                         print(utils.colored(50, 205, 50, text))
-                        text = f'Remaining cash £{remaining_cash}'
+                        text = f'Remaining balance {print_current_balance(stats)}'
                         print(utils.colored(0, 255, 255, text))
                         print_press_enter_to("Press Enter to continue...")
                     else:
