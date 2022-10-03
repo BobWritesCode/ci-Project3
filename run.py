@@ -102,7 +102,7 @@ def set_up_character(data, new_player):
         data = [
             user_id,                        #0
             name,                           #1
-            1,                              #2
+            1.0,                            #2
             float(constants.STARTING_CASH), #3
             float(0),                       #4
             int(0),                         #5
@@ -129,7 +129,8 @@ def set_up_character(data, new_player):
             False,                        #26
             int(0),                         #27
             int(0),                         #28
-            False                         #29
+            False,                         #29
+            0                             #30
         ]
     else:
         to_check = [14,17,20,23,26,29]
@@ -139,7 +140,7 @@ def set_up_character(data, new_player):
     stats = {
         "user_id" : data[0],                #0
         "name" : data[1],                   #1
-        "day" : int(data[2]),               #2
+        "day" : float(data[2]),               #2
         "cash" : float(data[3]),            #3
         "reputation" : float(data[4]),      #4
         "sausage" : int(data[5]),           #5
@@ -180,7 +181,8 @@ def set_up_character(data, new_player):
                 "staff_lvl" : int(data[28])  #28
             }
         },
-        "game_over" : data[29]               #29
+        "game_over" : data[29],               #29
+        "game_save_row" : data[30]           #30
     }
     return stats
 
@@ -278,36 +280,43 @@ def run_day(stats, PM):
                 stats = deduct_stock(stats, sold)
                 print("\nDAY OVER - Sold out of stock")
                 print('\nEnd of day sales report:')
-                sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
-                print_press_enter_to("End of day")
-                trading = False
-                break
+                #sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
+                #print_press_enter_to("End of day")
+                if hour < 12:
+                    hour = 11
+                else:
+                    hour = 16
+                minute = 59
             minute += 1
             if minute == 60: 
                 minute = 00
                 hour += 1
                 if not PM and hour == 12:
                     PM = True
+                    stats["day"] += 0.5
                     for i in cust_count:
                         sold = sold + int(i)
                     t_sold += sold
                     stats = deduct_stock(stats, sold)
-                    print('\nLunch time sales report:')
+                    save_data(stats, False) # SAVE GAME
+                    print('\n12 noon time sales report:')
                     sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
-                    print_press_enter_to("12 noon break.")
                     for i in range(total_locations):
                         cust_count[i] = 0
                     sold = 0
+                    print_press_enter_to("Press Enter to continue the day...")
                     break
                 elif PM and hour == 17:
                     trading = False
+                    stats["day"] += 0.5
                     for i in cust_count:
                         sold = sold + int(i)
                     t_sold += sold
                     stats = deduct_stock(stats, sold)
+                    save_data(stats, False) # SAVE GAME
                     print('\nEnd of day sales report:')
                     sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
-                    print_press_enter_to("End of day")
+                    print_press_enter_to("Press Enter to move on to next day!")
                     break
     stats["day"]+=1
     daily_menu(stats)
@@ -365,25 +374,38 @@ def save_data(stats, first_save):
     If "exit = True" go to main menu after save.
     '''
     if not first_save:
-        text = utils.colored(0, 255, 255, "SAVING.... Please do not close.")
+        text = utils.colored(0, 255, 255, "Please do not close.")
         print(f'\n{text}')
     data_to_save = []
     data_to_save = convert_dict_to_array(stats, data_to_save)
+    save_percent = len(data_to_save)
     worksheet = SHEET.worksheet("user_data")
     col_array = worksheet.col_values(1)
     i = 0
     found = False
     if not first_save:
-        for cell_value in col_array:
-            i+=1
-            if cell_value == stats['user_id']:
-                j = 0
-                found = True
-                for y in data_to_save:
-                    j+=1
-                    worksheet.update_cell(i, j, y)
-                text = "Data saved."
-                print(utils.colored(50, 205, 50, text))
+        if int(stats["game_save_row"]) != int(0):
+            i = stats["game_save_row"]
+            found = True
+            j = 0
+            for y in data_to_save:
+                j+=1
+                worksheet.update_cell(i, j, y)
+                text = utils.colored(0, 255, 255, f' SAVING... {floor((j/save_percent)*100)}%')
+                print(f'{text}', end='\r')
+        else:
+            for cell_value in col_array:
+                i+=1
+                if cell_value == stats['user_id']:
+                    j = 0
+                    found = True
+                    for y in data_to_save:
+                        j+=1
+                        worksheet.update_cell(i, j, y)
+                        text = utils.colored(0, 255, 255, f' SAVING... {floor((j/save_percent)*100)}%')
+                        print(f'{text}', end='\r')
+        text = utils.colored(50, 205, 50, "Data saved. Now safe to close.")
+        print(f'{text}', end='\r')
     if not found or first_save:
         worksheet.append_row(data_to_save)
     print_press_enter_to("Press Enter to continue...")
@@ -419,6 +441,7 @@ def retrieve_save():
                 # Copy data from row where GAME ID matches
                 data = worksheet.row_values(i)
                 stats = set_up_character(data, False)
+                stats["game_save_row"] = i
                 text = utils.colored(50, 205, 50, "GAME LOADED.")
                 print(f'\n{text}')
                 print_press_enter_to("Press Enter to continue...")
