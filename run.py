@@ -373,6 +373,35 @@ def save_data(stats, first_save):
     Else creates a new row with data.
     If "exit = True" go to main menu after save.
     '''
+
+
+    def save_loop(i, data, save_percent):
+        '''
+        Inner function to save_data()
+        Finds the correct row in Google sheet to save game data.
+        '''
+        j = 0
+        for y in data:
+            j+=1
+            worksheet.update_cell(i, j, y)
+            text = utils.colored(0, 255, 255, f' SAVING... {floor((j/save_percent)*100)}%')
+            print(f'{text}', end='\r')
+        return True
+
+
+    def convert_dict_to_array(data, data_to_save):
+        '''
+        Inner function to save_data()
+        Convert dict game data to an array so it can be saved to Google Sheet
+        '''
+        for i in data:
+            if type(data[f'{i}']) is dict:
+                convert_dict_to_array(data[f'{i}'], data_to_save)
+            else:
+                data_to_save.append(data[f"{i}"])
+        return data_to_save
+
+
     if not first_save:
         text = utils.colored(0, 255, 255, "Please do not close.")
         print(f'\n{text}')
@@ -381,29 +410,16 @@ def save_data(stats, first_save):
     save_percent = len(data_to_save)
     worksheet = SHEET.worksheet("user_data")
     col_array = worksheet.col_values(1)
-    i = 0
     found = False
     if not first_save:
         if int(stats["game_save_row"]) != int(0):
             i = stats["game_save_row"]
-            found = True
-            j = 0
-            for y in data_to_save:
-                j+=1
-                worksheet.update_cell(i, j, y)
-                text = utils.colored(0, 255, 255, f' SAVING... {floor((j/save_percent)*100)}%')
-                print(f'{text}', end='\r')
+            found = save_loop(i, data_to_save, save_percent)
         else:
             for cell_value in col_array:
                 i+=1
                 if cell_value == stats['user_id']:
-                    j = 0
-                    found = True
-                    for y in data_to_save:
-                        j+=1
-                        worksheet.update_cell(i, j, y)
-                        text = utils.colored(0, 255, 255, f' SAVING... {floor((j/save_percent)*100)}%')
-                        print(f'{text}', end='\r')
+                    found = save_loop(i, data_to_save, save_percent)
         text = utils.colored(50, 205, 50, "Data saved. Now safe to close.")
         print(f'{text}', end='\r')
     if not found or first_save:
@@ -450,18 +466,6 @@ def retrieve_save():
         # If no GAME ID match then show error.
         if not found:
             print_error_message("No game found")
-
-
-def convert_dict_to_array(data, data_to_save):
-    '''
-    Convert dict game data to an array so it can be saved to Google Sheet
-    '''
-    for i in data:
-        if type(data[f'{i}']) is dict:
-            convert_dict_to_array(data[f'{i}'], data_to_save)
-        else:
-            data_to_save.append(data[f"{i}"])
-    return data_to_save
 
 
 def purchase_location(stats):
