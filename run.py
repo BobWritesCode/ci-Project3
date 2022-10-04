@@ -407,19 +407,19 @@ def save_data(stats, first_save):
         print(f'\n{text}')
     data_to_save = []
     data_to_save = convert_dict_to_array(stats, data_to_save)
-    save_percent = len(data_to_save)
     worksheet = SHEET.worksheet("user_data")
     col_array = worksheet.col_values(1)
     found = False
     if not first_save:
         if int(stats["game_save_row"]) != int(0):
             i = stats["game_save_row"]
-            found = save_loop(i, data_to_save, save_percent)
+            found = save_loop(i, data_to_save, len(data_to_save))
         else:
             for cell_value in col_array:
                 i+=1
                 if cell_value == stats['user_id']:
-                    found = save_loop(i, data_to_save, save_percent)
+                    found = save_loop(i, data_to_save, len(data_to_save))
+                    break
         text = utils.colored(50, 205, 50, "Data saved. Now safe to close.")
         print(f'{text}', end='\r')
     if not found or first_save:
@@ -767,6 +767,23 @@ def change_recipe_menu(stats):
     '''
     Player is able to change recipe menu
     '''
+
+
+    def validate_recipe_change(data):
+        '''
+        Check user input for recipe change is valid
+        '''
+        print(data)
+        if len(data) == 1 and data[0] == str(0): return True
+        if len(data) != 2:
+            text = utils.colored(255, 0, 0, 'Check instructions and try again.')
+            print(f'{text}')
+            print_press_enter_to("Press Enter to continue...")
+        else:
+            if validate_input(data[0], 999) and validate_input(data[1], 999): return True
+        return False
+
+
     while True:
         clear_terminal()
         bun = stats['recipe']['bun']
@@ -789,13 +806,11 @@ def change_recipe_menu(stats):
         print(f'{"4. Sauce":<12}{"|":<2}{f"{sauce}":<0}')
         print_go_back()
         print('\nTo update your recipe type the ingrediant and amount i.e. "3 4" will update onion to 4 potions per serving.\n')
-        # Get player input
         text = utils.colored(255, 165, 0, "Enter change i.e. 3 4 (max 999):")
         user_choice = input(f'{text}')
         user_choice = user_choice.split()
         if validate_recipe_change(user_choice):
-            if int(user_choice[0]) == 0:
-                break
+            if int(user_choice[0]) == 0: break
             stock_choosen = constants.STOCK_OPTIONS[int(user_choice[0])-1]
             stats['recipe'][stock_choosen] = int(user_choice[1])
             text = utils.colored(50, 205, 50, f'Updated {stock_choosen.capitalize()} to {user_choice[1]} per serving.')
@@ -869,22 +884,6 @@ def validate_price_change(data):
         print_error_message("invalid input")
         return False
     return True
-
-
-def validate_recipe_change(data):
-    '''
-    Check user input for recipe change is valid
-    '''
-    if len(data) == 1 and int(data[0]) == 0:
-        return True
-    if len(data) != 2:
-        text = utils.colored(255, 0, 0, 'Too little or too many values.')
-        print(f'{text}')
-        print_press_enter_to("Press Enter to continue...")
-    else:
-        if validate_input(data[0], 999) and validate_input(data[1], 999): 
-            return True
-    return False
 
 
 def create_user_name():
