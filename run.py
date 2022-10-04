@@ -861,7 +861,7 @@ def set_selling_price(stats):
                 break
             new_price = round(float(new_price) , 2)
             stats["selling_price"] = float(new_price)
-            text = utils.colored(50, 205, 50, f'\nUpdated selling price to £{new_price}')
+            text = utils.colored(50, 205, 50, f'\nUpdated selling price to £{"{:.2f}".format(new_price)}')
             print(text)
             print_press_enter_to("Press Enter to continue...")
     daily_menu(stats)
