@@ -497,7 +497,11 @@ def purchase_location(stats):
         text = utils.colored(0, 255, 255, "Purchase hotdog pitch locations")
         print(f'{text}')
         print('------------------------------------')
-        print(f'Current balance {print_current_balance(stats)}')
+        text = utils.colored(50, 205, 50, print_current_balance(stats))
+        print(f'Current balance {text}\n')
+        print('Each location purchase means more customer to sell to. The better the location the more potential customers.\n')
+        text = utils.colored(255, 105, 180, "TIP")
+        print(f'{text}: Each location will need a cart and a staff member before they sell any hotdogs.\n')
         for x, y in enumerate(LOC_NAME, start=1):
             str_part_1 = f'{x}. {y}'
             if stats['location'][str(x)]['purchased'] == False:
@@ -506,8 +510,8 @@ def purchase_location(stats):
                 str_part_3 = utils.colored(0, 255, 255, text)
                 print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<53}' + ' - ' f'{str_part_3:<30}')
             else:
-                str_part_2 = utils.colored(255, 165, 0, "Purchased")
-                print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<52}' + '- ')
+                str_part_2 = utils.colored(50, 205, 50, "Purchased")
+                print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<52}')
         print_go_back()
         # Get player input
         text = utils.colored(255, 165, 0, "Input choice:")
@@ -528,7 +532,7 @@ def purchase_location(stats):
                     else:
                         print_error_message("Not enough funds")
                 else:
-                    print_error_message('Already Purchase')
+                    print_error_message('Already Purchased')
             else:
                 break
     daily_menu(stats)
