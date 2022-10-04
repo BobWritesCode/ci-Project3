@@ -298,14 +298,15 @@ def run_day(stats, PM):
         footfall = constants.LOCATION_FOOTFALL
         for i in range(total_locations):
             rep_modifier = (stats["reputation"] + 2) / 2
-            cust_chance.append((540 / (footfall[i] * rep_modifier))*100)
+            cust_chance.append((540 / (footfall[i] * rep_modifier ))*100)
         while True:
             for i in range(total_locations):
                 x = randrange(floor(cust_chance[i]))
                 while x <= 100:
                     cust_count[i] += 1
                     portions -= 1
-                    sales_value = (stats["selling_price"] * stats["location"][str(open_loc_num[i])]["cart_lvl"]) - product_cost
+                    z = 1 + ((constants.CART_SELLING_INCREASE * stats["location"][str(open_loc_num[i])]["cart_lvl"]) / 100)
+                    sales_value = (stats["selling_price"] * z ) - product_cost
                     total_daily_sales += sales_value
                     loc_sale_value[i] += sales_value
                     stats["cash"] += stats["selling_price"] - product_cost
