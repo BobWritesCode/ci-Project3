@@ -236,6 +236,31 @@ def run_day(stats, PM):
     Day runs from 8 am until 5pm. 540 minutes in total.
     Each minute is a chance for something to happen.
     '''
+
+    def sales_report(stats, cust_count, total_daily_sales, open_locations, sold):
+        '''
+        Print sales report to terminal
+        '''
+        print('------------------------------------')
+        for i in range(len(cust_count)):
+            print(f'{open_locations[i]} - {cust_count[i]}')
+        print('------------------------------------')
+        print(f'Total daily units sold: {sold}')
+        print(f'Total daily sales value: £{floor(total_daily_sales*100)/100}')
+        print_press_enter_to("Press Enter to continue...")
+
+
+    def deduct_stock(stats, sold):
+        '''
+        Deduct any stock that has been sold and return stats back to calling function
+        '''
+        stats["sausage"] -= stats["recipe"]["sausage"] * sold
+        stats["bun"] -= stats["recipe"]["bun"] * sold
+        stats["onion"] -= stats["recipe"]["onion"] * sold
+        stats["sauce"] -= stats["recipe"]["sauce"] * sold
+        return stats
+
+        
     expected_cost = constants.LOCATION_EXP_COST[0]
     hour = 8
     minute = 00
@@ -280,8 +305,6 @@ def run_day(stats, PM):
                 stats = deduct_stock(stats, sold)
                 print("\nDAY OVER - Sold out of stock")
                 print('\nEnd of day sales report:')
-                #sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
-                #print_press_enter_to("End of day")
                 if hour < 12:
                     hour = 11
                 else:
@@ -298,7 +321,6 @@ def run_day(stats, PM):
                         sold = sold + int(i)
                     t_sold += sold
                     stats = deduct_stock(stats, sold)
-                    save_data(stats, False) # SAVE GAME
                     print('\n12 noon time sales report:')
                     sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
                     for i in range(total_locations):
@@ -313,37 +335,12 @@ def run_day(stats, PM):
                         sold = sold + int(i)
                     t_sold += sold
                     stats = deduct_stock(stats, sold)
-                    save_data(stats, False) # SAVE GAME
                     print('\nEnd of day sales report:')
                     sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
                     print_press_enter_to("Press Enter to move on to next day!")
                     break
     stats["day"]+=1
     daily_menu(stats)
-
-
-def sales_report(stats, cust_count, total_daily_sales, open_locations, sold):
-    '''
-    Print sales report to terminal
-    '''
-    print('------------------------------------')
-    for i in range(len(cust_count)):
-        print(f'{open_locations[i]} - {cust_count[i]}')
-    print('------------------------------------')
-    print(f'Total daily units sold: {sold}')
-    print(f'Total daily sales value: £{floor(total_daily_sales*100)/100}')
-    print_press_enter_to("Press Enter to continue...")
-
-
-def deduct_stock(stats, sold):
-    '''
-    Deduct any stock that has been sold and return stats back to calling function
-    '''
-    stats["sausage"] -= stats["recipe"]["sausage"] * sold
-    stats["bun"] -= stats["recipe"]["bun"] * sold
-    stats["onion"] -= stats["recipe"]["onion"] * sold
-    stats["sauce"] -= stats["recipe"]["sauce"] * sold
-    return stats
 
 
 def get_portions_avaliable(stats):
