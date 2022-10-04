@@ -737,9 +737,12 @@ def puchase_staff_menu(stats):
         clear_terminal()
         text = utils.colored(0, 255, 255, "Hire and train staff for your hotdog pitch locations")
         print(f'{text}')
-        print(f'Better trained staff encourage returning customers meaning more footfall.')
         print('------------------------------------')
-        print(f'Current balance {print_current_balance(stats)}\n')
+        text = utils.colored(50, 205, 50, print_current_balance(stats))
+        print(f'Current balance {text}\n')
+        print(f'Better trained staff encourage returning customers meaning more footfall.\n')
+        text = utils.colored(255, 105, 180, "TIP")
+        print(f'{text}: Each location will need a cart before they sell any hotdogs.\n')
         for x, y in enumerate(LOC_NAME, start=1):
             staff_level = stats['location'][str(x)]['staff_lvl']
             str_part_1 = f'{x}. {y}'
@@ -755,7 +758,7 @@ def puchase_staff_menu(stats):
             elif staff_level == 0:
                 text = f'PURCHASE for £ {STAFF_PRICE[staff_level]}'
                 str_part_3 = utils.colored(50, 205, 50, text)
-            elif staff_level == '5':
+            elif staff_level == 5:
                 text = 'No traning required'
                 str_part_3 = utils.colored(255, 165, 0, text)
             else:
@@ -764,7 +767,7 @@ def puchase_staff_menu(stats):
             print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<23}' + ' - ' f'{str_part_3:<18}')
         print_go_back()
         # Get player input
-        text = utils.colored(255, 165, 0, "Input choice:")
+        text = utils.colored(255, 165, 0, "Input choice (0-5):")
         user_choice = input(f'\n{text}')
         if validate_input(user_choice, 5):
             if int(user_choice) > 0:
@@ -772,19 +775,22 @@ def puchase_staff_menu(stats):
                 if stats['location'][str(user_choice)]['purchased'] == True:
                     # Check if remaining cash will above 0 after purchase, if so continue, else loop
                     staff_level = stats['location'][str(user_choice)]['staff_lvl']
-                    remaining_cash = stats["cash"] - STAFF_PRICE[staff_level]
-                    if remaining_cash >= 0:
-                        new_staff_lvl = staff_level + 1
-                        stats['location'][str(user_choice)]['staff_lvl'] = new_staff_lvl
-                        stats["cash"] = remaining_cash
-                        loc = int(user_choice) - 1
-                        text = f'Staff level {new_staff_lvl} purchased for {LOC_NAME[loc]} for £{STAFF_PRICE[staff_level]}.'
-                        print(utils.colored(50, 205, 50, text))
-                        text = f'Remaining balance {print_current_balance(stats)}'
-                        print(utils.colored(0, 255, 255, text))
-                        print_press_enter_to("Press Enter to continue...")
+                    if staff_level == 5:
+                        print_error_message("Already at max level.")
                     else:
-                        print_error_message("Not enough funds")
+                        remaining_cash = stats["cash"] - STAFF_PRICE[staff_level]
+                        if remaining_cash >= 0:
+                            new_staff_lvl = staff_level + 1
+                            stats['location'][str(user_choice)]['staff_lvl'] = new_staff_lvl
+                            stats["cash"] = remaining_cash
+                            loc = int(user_choice) - 1
+                            text = f'Staff level {new_staff_lvl} purchased for {LOC_NAME[loc]} for £{STAFF_PRICE[staff_level]}.'
+                            print(utils.colored(50, 205, 50, text))
+                            text = f'Remaining balance {print_current_balance(stats)}'
+                            print(utils.colored(0, 255, 255, text))
+                            print_press_enter_to("Press Enter to continue...")
+                        else:
+                            print_error_message("Not enough funds")
                 else:
                     print_error_message("Purchase Land")
             else:
