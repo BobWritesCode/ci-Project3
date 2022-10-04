@@ -17,6 +17,7 @@ LOCATION_FOOTFALL = [20, 40, 80, 160, 320]
 LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Fairground"]
 LOCATION_COSTS = [200, 400, 600, 1000, 1600]
 STAFF_COSTS = [200, 400, 600, 1000, 1600]
+STAFF_FOOTFALL_INCREASE = 50
 STOCK_OPTIONS = ['bun', 'sausage', 'onion', 'sauce']
 STARTING_CASH = 1000
 

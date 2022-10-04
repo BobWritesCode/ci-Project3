@@ -298,7 +298,8 @@ def run_day(stats, PM):
         footfall = constants.LOCATION_FOOTFALL
         for i in range(total_locations):
             rep_modifier = (stats["reputation"] + 2) / 2
-            cust_chance.append((540 / (footfall[i] * rep_modifier ))*100)
+            z = 1 + ((constants.STAFF_FOOTFALL_INCREASE * stats["location"][str(open_loc_num[i])]["staff_lvl"]) / 100)
+            cust_chance.append((540 / (footfall[i] * rep_modifier * z ))*100)
         while True:
             for i in range(total_locations):
                 x = randrange(floor(cust_chance[i]))
@@ -721,6 +722,7 @@ def puchase_staff_menu(stats):
         clear_terminal()
         text = utils.colored(0, 255, 255, "Hire and train staff for your hotdog pitch locations")
         print(f'{text}')
+        print(f'Better trained staff encourage returning customers meaning more footfall.')
         print('------------------------------------')
         print(f'Current balance {print_current_balance(stats)}\n')
         for x, y in enumerate(LOC_NAME, start=1):
