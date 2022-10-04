@@ -298,13 +298,7 @@ def run_day(stats, PM):
                     x = randrange(floor(cust_chance[i]))
                 if portions == 0: break
             if portions == 0:
-                print(f'Sold out at {hour}:{minute}')
-                for i in cust_count:
-                    sold = sold + int(i)
-                t_sold += sold
-                stats = deduct_stock(stats, sold)
-                print("\nDAY OVER - Sold out of stock")
-                print('\nEnd of day sales report:')
+                print(f'\nSold out at {hour}:{minute}')
                 if hour < 12:
                     hour = 11
                 else:
@@ -326,7 +320,6 @@ def run_day(stats, PM):
                     for i in range(total_locations):
                         cust_count[i] = 0
                     sold = 0
-                    print_press_enter_to("Press Enter to continue the day...")
                     break
                 elif PM and hour == 17:
                     trading = False
@@ -337,7 +330,6 @@ def run_day(stats, PM):
                     stats = deduct_stock(stats, sold)
                     print('\nEnd of day sales report:')
                     sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
-                    print_press_enter_to("Press Enter to move on to next day!")
                     break
     stats["day"]+=1
     daily_menu(stats)
