@@ -237,16 +237,22 @@ def run_day(stats, PM):
     Each minute is a chance for something to happen.
     '''
 
-    def sales_report(stats, cust_count, total_daily_sales, open_locations, sold):
+    def sales_report(cust_count, total_daily_sales, open_loc_name, sold, loc_sale_value, sold_out_text):
         '''
         Print sales report to terminal
         '''
+        if sold_out_text : print(sold_out_text)
+        print('------------------------------------')
+        print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
         print('------------------------------------')
         for i in range(len(cust_count)):
-            print(f'{open_locations[i]} - {cust_count[i]}')
+            print(f'{open_loc_name[i]:<13}{"-":<3}{cust_count[i]:<8}{"-":<3}{floor(loc_sale_value[i]*100)/100:<8}')
         print('------------------------------------')
-        print(f'Total daily units sold: {sold}')
-        print(f'Total daily sales value: £{floor(total_daily_sales*100)/100}')
+        text = utils.colored(50, 205, 50, f'{sold}')
+        print(f'Total daily units sold: {text}')
+        text = utils.colored(50, 205, 50, f'£{floor(total_daily_sales*100)/100}')
+        print(f'Total daily sales value: {text}')
+        print('\nSales values are net profit (Sold price minus product cost. Variance +/- £0.01)')
         print_press_enter_to("Press Enter to continue...")
 
 
@@ -260,23 +266,30 @@ def run_day(stats, PM):
         stats["sauce"] -= stats["recipe"]["sauce"] * sold
         return stats
 
-        
+    clear_terminal()
     expected_cost = constants.LOCATION_EXP_COST[0]
-    hour = 8
-    minute = 00
-    cust_count = []
-    open_locations= []
+    hour = 8 # Game time, hours
+    minute = 00 # Game time, minute
+    cust_count = [] # Temp customer count for AM and PM
+    t_cust_count = [] # Total customer count
+    open_loc_name = [] # Open Location Name
+    open_loc_num = [] # Open Location Number
+    loc_sale_value = [] # Location Sales Value
     sold = 0
-    t_sold = 0
+    t_sold = 0 # Total units sold throughout the dayS
     total_daily_sales = 0.0
+    sold_out_text = 0
     for i in range(len(constants.LOCATION_NAMES)):
         if  ( stats["location"][f"{i+1}"]["purchased"] and 
         stats["location"][f"{i+1}"]["cart_lvl"] > 0 and
         stats["location"][f"{i+1}"]["staff_lvl"] > 0
         ):
             cust_count.append(0)
-            open_locations.append(constants.LOCATION_NAMES[i])
-            total_locations = len(open_locations)
+            t_cust_count.append(0)
+            open_loc_name.append(constants.LOCATION_NAMES[i])
+            open_loc_num.append(i+1)
+            total_locations = len(open_loc_name)
+            loc_sale_value.append(0)
     trading = True
     while trading:
         cust_chance = []
@@ -292,13 +305,15 @@ def run_day(stats, PM):
                 while x <= 100:
                     cust_count[i] += 1
                     portions -= 1
-                    total_daily_sales += stats["selling_price"] - product_cost
+                    sales_value = (stats["selling_price"] * stats["location"][str(open_loc_num[i])]["cart_lvl"]) - product_cost
+                    total_daily_sales += sales_value
+                    loc_sale_value[i] += sales_value
                     stats["cash"] += stats["selling_price"] - product_cost
                     if portions == 0: break
                     x = randrange(floor(cust_chance[i]))
                 if portions == 0: break
             if portions == 0:
-                print(f'\nSold out at {hour}:{minute}')
+                sold_out_text = utils.colored(255, 0, 0, f'SOLD OUT at {hour}:{minute}')
                 if hour < 12:
                     hour = 11
                 else:
@@ -311,25 +326,30 @@ def run_day(stats, PM):
                 if not PM and hour == 12:
                     PM = True
                     stats["day"] += 0.5
-                    for i in cust_count:
-                        sold = sold + int(i)
-                    t_sold += sold
-                    stats = deduct_stock(stats, sold)
-                    print('\n12 noon time sales report:')
-                    sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
+                    clear_terminal()
+                    text = utils.colored(0, 255, 255, "12 noon time sales report:")
+                    print(f'{text}')
                     for i in range(total_locations):
+                        sold += cust_count[i]
+                        t_sold += cust_count[i]
+                        t_cust_count[i] += cust_count[i]
                         cust_count[i] = 0
+                    stats = deduct_stock(stats, sold)
+                    sales_report(t_cust_count, total_daily_sales, open_loc_name, t_sold, loc_sale_value, sold_out_text)
                     sold = 0
                     break
                 elif PM and hour == 17:
                     trading = False
                     stats["day"] += 0.5
-                    for i in cust_count:
-                        sold = sold + int(i)
-                    t_sold += sold
+                    for i in range(total_locations):
+                        sold += cust_count[i]
+                        t_sold += cust_count[i]
+                        t_cust_count[i] += cust_count[i]
                     stats = deduct_stock(stats, sold)
-                    print('\nEnd of day sales report:')
-                    sales_report(stats, cust_count, total_daily_sales, open_locations, t_sold)
+                    clear_terminal()
+                    text = utils.colored(0, 255, 255, "End of day sales report:")
+                    print(f'{text}')
+                    sales_report(t_cust_count, total_daily_sales, open_loc_name, t_sold, loc_sale_value, sold_out_text)
                     break
     stats["day"]+=1
     daily_menu(stats)
@@ -518,6 +538,8 @@ def purchase_cart_menu(stats):
         print(f'{text}')
         print('------------------------------------')
         print(f'Current balance {print_current_balance(stats)}\n')
+        print(f'\nEach upgrade on a cart will produce better quality hotdogs. So you will sell {constants.CART_SELLING_INCREASE}%')
+        print('more than the base price without an penelties')
         for x, y in enumerate(LOC_NAME, start=1):
             cart_level = stats['location'][str(x)]['cart_lvl']
             str_part_1 = f'{x}. {y}'
