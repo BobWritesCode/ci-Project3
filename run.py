@@ -771,7 +771,6 @@ def change_recipe_menu(stats):
         '''
         Check user input for recipe change is valid
         '''
-        print(data)
         if len(data) == 1 and data[0] == str(0): return True
         if len(data) != 2:
             text = utils.colored(255, 0, 0, 'Check instructions and try again.')
@@ -784,10 +783,10 @@ def change_recipe_menu(stats):
 
     while True:
         clear_terminal()
-        bun = stats['recipe']['bun']
-        sausage = stats['recipe']['sausage']
-        onion = stats['recipe']['onion']
-        sauce = stats['recipe']['sauce']
+        bun = utils.colored(50, 205, 50, stats['recipe']['bun'])
+        sausage = utils.colored(50, 205, 50, stats['recipe']['sausage'])
+        onion = utils.colored(50, 205, 50, stats['recipe']['onion'])
+        sauce = utils.colored(50, 205, 50, stats['recipe']['sauce'])
         text = utils.colored(0, 255, 255, "Make changes to your recipe")
         print(f'{text}')
         print('------------------------------------\n')
@@ -798,22 +797,37 @@ def change_recipe_menu(stats):
         text2 = utils.colored(0, 255, 255, "Portions per serving")
         print(f'{text1:<12}{"|":<2}{text2:<0}')
         print('------------------------------------')
-        print(f'{"1. Buns":<12}{"|":<2}{f"{bun}":<0}')
-        print(f'{"2. Sausages":<12}{"|":<2}{f"{sausage}":<0}')
-        print(f'{"3. Onions":<12}{"|":<2}{f"{onion}":<0}')
-        print(f'{"4. Sauce":<12}{"|":<2}{f"{sauce}":<0}')
+        print(f'{"1. Buns":<12}{"|":<2}{f"{bun}":<4} (Min 1 - Max 1)')
+        print(f'{"2. Sausages":<12}{"|":<2}{f"{sausage}":<4} (Min 1 - Max 2)')
+        print(f'{"3. Onions":<12}{"|":<2}{f"{onion}":<4} (Min 0 - Max 5)')
+        print(f'{"4. Sauce":<12}{"|":<2}{f"{sauce}":<4} (Min 0 - Max 5)')
         print_go_back()
         print('\nTo update your recipe type the ingrediant and amount i.e. "3 4" will update onion to 4 potions per serving.\n')
-        text = utils.colored(255, 165, 0, "Enter change i.e. 3 4 (max 999):")
+        text = utils.colored(255, 165, 0, "Enter change i.e. 3 4:")
         user_choice = input(f'{text}')
         user_choice = user_choice.split()
         if validate_recipe_change(user_choice):
             if int(user_choice[0]) == 0: break
-            stock_choosen = constants.STOCK_OPTIONS[int(user_choice[0])-1]
-            stats['recipe'][stock_choosen] = int(user_choice[1])
-            text = utils.colored(50, 205, 50, f'Updated {stock_choosen.capitalize()} to {user_choice[1]} per serving.')
-            print(text)
-            print_press_enter_to("Press Enter to continue...")
+            if int(user_choice[0]) > 4:
+                print_error_message("Invalid choice.")
+            else:
+                if ((int(user_choice[0]) == 1 and int(user_choice[1]) > 1) or 
+                (int(user_choice[0]) == 2 and int(user_choice[1]) > 2) or
+                (int(user_choice[0]) == 3 and int(user_choice[1]) > 5) or
+                (int(user_choice[0]) == 4 and int(user_choice[1]) > 5)):
+                    print_error_message("Check maximum amounts.")
+                else:
+                    if ((int(user_choice[0]) == 1 and int(user_choice[1]) < 1) or 
+                    (int(user_choice[0]) == 2 and int(user_choice[1]) < 1) or
+                    (int(user_choice[0]) == 3 and int(user_choice[1]) < 0) or
+                    (int(user_choice[0]) == 4 and int(user_choice[1]) < 0)):
+                        print_error_message("Check minimum amounts.")
+                    else:
+                        stock_choosen = constants.STOCK_OPTIONS[int(user_choice[0])-1]
+                        stats['recipe'][stock_choosen] = int(user_choice[1])
+                        text = utils.colored(50, 205, 50, f'Updated {stock_choosen.capitalize()} to {user_choice[1]} per serving.')
+                        print(text)
+                        print_press_enter_to("Press Enter to continue...")
     daily_menu(stats)
 
 
