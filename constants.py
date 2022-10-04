@@ -73,14 +73,12 @@ DAILY_MENU_OPTIONS = f"""
 
 {text}"""
 
-text = colored(255, 105, 180, '5. Buy X portions of recipe hotdogs')
+text = colored(0, 255, 255, 'Pricing for products:')
 
 PURCHASE_STOCK_OPTIONS = f"""
-{text_choose_from_options}
+{text}
 ------------------------------------
-1. Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) £{STOCK_COSTS['bun'][2]}.00
-2. Pack of Hotdogs (pack of {STOCK_COSTS['sausage'][1]}) £{STOCK_COSTS['sausage'][2]}.00
-3. Onion (Makes {STOCK_COSTS['onion'][1]} portions) £{STOCK_COSTS['onion'][2]}.00
-4. Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) £{STOCK_COSTS['sauce'][2]}.00
-
-{text}"""
+Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) £{STOCK_COSTS['bun'][2]}.00
+Pack of Hotdogs (pack of {STOCK_COSTS['sausage'][1]}) £{STOCK_COSTS['sausage'][2]}.00
+Onion (Makes {STOCK_COSTS['onion'][1]} portions) £{STOCK_COSTS['onion'][2]}.00
+Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) £{STOCK_COSTS['sauce'][2]}.00"""
