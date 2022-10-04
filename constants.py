@@ -69,7 +69,7 @@ DAILY_MENU_OPTIONS = f"""
 4. Purchase stock
 5. Change Recipes
 6. Set selling prices
-7. Start trading (and save)
+7. Start trading
 
 {text}"""
 
