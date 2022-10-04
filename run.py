@@ -549,9 +549,11 @@ def purchase_cart_menu(stats):
         text = utils.colored(0, 255, 255, "Purchase or upgrade carts at your hotdog pitch locations")
         print(f'{text}')
         print('------------------------------------')
-        print(f'Current balance {print_current_balance(stats)}\n')
-        print(f'\nEach upgrade on a cart will produce better quality hotdogs. So you will sell {constants.CART_SELLING_INCREASE}%')
-        print('more than the base price without an penelties')
+        text = utils.colored(50, 205, 50, print_current_balance(stats))
+        print(f'Current balance {text}\n')
+        print(f'Each upgrade on a cart will produce better quality hotdogs. So you will sell {constants.CART_SELLING_INCREASE}% more for each level on top the base selling price without an penelties at that location.')
+        text = utils.colored(255, 105, 180, "TIP")
+        print(f'\n{text}: Each location will need a staff member before they sell any hotdogs.\n')
         for x, y in enumerate(LOC_NAME, start=1):
             cart_level = stats['location'][str(x)]['cart_lvl']
             str_part_1 = f'{x}. {y}'
@@ -567,7 +569,7 @@ def purchase_cart_menu(stats):
             elif cart_level == 0:
                 text = f'PURCHASE for £ {CART_PRICE[cart_level]}'
                 str_part_3 = utils.colored(50, 205, 50, text)
-            elif cart_level == '5':
+            elif cart_level == 5:
                 text = 'No further upgrades'
                 str_part_3 = utils.colored(255, 165, 0, text)
             else:
@@ -576,7 +578,7 @@ def purchase_cart_menu(stats):
             print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<23}' + ' - ' f'{str_part_3:<18}')
         print_go_back()
         # Get player input
-        text = utils.colored(255, 165, 0, "Input choice:")
+        text = utils.colored(255, 165, 0, "Input choice (0-5):")
         user_choice = input(f'\n{text}')
         if validate_input(user_choice, 5):
             if int(user_choice) > 0:
@@ -584,19 +586,22 @@ def purchase_cart_menu(stats):
                 if stats['location'][str(user_choice)]['purchased'] == True:
                     # Check if remaining cash will above 0 after purchase, if so continue, else loop
                     cart_level = stats['location'][str(user_choice)]['cart_lvl']
-                    remaining_cash = stats["cash"] - CART_PRICE[cart_level]
-                    if remaining_cash >= 0:
-                        new_cart_lvl = cart_level + 1
-                        stats['location'][str(user_choice)]['cart_lvl'] = new_cart_lvl
-                        stats["cash"] = remaining_cash
-                        loc = int(user_choice) - 1
-                        text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} for £{CART_PRICE[cart_level]}.'
-                        print(utils.colored(50, 205, 50, text))
-                        text = f'Remaining balance {print_current_balance(stats)}'
-                        print(utils.colored(0, 255, 255, text))
-                        print_press_enter_to("Press Enter to continue...")
+                    if cart_level == 5:
+                        print_error_message("Already at max level.")
                     else:
-                        print_error_message("Not enough funds")
+                        remaining_cash = stats["cash"] - CART_PRICE[cart_level]
+                        if remaining_cash >= 0:
+                            new_cart_lvl = cart_level + 1
+                            stats['location'][str(user_choice)]['cart_lvl'] = new_cart_lvl
+                            stats["cash"] = remaining_cash
+                            loc = int(user_choice) - 1
+                            text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} for £{CART_PRICE[cart_level]}.'
+                            print(utils.colored(50, 205, 50, text))
+                            text = f'Remaining balance {print_current_balance(stats)}'
+                            print(utils.colored(0, 255, 255, text))
+                            print_press_enter_to("Press Enter to continue...")
+                        else:
+                            print_error_message("Not enough funds")
                 else:
                     print_error_message("Purchase Land")
             else:
