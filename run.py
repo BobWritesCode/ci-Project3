@@ -234,7 +234,7 @@ def print_current_balance(stats):
     '''
     Print cash statment
     '''
-    return f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}'
+    return (f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}')
 
 
 def run_day(stats):
@@ -250,7 +250,7 @@ def run_day(stats):
         '''
         Print sales report to terminal
         '''
-        if sold_out_text: 
+        if sold_out_text:
             print(sold_out_text)
         print('------------------------------------')
         print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
@@ -302,7 +302,8 @@ def run_day(stats):
 
     def deduct_stock(stats, sold):
         '''
-        Deduct any stock that has been sold and return stats back to calling function
+        Deduct any stock that has been sold and return stats back to calling
+        function.
         '''
         stats["sausage"] -= stats["recipe"]["sausage"] * sold
         stats["bun"] -= stats["recipe"]["bun"] * sold
@@ -312,7 +313,7 @@ def run_day(stats):
 
     clear_terminal()
     if (stats["day"] % 1) == 0:
-        hour = 8 # Game time, hours
+        hour = 8  # Game time, hours
     else:
         hour = 12  # Game time, hours
     sp = stats["selling_price"]  # Selling Price
@@ -336,9 +337,11 @@ def run_day(stats):
     PVMI = constants.PRODUCT_VALUE_MAX_INCREASE
     pv = cost_to_make(stats) * PVMI  # Product Value
     for i in range(len(constants.LOCATION_NAMES)):
-        if (stats["location"][f"{i+1}"]["purchased"] and
-        stats["location"][f"{i+1}"]["cart_lvl"] > 0 and
-        stats["location"][f"{i+1}"]["staff_lvl"] > 0):
+        if (
+            stats["location"][f"{i+1}"]["purchased"] and
+            stats["location"][f"{i+1}"]["cart_lvl"] > 0 and
+            stats["location"][f"{i+1}"]["staff_lvl"] > 0
+        ):
             cust_count.append(0)
             t_cust_count.append(0)
             open_loc_name.append(constants.LOCATION_NAMES[i])
@@ -416,7 +419,7 @@ def run_day(stats):
                 hour = 16
             minute = 59
         minute += 1
-        if minute == 60: 
+        if minute == 60:
             minute = 00
             hour += 1
             if hour == 12:
@@ -430,7 +433,7 @@ def run_day(stats):
                     cust_count[i] = 0
                 stats = deduct_stock(stats, sold)
                 sales_report(
-                    stats, t_cust_count, total_daily_sales, open_loc_name, 
+                    stats, t_cust_count, total_daily_sales, open_loc_name,
                     t_sold, loc_sale_value, sold_out_text, feedback
                     )
                 sold = 0
@@ -445,7 +448,7 @@ def run_day(stats):
                 text = utils.colored(0, 255, 255, "End of day sales report:")
                 print(f'{text}')
                 sales_report(
-                    stats, t_cust_count, total_daily_sales, open_loc_name, 
+                    stats, t_cust_count, total_daily_sales, open_loc_name,
                     t_sold, loc_sale_value, sold_out_text, feedback
                     )
                 break
@@ -457,19 +460,13 @@ def get_portions_avaliable(stats):
     '''
     Return how many portions of hotdogs are avaliable based on stock and recipe
     '''
-    sausage = stats["sausage"]
-    bun = stats["bun"]
-    onion = stats["onion"]
-    sauce = stats["sauce"]
-    r_sauasge = stats["recipe"]["sausage"]
-    r_bun = stats["recipe"]["bun"]
-    r_onion = stats["recipe"]["onion"]
-    r_sauce = stats["recipe"]["sauce"]
-    portions = sausage / r_sauasge
-    if (bun / r_bun) < portions: portions = (bun / r_bun)
-    if (onion / r_onion) < portions: portions = (onion / r_onion)
-    if (sauce / r_sauce) < portions: portions = (sauce / r_sauce)
-    return floor(portions)
+    p = 9999
+    for i in constants.STOCK_OPTIONS:
+        if stats["recipe"][i] > 0:
+            x = stats[i] / stats["recipe"][i]
+            if x < p:
+                p = x
+    return floor(p)
 
 
 def save_data(stats, first_save):
@@ -589,7 +586,7 @@ def purchase_location(stats):
         print(f'{text}: Each location will need a cart and a staff member before they sell any hotdogs.\n')
         for x, y in enumerate(LOC_NAME, start=1):
             str_part_1 = f'{x}. {y}'
-            if stats['location'][str(x)]['purchased'] == False:
+            if not stats['location'][str(x)]['purchased']:
                 str_part_2 = utils.colored(50, 205, 50, "Avaliable")
                 text = f'PURCHASE for £{LOC_COST[x-1]}'
                 str_part_3 = utils.colored(0, 255, 255, text)
@@ -603,7 +600,7 @@ def purchase_location(stats):
         user_choice = input(f'\n{text}')
         if validate_input(user_choice, 5):
             if int(user_choice) > 0:
-                if stats['location'][str(user_choice)]['purchased'] == False:
+                if not stats['location'][str(user_choice)]['purchased']:
                     # Check if remaining cash will above 0 after purchase, if so continue, else loop
                     remaining_cash = stats["cash"] - LOC_COST[int(user_choice)-1]
                     if remaining_cash >= 0:
@@ -642,14 +639,14 @@ def purchase_cart_menu(stats):
         for x, y in enumerate(LOC_NAME, start=1):
             cart_level = stats['location'][str(x)]['cart_lvl']
             str_part_1 = f'{x}. {y}'
-            if cart_level == 0 :
+            if cart_level == 0:
                 text = 'Not currently owned'
                 str_part_2 = utils.colored(255, 0, 0, text)
             else:
                 text = f'Current level is {cart_level}'
                 str_part_2 = utils.colored(0, 255, 255, text)
-            if stats['location'][str(x)]['purchased'] is False:
-                text = f'Purchase location first'
+            if not stats['location'][str(x)]['purchased']:
+                text = 'Purchase location first'
                 str_part_3 = utils.colored(255, 0, 0, text)
             elif cart_level == 0:
                 text = f'PURCHASE for £ {CART_PRICE[cart_level]}'
@@ -668,7 +665,7 @@ def purchase_cart_menu(stats):
         if validate_input(user_choice, 5):
             if int(user_choice) > 0:
                 # Make sure location has been purchased first
-                if stats['location'][str(user_choice)]['purchased'] == True:
+                if stats['location'][str(user_choice)]['purchased']:
                     # Check if remaining cash will above 0 after purchase, if so continue, else loop
                     cart_level = stats['location'][str(user_choice)]['cart_lvl']
                     if cart_level == 5:
@@ -731,9 +728,21 @@ def purchase_stock_menu(stats):
                     basket["recipe"].append(stats['recipe'][y])
                     basket["portions"].append(constants.STOCK_COSTS[y][1])
                     basket["cost"].append(constants.STOCK_COSTS[y][2])
-                    basket["total_qty_r"].append(ceil((int(user_choice) - (basket["stock"][i] / basket["recipe"][i] ))/ basket["portions"][i] * basket["recipe"][i]))
-                    if basket["total_qty_r"][i] < 0: basket["total_qty_r"][i] = 0
-                    basket["total_qty_c"].append(basket["total_qty_r"][i] * basket["cost"][i])
+                    basket["total_qty_r"].append(
+                        ceil(
+                            (
+                                int(user_choice) -
+                                (basket["stock"][i] / basket["recipe"][i])
+                            ) /
+                            basket["portions"][i] * basket["recipe"][i]
+                            )
+                        )
+
+                    if basket["total_qty_r"][i] < 0:
+                        basket["total_qty_r"][i] = 0
+                    basket["total_qty_c"].append(
+                        basket["total_qty_r"][i] * basket["cost"][i]
+                        )
                     cost += basket["total_qty_c"][i]
                 text = utils.colored(0, 255, 255, "\nCheckout:")
                 print(f'{text}')
@@ -753,7 +762,8 @@ def purchase_stock_menu(stats):
                 yes_no = input(f'\n{text}\n')
                 if validate_yes_no(yes_no):
                     if yes_no.lower() in ['y', 'yes']:
-                        # Check if remaining cash will above 0 after purchase, if so continue, else loop
+                        # Check if remaining cash will above 0 after purchase,
+                        # if so continue, else loop
                         remaining_cash = stats["cash"] - cost
                         if remaining_cash >= 0:
                             # Update player stock with purchased items
@@ -794,13 +804,13 @@ def puchase_staff_menu(stats):
         for x, y in enumerate(LOC_NAME, start=1):
             staff_level = stats['location'][str(x)]['staff_lvl']
             str_part_1 = f'{x}. {y}'
-            if staff_level == 0 :
+            if staff_level == 0:
                 text = 'Vacant position'
                 str_part_2 = utils.colored(255, 0, 0, text)
             else:
                 text = f'Current level is {staff_level}'
                 str_part_2 = utils.colored(0, 255, 255, text)
-            if stats['location'][str(x)]['purchased'] is False:
+            if not stats['location'][str(x)]['purchased']:
                 text = 'Purchase location first'
                 str_part_3 = utils.colored(255, 0, 0, text)
             elif staff_level == 0:
@@ -820,8 +830,9 @@ def puchase_staff_menu(stats):
         if validate_input(user_choice, 5):
             if int(user_choice) > 0:
                 # Make sure location has been purchased first
-                if stats['location'][str(user_choice)]['purchased'] == True:
-                    # Check if remaining cash will above 0 after purchase, if so continue, else loop
+                if stats['location'][str(user_choice)]['purchased']:
+                    # Check if remaining cash will above 0 after purchase, if
+                    # so continue, else loop
                     staff_level = stats['location'][str(user_choice)]['staff_lvl']
                     if staff_level == 5:
                         print_error_message("Already at max level.")
@@ -851,19 +862,18 @@ def change_recipe_menu(stats):
     Player is able to change recipe menu
     '''
 
-
     def validate_recipe_change(data):
         '''
         Check user input for recipe change is valid
         '''
-        if len(data) == 1 and data[0] == str(0): 
+        if len(data) == 1 and data[0] == str(0):
             return True
         if len(data) != 2:
             text = utils.colored(255, 0, 0, 'Check instructions and try again.')
             print(f'{text}')
             print_press_enter_to("Press Enter to continue...")
         else:
-            if validate_input(data[0], 999) and validate_input(data[1], 999): 
+            if validate_input(data[0], 999) and validate_input(data[1], 999):
                 return True
         return False
 
@@ -893,20 +903,49 @@ def change_recipe_menu(stats):
         user_choice = input(f'{text}')
         user_choice = user_choice.split()
         if validate_recipe_change(user_choice):
-            if int(user_choice[0]) == 0: break
+            if int(user_choice[0]) == 0:
+                break
             if int(user_choice[0]) > 4:
                 print_error_message("Invalid choice.")
             else:
-                if ((int(user_choice[0]) == 1 and int(user_choice[1]) > 1) or
-                (int(user_choice[0]) == 2 and int(user_choice[1]) > 2) or
-                (int(user_choice[0]) == 3 and int(user_choice[1]) > 5) or
-                (int(user_choice[0]) == 4 and int(user_choice[1]) > 5)):
+                if (
+                    (
+                        int(user_choice[0]) == 1 and
+                        int(user_choice[1]) > 1
+                    ) or
+                    (
+                        int(user_choice[0]) == 2 and
+                        int(user_choice[1]) > 2
+                    ) or
+                    (
+                        int(user_choice[0]) == 3 and
+                        int(user_choice[1]) > 5
+                    ) or
+                    (
+                        int(user_choice[0]) == 4 and
+                        int(user_choice[1]) > 5
+                    )
+                ):
                     print_error_message("Check maximum amounts.")
                 else:
-                    if ((int(user_choice[0]) == 1 and int(user_choice[1]) < 1) or 
-                    (int(user_choice[0]) == 2 and int(user_choice[1]) < 1) or
-                    (int(user_choice[0]) == 3 and int(user_choice[1]) < 0) or
-                    (int(user_choice[0]) == 4 and int(user_choice[1]) < 0)):
+                    if (
+                        (
+                            int(user_choice[0]) == 1 and
+                            int(user_choice[1]) < 1
+                        ) or
+                        (
+                            int(user_choice[0]) == 2 and
+                            int(user_choice[1]) < 1
+                        ) or
+                        (
+                            int(user_choice[0]) == 3 and
+                            int(user_choice[1]) < 0
+                        ) or
+                        (
+                            int(user_choice[0]) == 4 and
+                            int(user_choice[1]) < 0
+                        )
+                    ):
                         print_error_message("Check minimum amounts.")
                     else:
                         stock_choosen = constants.STOCK_OPTIONS[int(user_choice[0])-1]
@@ -928,7 +967,7 @@ def set_selling_price(stats):
         print(f'{text}')
         print('------------------------------------')
         production_cost = cost_to_make(stats)
-        text = utils.colored(50, 205, 50, "£"+ str(round(production_cost, 2)))
+        text = utils.colored(50, 205, 50, "£" + str(round(production_cost, 2)))
         print(f'\nThe current cost for to make your your product is {text}')
         text = utils.colored(50, 205, 50, "£"+"{:.2f}".format(stats["selling_price"]))
         print(f'\nCurrent selling price is {text}')
@@ -957,10 +996,22 @@ def cost_to_make(stats):
     '''
     Works out the cost of making each hotdog
     '''
-    bun = stats['recipe']['bun'] * constants.STOCK_COSTS['bun'][2] / constants.STOCK_COSTS['bun'][1]
-    sausage = stats['recipe']['sausage'] * constants.STOCK_COSTS['sausage'][2] / constants.STOCK_COSTS['sausage'][1]
-    onion = stats['recipe']['onion'] * constants.STOCK_COSTS['onion'][2] / constants.STOCK_COSTS['onion'][1]
-    sauce = stats['recipe']['sauce'] * constants.STOCK_COSTS['sauce'][2] / constants.STOCK_COSTS['sauce'][1]
+    bun = (
+        stats['recipe']['bun'] * constants.STOCK_COSTS['bun'][2] /
+        constants.STOCK_COSTS['bun'][1]
+    )
+    sausage = (
+        stats['recipe']['sausage'] * constants.STOCK_COSTS['sausage'][2] /
+        constants.STOCK_COSTS['sausage'][1]
+    )
+    onion = (
+        stats['recipe']['onion'] * constants.STOCK_COSTS['onion'][2] /
+        constants.STOCK_COSTS['onion'][1]
+    )
+    sauce = (
+        stats['recipe']['sauce'] * constants.STOCK_COSTS['sauce'][2] /
+        constants.STOCK_COSTS['sauce'][1]
+    )
     return (bun + sausage + onion + sauce)
 
 
@@ -975,7 +1026,7 @@ def validate_price_change(data):
             print_error_message("invalid input")
             return False
         if float_value >= 0:
-          return True
+            return True
         else:
             raise ValueError()
     except ValueError as e:
@@ -998,10 +1049,10 @@ def create_user_name():
                 print(f'Hello {user_name}\n')
                 # Get player input
                 text = utils.colored(255, 165, 0, "Would you like to change your name? (yes / no) ")
-                yes_no  = input(f'{text}\n')
+                yes_no = input(f'{text}\n')
                 print('')
                 if validate_yes_no(yes_no):
-                    if yes_no.lower() in ['n','no']:
+                    if yes_no.lower() in ['n', 'no']:
                         return user_name
                     else:
                         break
@@ -1013,21 +1064,21 @@ def create_user_id(user_name):
     before showing user.
     '''
     user_id = ''
-    print(f'Please wait why your new user ID is created...')
+    print('Please wait why your new user ID is created...')
     while True:
-        user_id = "".join(string.ascii_uppercase[random.randrange(0,25)] for x in range(6))
+        user_id = "".join(string.ascii_uppercase[random.randrange(0, 25)] for x in range(6))
         user_data = SHEET.worksheet('user_data')
         cell_list = user_data.findall(user_id)
         if len(cell_list) == 0:
             break
     clear_terminal()
-    print(f'Welcome to your new game. The first thing we need to do is set you up with a new')
-    print(f'new account.\n')
+    print('Welcome to your new game. The first thing we need to do is set you up with a new')
+    print('new account.\n')
     print('------------------------------------')
     print('USER ID CREATED')
     print('------------------------------------')
     print(f'\n{user_name}, your new user ID is: {utils.colored(0, 207, 0, user_id)}\n')
-    print(f'Please keep this safe as this is how you can retrieve your progress')
+    print('Please keep this safe as this is how you can retrieve your progress')
     return user_id
 
 
@@ -1054,10 +1105,10 @@ def validate_input(value, max_value):
             print_error_message("invalid input")
             return False
         if int_value >= 0 and int_value <= int(max_value):
-          return True
+            return True
         else:
             raise ValueError()
-    except ValueError as e:        
+    except ValueError as e:
         print_error_message("invalid input")
         return False
     return True
@@ -1069,7 +1120,7 @@ def validate_yes_no(value):
     Acceptable ['y','ye','yes','n','no'], return True
     Else return False.
     '''
-    if value.lower() in ['y','ye','yes','n','no']:
+    if value.lower() in ['y', 'ye', 'yes', 'n', 'no']:
         return True
     else:
         print_error_message("invalid input")
@@ -1121,7 +1172,7 @@ def print_go_back():
     '''
     Print 0. Go Back in yellow
     '''
-    text = utils.colored(255,255,0, f'\n0. Go Back')
+    text = utils.colored(255, 255, 0, '\n0. Go Back')
     print(text)
 
 
@@ -1131,6 +1182,7 @@ def main():
     '''
     main_menu()
 
-#Setting default text color
+
+# Setting default text color
 print(utils.colored(0, 0, 0, 'text'))
 main()
