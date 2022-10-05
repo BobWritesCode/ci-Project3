@@ -1,13 +1,14 @@
-# FUNCTION TO USER COLOR TEXT IN CONSTANTS
-
-def colored(r, g, b, text):
+def colored(red, green, blue, text):
     '''
     Allows to change text colour
     '''
-    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
+    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(
+      red, green, blue, text
+      )
 
 
-text_choose_from_options = colored(0, 255, 255, 'Choose from the following options:')
+text_choose_from_options = colored(0, 255, 255, 'Choose from the following \
+  options:')
 
 # CONSTANTS START HERE
 
@@ -19,7 +20,8 @@ LOCATION_NAMES = [
   "Meow Park",
   "Downtown",
   "The Mall",
-  "Fairground"]
+  "Fairground"
+]
 
 LOCATION_COSTS = [200, 400, 600, 1000, 1600]
 
@@ -31,7 +33,8 @@ OPTIMAL_SELLING_PRICE = {
   LOCATION_NAMES[1]: 3.0,
   LOCATION_NAMES[2]: 4.0,
   LOCATION_NAMES[3]: 5.0,
-  LOCATION_NAMES[4]: 7.0}
+  LOCATION_NAMES[4]: 7.0
+}
 
 
 OPTIMAL_RECIPE = {
@@ -40,12 +43,13 @@ OPTIMAL_RECIPE = {
   LOCATION_NAMES[1]: [1, 1, 2, 2],
   LOCATION_NAMES[2]: [1, 1, 3, 3],
   LOCATION_NAMES[3]: [1, 1, 3, 5],
-  LOCATION_NAMES[4]: [1, 2, 5, 5]}
+  LOCATION_NAMES[4]: [1, 2, 5, 5]
+}
 
 PRODUCT_VALUE_MAX_INCREASE = 3  # 300% (Product value * 300%)
 
 STAFF_COSTS = [200, 400, 600, 1000, 1600]
-STAFF_FOOTFALL_INCREASE = 50
+STAFF_FOOTFALL_INCREASE = 10
 STOCK_OPTIONS = ['bun', 'sausage', 'onion', 'sauce']
 STARTING_CASH = 1000
 
@@ -62,14 +66,14 @@ BACKGROUND_STORY = f"""
 Background
 ------------------------------------
 
-You have hit some really hard times lately and nearly lost everything.
-Your down to your last £{STARTING_CASH}. Luckily your friend has told
+You have hit some really hard times lately and nearly lost everything. \
+Your down to your last £{STARTING_CASH}. Luckily your friend has told \
 you about a sure way to earn some quick cash... HOTDOGS!
-He has told you where you can do to buy your first hotdog cart and
+He has told you where you can do to buy your first hotdog cart and \
 where you can set up for cheap. Everything else though is up to you.
 
-You make your way down to the local hotdog supplies market and have a
-look around. Most of what you see is outside your budget but see there
+You make your way down to the local hotdog supplies market and have a \
+look around. Most of what you see is outside your budget but see there \
 are a few things around to get you started...."""
 
 CREDITS = f"""
@@ -106,7 +110,11 @@ text = colored(0, 255, 255, 'Pricing for products:')
 PURCHASE_STOCK_OPTIONS = f"""
 {text}
 ------------------------------------
-Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) £{STOCK_COSTS['bun'][2]}.00
-Pack of Hotdogs (pack of {STOCK_COSTS['sausage'][1]}) £{STOCK_COSTS['sausage'][2]}.00
-Onion (Makes {STOCK_COSTS['onion'][1]} portions) £{STOCK_COSTS['onion'][2]}.00
-Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) £{STOCK_COSTS['sauce'][2]}.00"""
+Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) \
+  £{STOCK_COSTS['bun'][2]}.00
+Pack of Hotdogs (pack of {STOCK_COSTS['sausage'][1]}) \
+  £{STOCK_COSTS['sausage'][2]}.00
+Onion (Makes {STOCK_COSTS['onion'][1]} portions) \
+  £{STOCK_COSTS['onion'][2]}.00
+Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) \
+  £{STOCK_COSTS['sauce'][2]}.00"""
