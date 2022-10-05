@@ -6,16 +6,44 @@ def colored(r, g, b, text):
     '''
     return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
 
+
 text_choose_from_options = colored(0, 255, 255, 'Choose from the following options:')
 
 # CONSTANTS START HERE
 
 CART_COSTS = [200, 400, 600, 1000, 1600]
 CART_SELLING_INCREASE = 5
-LOCATION_EXP_COST = [3.0, 3.5, 4.0, 5.0, 7.0]
 LOCATION_FOOTFALL = [20, 40, 80, 160, 320]
-LOCATION_NAMES = ["Cheap Street", "Meow Park", "Downtown", "The Mall", "Fairground"]
+LOCATION_NAMES = [
+  "Cheap Street",
+  "Meow Park",
+  "Downtown",
+  "The Mall",
+  "Fairground"]
+
 LOCATION_COSTS = [200, 400, 600, 1000, 1600]
+
+MAX_PRICE_OVER_OPTIMAL = 3  # £3 over optimal before 100% decline
+
+OPTIMAL_SELLING_PRICE = {
+  # Location : Optimal selling price before any bonuses
+  LOCATION_NAMES[0]: 2.0,
+  LOCATION_NAMES[1]: 3.0,
+  LOCATION_NAMES[2]: 4.0,
+  LOCATION_NAMES[3]: 5.0,
+  LOCATION_NAMES[4]: 7.0}
+
+
+OPTIMAL_RECIPE = {
+  # Location : Bun, Sausage, Onion, Sauce
+  LOCATION_NAMES[0]: [1, 1, 1, 1],
+  LOCATION_NAMES[1]: [1, 1, 2, 2],
+  LOCATION_NAMES[2]: [1, 1, 3, 3],
+  LOCATION_NAMES[3]: [1, 1, 3, 5],
+  LOCATION_NAMES[4]: [1, 2, 5, 5]}
+
+PRODUCT_VALUE_MAX_INCREASE = 3  # 300% (Product value * 300%)
+
 STAFF_COSTS = [200, 400, 600, 1000, 1600]
 STAFF_FOOTFALL_INCREASE = 50
 STOCK_OPTIONS = ['bun', 'sausage', 'onion', 'sauce']
@@ -23,10 +51,10 @@ STARTING_CASH = 1000
 
 STOCK_COSTS = {
   # id : [name, portions, cost]
-  'bun' : ['Pack of Hotdog Buns', 6, 1], 
-  'sausage' : ['Pack of Hotdog Sausage', 8, 2], 
-  'onion' : ['Onion', 10, 1], 
-  'sauce' : ['Jar of Special Sauce', 20, 5]
+  'bun': ['Pack of Hotdog Buns', 6, 1],
+  'sausage': ['Pack of Hotdog Sausage', 8, 2],
+  'onion': ['Onion', 10, 1],
+  'sauce': ['Jar of Special Sauce', 20, 5]
 }
 
 BACKGROUND_STORY = f"""
@@ -58,7 +86,7 @@ MAIN_MENU_OPTIONS = f"""
 3. View leaderboard
 4. Credits"""
 
-text = colored(255,255,0, '0. Save and quit')
+text = colored(255, 255, 0, '0. Save and quit')
 
 DAILY_MENU_OPTIONS = f"""
 {text_choose_from_options}
