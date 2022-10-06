@@ -538,7 +538,7 @@ def sales_report(stats, data):
  PREPARATION...")
     else:
         print_press_enter_to("Press Enter to continue to NEXT DAY...")
-    
+
     return stats
 
 
@@ -734,6 +734,7 @@ def purchase_cart_menu(stats):
     '''
     LOC_NAME = constants.LOCATION_NAMES
     CART_PRICE = constants.CART_COSTS
+    
     while True:
         clear_terminal()
         text = cyan("Purchase or upgrade carts at your\
@@ -748,6 +749,7 @@ def purchase_cart_menu(stats):
         text = pink("TIP")
         print(f'\n{text}: Each location will need a staff member before they\
  sell any hotdogs.\n')
+
         for x, y in enumerate(LOC_NAME, start=1):
             cart_level = stats['location'][str(x)]['cart_lvl']
             str_part_1 = f'{x}. {y}'
@@ -767,36 +769,44 @@ def purchase_cart_menu(stats):
                 text = f'UPGRADE for £{CART_PRICE[cart_level]}'
                 str_part_3 = green(text)
             print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<23}' + ' - ' f'{str_part_3:<18}')
+        
         print_go_back()
+
         # Get player input
         text = orange("Input choice (0-5):")
         user_choice = input(f'\n{text}')
-        if validate_input(user_choice, 5):
-            if int(user_choice) > 0:
-                # Make sure location has been purchased first
-                if stats['location'][str(user_choice)]['purchased']:
-                    # Check if remaining cash will above 0 after purchase, if so continue, else loop
-                    cart_level = stats['location'][str(user_choice)]['cart_lvl']
-                    if cart_level == 5:
-                        print_error_message("Already at max level.")
-                    else:
-                        remaining_cash = stats["cash"] - CART_PRICE[cart_level]
-                        if remaining_cash >= 0:
-                            new_cart_lvl = cart_level + 1
-                            stats['location'][str(user_choice)]['cart_lvl'] = new_cart_lvl
-                            stats["cash"] = remaining_cash
-                            loc = int(user_choice) - 1
-                            text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} for £{CART_PRICE[cart_level]}.'
-                            print(green(text))
-                            text = f'Remaining balance {print_current_balance(stats)}'
-                            print(cyan(text))
-                            print_press_enter_to("Press Enter to continue...")
-                        else:
-                            print_error_message("Not enough funds")
-                else:
-                    print_error_message("Purchase Land")
-            else:
-                break
+
+        if not validate_input(user_choice, 5):
+            continue
+
+        if int(user_choice) == 0:
+            break
+
+        # Make sure location has been purchased first
+        if not stats['location'][str(user_choice)]['purchased']:
+            print_error_message("Purchase Land")
+            continue
+
+        # Check if remaining cash will above 0 after purchase, if so continue, else loop
+        cart_level = stats['location'][str(user_choice)]['cart_lvl']
+        if cart_level == 5:
+            print_error_message("Already at max level.")
+            continue
+
+        remaining_cash = stats["cash"] - CART_PRICE[cart_level]
+        if remaining_cash >= 0:
+            new_cart_lvl = cart_level + 1
+            stats['location'][str(user_choice)]['cart_lvl'] = new_cart_lvl
+            stats["cash"] = remaining_cash
+            loc = int(user_choice) - 1
+            text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} for £{CART_PRICE[cart_level]}.'
+            print(green(text))
+            text = f'Remaining balance {print_current_balance(stats)}'
+            print(cyan(text))
+            print_press_enter_to("Press Enter to continue...")
+        else:
+            print_error_message("Not enough funds")
+
     daily_menu(stats)
 
 
