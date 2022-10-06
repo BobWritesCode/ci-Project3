@@ -7,13 +7,15 @@ def colored(red, green, blue, text):
       )
 
 
-text_choose_from_options = colored(0, 255, 255, 'Choose from the following \
-  options:')
+text_choose_from_options = colored(
+  0, 255, 255, 'Choose from the following options:'
+  )
 
 # CONSTANTS START HERE
 
 CART_COSTS = [200, 400, 600, 1000, 1600]
 CART_SELLING_INCREASE = 5
+LAST_DAY = 20
 LOCATION_FOOTFALL = [20, 40, 80, 160, 320]
 LOCATION_NAMES = [
   "Cheap Street",
@@ -49,13 +51,6 @@ PRODUCT_VALUE_MAX_INCREASE = 3  # 300% (Product value * 300%)
 STAFF_COSTS = [200, 400, 600, 1000, 1600]
 STAFF_FOOTFALL_INCREASE = 10
 
-STOCK_OPTIONS = [
-  'bun',
-  'sausage',
-  'onion',
-  'sauce'
-]
-
 STARTING_CASH = 1000
 
 STOCK_COSTS = {
@@ -65,6 +60,13 @@ STOCK_COSTS = {
   'onion': ['Onion', 10, 1],
   'sauce': ['Jar of Special Sauce', 20, 5]
 }
+
+STOCK_OPTIONS = [
+  'bun',
+  'sausage',
+  'onion',
+  'sauce'
+]
 
 BACKGROUND_STORY = f"""
 ------------------------------------

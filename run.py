@@ -204,7 +204,6 @@ def daily_menu(stats):
     Daily player menu to purchase upgrades and make changes to recipes
     '''
     clear_terminal()
-
     if (stats["day"] % 1) == 0:
         text_time_of_day = pink("Morning")
     else:
@@ -217,7 +216,7 @@ def daily_menu(stats):
         text = green(print_current_balance(stats))
         print(f'Current balance {text}')
         text = pink(int(floor(stats["day"])))
-        print(f'Day: {text}out of 10')
+        print(f'Day: {text} out of {constants.LAST_DAY}')
         print(f'Time of Day: {text_time_of_day}')
         text = gold(stats['reputation'])
         print(f'Company reputation: {text} / 5')
@@ -314,16 +313,16 @@ def run_day(stats):
     footfall = constants.LOCATION_FOOTFALL
 
     for i in range(total_locations):
-        SFI = constants.STAFF_FOOTFALL_INCREASE
+        staff_foot_inc = constants.STAFF_FOOTFALL_INCREASE
         staff_lvl = stats["location"][str(open_loc_num[i])]["staff_lvl"]
-        z = 1 + ((SFI * staff_lvl) / 100)
+        z = 1 + ((staff_foot_inc * staff_lvl) / 100)
         cust_chance.append((540 / (footfall[i] * rep_modifier * z))*100)
 
     while True:
         for i in range(total_locations):
-            x = randrange(floor(cust_chance[i]))
+            chance = randrange(floor(cust_chance[i]))
 
-            while x <= 100:
+            while chance <= 100:
                 will_buy = False
                 goto_1 = False
                 goto_2 = False
@@ -378,7 +377,7 @@ def run_day(stats):
                     if portions == 0:
                         break
 
-                x = randrange(floor(cust_chance[i]))
+                chance = randrange(floor(cust_chance[i]))
 
             if portions == 0:
                 break
@@ -429,7 +428,10 @@ def run_day(stats):
             break
 
     stats["day"] += 0.5
-    daily_menu(stats)
+    if stats["day"] == constants.LAST_DAY + 1:
+        end_game(stats)
+    else:
+        daily_menu(stats)
 
 
 def rep_change(stats, rep_score, sold):
@@ -503,7 +505,7 @@ def sales_report(stats, data):
     print(f'Total daily sales value: {text} (var +/- £0.01')
     print('\nSales values are net profit (Sold price minus product cost.')
     print_press_enter_to("Press Enter to see feedback..")
-    print(f'\n{cyan("Customer feedback / improvemnts")}')
+    print(f'\n{cyan("Customer feedback / improvements to be made:")}')
     print('-----------------------------------------------------------')
     print(f'{"Location":<13}{"-":<3}{"Amount":<6}{"-":<3}{"Comment":<13}')
     print('-----------------------------------------------------------')
@@ -581,54 +583,60 @@ def save_data(stats, first_save):
     If "exit = True" go to main menu after save.
     '''
 
-    def save_loop(i, data, save_percent):
-        '''
-        Inner function to save_data()
-        Finds the correct row in Google sheet to save game data.
-        '''
-        j = 0
-        for y in data:
-            j += 1
-            worksheet.update_cell(i, j, y)
-            text = cyan(f' SAVING... {floor((j/save_percent)*100)}%')
-            print(f'{text}', end='\r')
-        return True
-
-    def convert_dict_to_array(data, data_to_save):
-        '''
-        Inner function to save_data()
-        Convert dict game data to an array so it can be saved to Google Sheet
-        '''
-        for i in data:
-            if type(data[f'{i}']) is dict:
-                convert_dict_to_array(data[f'{i}'], data_to_save)
-            else:
-                data_to_save.append(data[f"{i}"])
-        return data_to_save
-
     if not first_save:
         text = cyan("Please do not close.")
         print(f'\n{text}')
+
     data_to_save = []
     data_to_save = convert_dict_to_array(stats, data_to_save)
     worksheet = SHEET.worksheet("user_data")
     col_array = worksheet.col_values(1)
     found = False
+
     if not first_save:
         if int(stats["game_save_row"]) != int(0):
-            i = stats["game_save_row"]
-            found = save_loop(i, data_to_save, len(data_to_save))
+            row = stats["game_save_row"]
+            found = save_loop(row, data_to_save, len(data_to_save), worksheet)
         else:
-            for cell_value in col_array:
-                i += 1
-                if cell_value == stats['user_id']:
-                    found = save_loop(i, data_to_save, len(data_to_save))
+            for row, key in enumerate(col_array, 1):
+                if key == stats['user_id']:
+                    found = save_loop(
+                        row, data_to_save, len(data_to_save), worksheet
+                        )
                     break
-        text = green("Data saved. Now safe to close.")
+
+        text = green("Data saved. Safe to continue.")
         print(f'{text}', end='\r')
+
     if not found or first_save:
         worksheet.append_row(data_to_save)
+
     print_press_enter_to("Press Enter to continue...")
+
+
+def save_loop(row, data, save_percent, worksheet):
+    '''
+    Finds the correct row in Google sheet to save game data.
+    '''
+    for count, key in enumerate(data, 1):
+        worksheet.update_cell(row, count, key)
+        text = cyan(f' SAVING... {floor((count/save_percent)*100)}%')
+        print(f'{text}', end='\r')
+
+    return True
+
+
+def convert_dict_to_array(data, data_to_save):
+    '''
+    Convert dict game data to an array so it can be saved to Google Sheet
+    '''
+    for key in data:
+        if isinstance(data[f'{key}'], dict):
+            convert_dict_to_array(data[f'{key}'], data_to_save)
+        else:
+            data_to_save.append(data[f"{key}"])
+
+    return data_to_save
 
 
 def retrieve_save():
@@ -776,8 +784,12 @@ def purchase_cart_menu(stats):
             else:
                 text = f'UPGRADE for £{CART_PRICE[cart_level]}'
                 str_part_3 = green(text)
-            print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<23}' + ' - ' f'{str_part_3:<18}')
-        
+            print(
+                f'{str_part_1:<16}' + ' - ' +
+                f'{str_part_2:<23}' + ' - ' +
+                f'{str_part_3:<18}'
+                )
+
         print_go_back()
 
         text = orange("Input choice (0-5):")
@@ -794,7 +806,8 @@ def purchase_cart_menu(stats):
             print_error_message("Purchase Land")
             continue
 
-        # Check if remaining cash will above 0 after purchase, if so continue, else loop
+        # Check if remaining cash will above 0 after purchase, if so continue,
+        # else loop
         cart_level = stats['location'][str(user_choice)]['cart_lvl']
         if cart_level == 5:
             print_error_message("Already at max level.")
@@ -806,7 +819,8 @@ def purchase_cart_menu(stats):
             stats['location'][str(user_choice)]['cart_lvl'] = new_cart_lvl
             stats["cash"] = remaining_cash
             loc = int(user_choice) - 1
-            text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} for £{CART_PRICE[cart_level]}.'
+            text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} \
+ for £{CART_PRICE[cart_level]}.'
             print(green(text))
             text = f'Remaining balance {print_current_balance(stats)}'
             print(cyan(text))
@@ -1044,88 +1058,118 @@ def change_recipe_menu(stats):
 
     while True:
         clear_terminal()
+
         bun = green(stats['recipe']['bun'])
         sausage = green(stats['recipe']['sausage'])
         onion = green(stats['recipe']['onion'])
         sauce = green(stats['recipe']['sauce'])
-        text = cyan("Make changes to your recipe")
-        print(f'\n{text}')
-        print('------------------------------------')
 
+        print(f'\n{cyan("Make changes to your recipe")}')
+        print('------------------------------------')
         print(cyan("\nCurrent Recipe:"))
         print('------------------------------------')
-        text1 = cyan("Ingrediant")
-        text2 = cyan("Portions per serving")
-        print(f'{text1:<12}{"|":<2}{text2:<0}')
+        print(f'{cyan("Ingrediant"):<12}{"|":<2}\
+ {cyan("Portions per serving"):<0}')
         print('------------------------------------')
         print(f'{"1. Buns":<12}{"|":<2}{f"{bun}":<4} (Min 1 - Max 1)')
         print(f'{"2. Sausages":<12}{"|":<2}{f"{sausage}":<4} (Min 1 - Max 2)')
         print(f'{"3. Onions":<12}{"|":<2}{f"{onion}":<4} (Min 0 - Max 5)')
         print(f'{"4. Sauce":<12}{"|":<2}{f"{sauce}":<4} (Min 0 - Max 5)')
+
         prod_cost = cost_to_make(stats)
         markup = constants.PRODUCT_VALUE_MAX_INCREASE
         prod_cost *= markup
         text = pink(f'£{str("{:.2f}".format(prod_cost))}')
         print(f'\nCurrent base product value is: {text}')
         print_go_back()
-        print('\nTo update your recipe type the ingrediant and amount i.e.\
+
+        print('\nTo update your recipe type the ingrediant and amount i.e. \
  "3 4".\n')
-        text = orange("Enter change i.e. 3 4:")
-        user_choice = input(f'{text}')
+        user_choice = input(f'{orange("Enter change i.e. 3 4:")}')
         user_choice = user_choice.split()
-        if validate_recipe_change(user_choice):
-            if int(user_choice[0]) == 0:
-                break
-            if int(user_choice[0]) > 4:
-                print_error_message("Invalid choice.")
-            else:
-                if (
-                    (
-                        int(user_choice[0]) == 1 and
-                        int(user_choice[1]) > 1
-                    ) or
-                    (
-                        int(user_choice[0]) == 2 and
-                        int(user_choice[1]) > 2
-                    ) or
-                    (
-                        int(user_choice[0]) == 3 and
-                        int(user_choice[1]) > 5
-                    ) or
-                    (
-                        int(user_choice[0]) == 4 and
-                        int(user_choice[1]) > 5
-                    )
-                ):
-                    print_error_message("Check maximum amounts.")
-                else:
-                    if (
-                        (
-                            int(user_choice[0]) == 1 and
-                            int(user_choice[1]) < 1
-                        ) or
-                        (
-                            int(user_choice[0]) == 2 and
-                            int(user_choice[1]) < 1
-                        ) or
-                        (
-                            int(user_choice[0]) == 3 and
-                            int(user_choice[1]) < 0
-                        ) or
-                        (
-                            int(user_choice[0]) == 4 and
-                            int(user_choice[1]) < 0
-                        )
-                    ):
-                        print_error_message("Check minimum amounts.")
-                    else:
-                        stock_choosen = constants.STOCK_OPTIONS[int(user_choice[0])-1]
-                        stats['recipe'][stock_choosen] = int(user_choice[1])
-                        text = green(f'Updated\
- {stock_choosen.capitalize()} to {user_choice[1]} per serving.')
-                        print(text)
-                        print_press_enter_to("Press Enter to continue...")
+
+        if not validate_recipe_change(user_choice):
+            continue
+
+        if int(user_choice[0]) == 0:
+            break
+
+        if int(user_choice[0]) > 4:
+            print_error_message("Invalid choice.")
+            continue
+
+        if (
+            (int(user_choice[0]) == 1 and int(user_choice[1]) > 1) or
+            (int(user_choice[0]) == 2 and int(user_choice[1]) > 2) or
+            (int(user_choice[0]) == 3 and int(user_choice[1]) > 5) or
+            (int(user_choice[0]) == 4 and int(user_choice[1]) > 5)
+        ):
+            print_error_message("Check maximum amounts.")
+            continue
+
+        if (
+            (int(user_choice[0]) == 1 and int(user_choice[1]) < 1) or
+            (int(user_choice[0]) == 2 and int(user_choice[1]) < 1) or
+            (int(user_choice[0]) == 3 and int(user_choice[1]) < 0) or
+            (int(user_choice[0]) == 4 and int(user_choice[1]) < 0)
+        ):
+            print_error_message("Check minimum amounts.")
+            continue
+
+        stock_choosen = (constants.STOCK_OPTIONS[int(user_choice[0])-1])
+        stats['recipe'][stock_choosen] = int(user_choice[1])
+        text = green(f'Updated {stock_choosen.capitalize()} to \
+ {user_choice[1]} per serving.')
+        print(text)
+        print_press_enter_to("Press Enter to continue...")
+
     daily_menu(stats)
+
+
+def end_game(stats):
+    '''
+    After last day has been completed, this function will save the player and
+    upload their score to the leaderboard if they are in the top X of players.
+    '''
+    clear_terminal()
+    print(f'{gold("CONGRATULATIONS!")}')
+    print('\nYou completed the final day. Let\'s see how you did!')
+    print('But first lets save your game!')
+
+    save_data(stats, False)
+    clear_terminal()
+
+    cash = stats["cash"]
+    rep = stats["reputation"]
+    sum1 = 0
+    sum2 = 0
+    sum3 = 0
+
+    for key in stats["location"]:
+        sum1 += 1 if stats["location"][str(key)]["purchased"] else None
+        sum2 += stats["location"][str(key)]["cart_lvl"]
+        sum3 += stats["location"][str(key)]["staff_lvl"]
+
+    print(f'{gold("Your final score!")}\n')
+    text = green("£" + str(floor(cash * 100) / 100))
+    print(f'You managed to earn a whooping {text}')
+    text = gold(str(sum1)) + pink(" / 5")
+    print(f'\n{text} Locations purchased!')
+    text = gold(str(sum2)) + pink(" / 25")
+    print(f'{text} Carts purchased and upgraded!')
+    text = gold(str(sum3)) + pink(" / 25")
+    print(f'{text } Hired and uptrained staff!')
+    text = gold(str(rep)) + pink(" / 5")
+    print(f'{text} Reputation!')
+    percent = (sum1 + sum2 + sum3 + rep) / 60
+    text = gold(str(floor(percent * 100)) + "%")
+    print(f'{text} Completion rating!')
+    print('\nI hope you are happy with what you have achieved becuase I am.')
+    print('Let\'s see if you managed to secure a place on our leaderboard.')
+    print(f'\n{gold("THANK YOU FOR PLAYING!")}')
+    print_press_enter_to('Press Enter to quit.')
+    stats = {}
+    main()
 
 
 def set_selling_price(stats):
@@ -1135,8 +1179,7 @@ def set_selling_price(stats):
     while True:
         clear_terminal()
         curr_price = stats["selling_price"]
-        text = cyan("Set the selling price of your\
- product")
+        text = cyan("Set the selling price of your product")
         print(f'{text}')
         print('------------------------------------')
         production_cost = cost_to_make(stats)
@@ -1226,23 +1269,26 @@ def create_user_name():
     Allow user to create their own name for the game
     '''
     while True:
-        # Get player input
         text = orange("What name would you like to use?")
         user_name = input(f'{text}\n')
         print('')
-        if user_name:
-            while True:
-                print(f'Hello {user_name}\n')
-                # Get player input
-                text = orange("Would you like to change\
- your name? (yes / no) ")
-                yes_no = input(f'{text}\n')
-                print('')
-                if validate_yes_no(yes_no):
-                    if yes_no.lower() in ['n', 'no']:
-                        return user_name
-                    else:
-                        break
+
+        if not user_name:
+            continue
+
+        while True:
+            print(f'Hello {user_name}\n')
+            text = orange("Would you like to change your name? (yes / no) ")
+            yes_no = input(f'{text}\n')
+            print('')
+
+            if not validate_yes_no(yes_no):
+                continue
+
+            if yes_no.lower() in ['n', 'no']:
+                return user_name
+
+            break
 
 
 def create_user_id(user_name):

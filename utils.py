@@ -52,11 +52,12 @@ def red(text):
     return colored(255, 0, 0, text)
 
 
-# Credit: https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3
+# Credit:
+# https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3
 def colored(red, green, blue, text):
     '''
     Allows to change text colour
     '''
-    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(
+    return "\033[38;2;{};{};{}m{}\033[38;2;255;255;255m".format(
         red, green, blue, text
         )
