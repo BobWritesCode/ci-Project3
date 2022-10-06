@@ -1,3 +1,7 @@
+'''
+test
+'''
+
 def main_menu_header(red, green, blue, text):
     colored_text = colored(red, green, blue, text)
     return f"""
@@ -50,6 +54,13 @@ def red(text):
     Changes to RED if printed to termail
     '''
     return colored(255, 0, 0, text)
+
+
+def yellow(text):
+    '''
+    Changes to YELLOW if printed to termail
+    '''
+    return colored(255, 255, 0, text)
 
 
 # Credit:

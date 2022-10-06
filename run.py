@@ -1,19 +1,20 @@
-import gspread
-from google.oauth2.service_account import Credentials
-import os
-import string
-import random
-import constants
-import utils
 from math import floor
 from math import ceil
 from random import randrange
+import random
+import os
+import string
+import gspread
+from google.oauth2.service_account import Credentials
+import constants
+import utils
 from utils import pink
 from utils import gold
 from utils import green
 from utils import cyan
 from utils import orange
 from utils import red
+from utils import yellow
 
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 GAMETITLE = 'Hotdog Empire Tycoon'  # Name change pending
@@ -38,15 +39,24 @@ def show_leaderboard_data():
     clear_terminal()
     highscore = SHEET.worksheet('leaderboard')
     data = highscore.get_all_values()
-    print('************************************')
-    print('Top 10 highscores for classic mode')
-    print('************************************\n')
-    print(f"{data[0][0]:<30}{data[0][1]:<40}")
+    print(f'{yellow("************************************")}')
+    print(f'{cyan("Top 10 highscores for classic mode")}')
+    print(f'{yellow("************************************")}\n')
+    print(f"{data[0][0]:<20}{data[0][1]:<20}")
     print('------------------------------------')
-    for x in data[1:10]:
-        print(f"{x[0]:<30}{x[1]:<40}")
+    for key in data[1:10]:
+        print(f"{key[0]:<20}{key[1]:<20}")
     print_press_enter_to("Press Enter to return to main menu...")
     main_menu()
+
+
+def check_top_10():
+    '''
+    Checks top 10 of leaderboard to see if user qualifies
+    '''
+    highscore = SHEET.worksheet('leaderboard')
+    data = highscore.get_all_values()
+    return data
 
 
 def main_menu():
@@ -312,15 +322,17 @@ def run_day(stats):
     portions = get_portions_avaliable(stats)
     footfall = constants.LOCATION_FOOTFALL
 
-    for i in range(total_locations):
+    for key in range(total_locations):
         staff_foot_inc = constants.STAFF_FOOTFALL_INCREASE
-        staff_lvl = stats["location"][str(open_loc_num[i])]["staff_lvl"]
-        z = 1 + ((staff_foot_inc * staff_lvl) / 100)
-        cust_chance.append((540 / (footfall[i] * rep_modifier * z))*100)
+        staff_lvl = stats["location"][str(open_loc_num[key])]["staff_lvl"]
+        staff_mod = 1 + ((staff_foot_inc * staff_lvl) / 100)
+        cust_chance.append(
+            (540 / (footfall[key] * rep_modifier * staff_mod)) * 100
+            )
 
     while True:
-        for i in range(total_locations):
-            chance = randrange(floor(cust_chance[i]))
+        for key in range(total_locations):
+            chance = randrange(floor(cust_chance[key]))
 
             while chance <= 100:
                 will_buy = False
@@ -329,7 +341,7 @@ def run_day(stats):
                 goto_3 = False
 
                 # Base selling price > what customer likes pay at location.
-                osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[i]]
+                osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[key]]
                 osp = osp * rep_modifier
                 if price > osp:
                     goto_1 = True
@@ -340,9 +352,9 @@ def run_day(stats):
                 max_markup = constants.MAX_PRICE_OVER_OPTIMAL
                 if goto_1 and (price - osp) / max_markup < randrange(100):
                     will_buy = True
-                    feedback["cost buy"][i] += 1
+                    feedback["cost buy"][key] += 1
                 elif goto_1:
-                    feedback["cost"][i] += 1
+                    feedback["cost"][key] += 1
                     rep_score -= 1
 
                 # Product value * max markup is > base selling price.
@@ -356,28 +368,28 @@ def run_day(stats):
                 diff = price - prod_value
                 if goto_3 and (diff / prod_markup) * 100 <= randrange(100):
                     will_buy = True
-                    feedback["value buy"][i] += 1
+                    feedback["value buy"][key] += 1
                 elif goto_3:
-                    feedback["value"][i] += 1
+                    feedback["value"][key] += 1
                     rep_score -= 1
 
                 # Customer is happy to buy product
                 if will_buy:
-                    cust_count[i] += 1
+                    cust_count[key] += 1
                     portions -= 1
-                    CSI = constants.CART_SELLING_INCREASE
+                    cart_sell_inc = constants.CART_SELLING_INCREASE
                     # Location cart level
-                    cl = stats["location"][str(open_loc_num[i])]["cart_lvl"]
+                    cart_lvl = stats["location"][str(open_loc_num[key])]["cart_lvl"]
                     # Selling Price Modifier i.e 1.05
-                    spm = 1 + ((CSI * cl) / 100)
-                    sales_value = (price * spm) - product_cost
-                    loc_sale_value[i] += sales_value
+                    sell_price_mod = 1 + ((cart_sell_inc * cart_lvl) / 100)
+                    sales_value = (price * sell_price_mod) - product_cost
+                    loc_sale_value[key] += sales_value
                     stats["cash"] += sales_value
 
                     if portions == 0:
                         break
 
-                chance = randrange(floor(cust_chance[i]))
+                chance = randrange(floor(cust_chance[key]))
 
             if portions == 0:
                 break
@@ -564,15 +576,19 @@ def deduct_stock(stats, sold):
 
 def get_portions_avaliable(stats):
     '''
-    Return how many portions of hotdogs are avaliable based on stock and recipe
+    Return how many portions of hotdogs are avaliable to sell
+    based on current stock and recipe.
     '''
-    p = 9999
-    for i in constants.STOCK_OPTIONS:
-        if stats["recipe"][i] > 0:
-            x = stats[i] / stats["recipe"][i]
-            if x < p:
-                p = x
-    return floor(p)
+    # Max portions that can be sold in 1 part of the day
+    max_por = 9999999
+    for key in constants.STOCK_OPTIONS:
+        if stats["recipe"][key] > 0:
+            # First, see make portions of hotdog from each ingredient
+            ing_max = stats[key] / stats["recipe"][key]
+            # Next, see if ing_max is smallest out of all ingredient, mearning
+            # max hotdogs
+            max_por = ing_max if ing_max < max_por else max_por
+    return floor(max_por)
 
 
 def save_data(stats, first_save):
@@ -681,8 +697,9 @@ def purchase_location(stats):
     '''
     Purchase location menu for player
     '''
-    LOC_NAME = constants.LOCATION_NAMES
-    LOC_COST = constants.LOCATION_COSTS
+    loc_name = constants.LOCATION_NAMES
+    loc_cost = constants.LOCATION_COSTS
+
     while True:
         clear_terminal()
         text = cyan("Purchase hotdog pitch locations")
@@ -696,11 +713,11 @@ def purchase_location(stats):
         print(f'{text}: Each location will need a cart and a staff member\
  before they sell any hotdogs.\n')
 
-        for count, key in enumerate(LOC_NAME, start=1):
+        for count, key in enumerate(loc_name, start=1):
             str_part_1 = f'{count}. {key}'
             if not stats['location'][str(count)]['purchased']:
                 str_part_2 = green("Avaliable")
-                text = f'PURCHASE for £{LOC_COST[count - 1]}'
+                text = f'PURCHASE for £{loc_cost[count - 1]}'
                 str_part_3 = cyan(text)
                 print(
                     f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<53}' +
@@ -723,7 +740,7 @@ def purchase_location(stats):
 
         if check_2 and not stats['location'][str(user_choice)]['purchased']:
 
-            remaining_cash = stats["cash"] - LOC_COST[int(user_choice)-1]
+            remaining_cash = stats["cash"] - loc_cost[int(user_choice)-1]
             check_3 = True
         else:
             print_error_message('Already Purchased')
@@ -731,8 +748,8 @@ def purchase_location(stats):
         # Check if remaining cash will remain >= 0
         if check_3 and remaining_cash >= 0:
             stats['location'][str(user_choice)]['purchased'] = True
-            var_1 = LOC_NAME[int(user_choice)-1]
-            var_2 = LOC_COST[int(user_choice)-1]
+            var_1 = loc_name[int(user_choice)-1]
+            var_2 = loc_cost[int(user_choice)-1]
             print(green(f'Your purchased {var_1} for £{var_2}'))
             stats["cash"] = remaining_cash
             text = f'Remaining balance {print_current_balance(stats)}'
@@ -748,8 +765,8 @@ def purchase_cart_menu(stats):
     '''
     Purchase cart menu for player
     '''
-    LOC_NAME = constants.LOCATION_NAMES
-    CART_PRICE = constants.CART_COSTS
+    loc_name = constants.LOCATION_NAMES
+    cart_price = constants.CART_COSTS
 
     while True:
         clear_terminal()
@@ -766,23 +783,23 @@ def purchase_cart_menu(stats):
         print(f'\n{text}: Each location will need a staff member before they\
  sell any hotdogs.\n')
 
-        for x, y in enumerate(LOC_NAME, start=1):
-            cart_level = stats['location'][str(x)]['cart_lvl']
-            str_part_1 = f'{x}. {y}'
+        for count, key in enumerate(loc_name, start=1):
+            cart_level = stats['location'][str(count)]['cart_lvl']
+            str_part_1 = f'{count}. {key}'
             if cart_level == 0:
                 text = 'Not currently owned'
                 str_part_2 = red(text)
             else:
                 str_part_2 = cyan(f'Current level is {cart_level}')
-            if not stats['location'][str(x)]['purchased']:
+            if not stats['location'][str(count)]['purchased']:
                 str_part_3 = red('Purchase location first')
             elif cart_level == 0:
-                str_part_3 = green(f'PURCHASE for £ {CART_PRICE[cart_level]}')
+                str_part_3 = green(f'PURCHASE for £ {cart_price[cart_level]}')
             elif cart_level == 5:
                 text = 'No further upgrades'
                 str_part_3 = gold(text)
             else:
-                text = f'UPGRADE for £{CART_PRICE[cart_level]}'
+                text = f'UPGRADE for £{cart_price[cart_level]}'
                 str_part_3 = green(text)
             print(
                 f'{str_part_1:<16}' + ' - ' +
@@ -813,14 +830,14 @@ def purchase_cart_menu(stats):
             print_error_message("Already at max level.")
             continue
 
-        remaining_cash = stats["cash"] - CART_PRICE[cart_level]
+        remaining_cash = stats["cash"] - cart_price[cart_level]
         if remaining_cash >= 0:
             new_cart_lvl = cart_level + 1
             stats['location'][str(user_choice)]['cart_lvl'] = new_cart_lvl
             stats["cash"] = remaining_cash
             loc = int(user_choice) - 1
-            text = f'Cart level {new_cart_lvl} purchased for {LOC_NAME[loc]} \
- for £{CART_PRICE[cart_level]}.'
+            text = f'Cart level {new_cart_lvl} purchased for {loc_name[loc]} \
+ for £{cart_price[cart_level]}.'
             print(green(text))
             text = f'Remaining balance {print_current_balance(stats)}'
             print(cyan(text))
@@ -1136,7 +1153,7 @@ def end_game(stats):
     print('\nYou completed the final day. Let\'s see how you did!')
     print('But first lets save your game!')
 
-    save_data(stats, False)
+    # save_data(stats, False)
     clear_terminal()
 
     cash = stats["cash"]
@@ -1166,6 +1183,22 @@ def end_game(stats):
     print(f'{text} Completion rating!')
     print('\nI hope you are happy with what you have achieved becuase I am.')
     print('Let\'s see if you managed to secure a place on our leaderboard.')
+
+    top_10 = check_top_10()
+    for count, key in enumerate(top_10[1:10], 2):
+        if cash > float(key[1]):
+            print(f'You placed {count - 1}')
+            row = count
+            data_to_save = [
+                stats["name"],
+                stats["cash"]
+            ]
+            worksheet = SHEET.worksheet("leaderboard")
+            save_loop(row, data_to_save, len(data_to_save), worksheet)
+            break
+    else:
+        print('Sadly you didn\'t make the top 10 this time. Maybe next time?')
+
     print(f'\n{gold("THANK YOU FOR PLAYING!")}')
     print_press_enter_to('Press Enter to quit.')
     stats = {}
@@ -1411,8 +1444,7 @@ def print_go_back():
     '''
     Print 0. Go Back in yellow
     '''
-    text = utils.colored(255, 255, 0, '\n0. Go Back')
-    print(text)
+    print(f"\n{yellow('n0. Go Back')}")
 
 
 def main():
@@ -1423,5 +1455,5 @@ def main():
 
 
 # Setting default text color
-print(utils.colored(0, 0, 0, 'text'))
+print(utils.colored(0, 0, 0, ''))
 main()

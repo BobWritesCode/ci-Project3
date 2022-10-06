@@ -1,15 +1,6 @@
-def colored(red, green, blue, text):
-    '''
-    Allows to change text colour
-    '''
-    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(
-      red, green, blue, text
-      )
-
-
-text_choose_from_options = colored(
-  0, 255, 255, 'Choose from the following options:'
-  )
+from utils import pink
+from utils import yellow
+from utils import cyan
 
 # CONSTANTS START HERE
 
@@ -89,18 +80,17 @@ Credits:
 {"Code by:":<20}{"Warwick Hart":<40}
 {"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}"""
 
+
 MAIN_MENU_OPTIONS = f"""
-{text_choose_from_options}
+{cyan('Choose from the following options:')}
 ------------------------------------
 1. New Game
 2. Retrieve a previous game
 3. View leaderboard
 4. Credits"""
 
-text = colored(255, 255, 0, '0. Save and quit')
-
 DAILY_MENU_OPTIONS = f"""
-{text_choose_from_options}
+{cyan('Choose from the following options:')}
 ------------------------------------
 1. Purchase location
 2. Purchase / upgrade cart(s)
@@ -108,14 +98,13 @@ DAILY_MENU_OPTIONS = f"""
 4. Purchase stock
 5. Change Recipes
 6. Set selling prices
-7. Start trading
 
-{text}"""
+{pink("7. Start trading")}
 
-text = colored(0, 255, 255, 'Pricing for products:')
+{yellow('0. Save and quit')}"""
 
 PURCHASE_STOCK_OPTIONS = f"""
-{text}
+{cyan('Pricing for products:')}
 ------------------------------------
 Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) \
   £{STOCK_COSTS['bun'][2]}.00
