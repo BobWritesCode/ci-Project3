@@ -252,7 +252,7 @@ def print_current_balance(stats):
     '''
     Print cash statment
     '''
-    return (f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}')
+    return f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}'
 
 
 def run_day(stats):
@@ -407,7 +407,7 @@ def run_day(stats):
             stats = sales_report(stats, data)
             break
 
-        elif hour == 17:
+        if hour == 17:
             for i in range(total_locations):
                 sold += cust_count[i]
             stats = deduct_stock(stats, sold)
@@ -676,15 +676,17 @@ def purchase_location(stats):
         print('------------------------------------')
         text = green(print_current_balance(stats))
         print(f'Current balance {text}\n')
-        print('Each location purchase means more customer to sell to. The better the location the more potential customers.\n')
+        print('Each location purchase means more customer to sell to.\
+ The better the location the more potential customers.\n')
         text = pink("TIP")
-        print(f'{text}: Each location will need a cart and a staff member before they sell any hotdogs.\n')
+        print(f'{text}: Each location will need a cart and a staff member\
+ before they sell any hotdogs.\n')
 
-        for x, y in enumerate(LOC_NAME, start=1):
-            str_part_1 = f'{x}. {y}'
-            if not stats['location'][str(x)]['purchased']:
+        for count, key in enumerate(LOC_NAME, start=1):
+            str_part_1 = f'{count}. {key}'
+            if not stats['location'][str(count)]['purchased']:
                 str_part_2 = green("Avaliable")
-                text = f'PURCHASE for £{LOC_COST[x-1]}'
+                text = f'PURCHASE for £{LOC_COST[count - 1]}'
                 str_part_3 = cyan(text)
                 print(
                     f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<53}' +
@@ -931,6 +933,7 @@ def puchase_staff_menu(stats):
     '''
     LOC_NAME = constants.LOCATION_NAMES
     STAFF_PRICE = constants.STAFF_COSTS
+
     while True:
         clear_terminal()
         text = cyan("Hire and train staff for your\
@@ -944,16 +947,17 @@ def puchase_staff_menu(stats):
         text = pink("TIP")
         print(f'{text}: Each location will need a cart before they sell any\
  hotdogs.\n')
-        for x, y in enumerate(LOC_NAME, start=1):
-            staff_level = stats['location'][str(x)]['staff_lvl']
-            str_part_1 = f'{x}. {y}'
+
+        for count, key in enumerate(LOC_NAME, start=1):
+            staff_level = stats['location'][str(count)]['staff_lvl']
+            str_part_1 = f'{count}. {key}'
             if staff_level == 0:
                 text = 'Vacant position'
                 str_part_2 = red(text)
             else:
                 text = f'Current level is {staff_level}'
                 str_part_2 = cyan(text)
-            if not stats['location'][str(x)]['purchased']:
+            if not stats['location'][str(count)]['purchased']:
                 text = 'Purchase location first'
                 str_part_3 = red(text)
             elif staff_level == 0:
@@ -969,39 +973,46 @@ def puchase_staff_menu(stats):
                 f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<23}' +
                 ' - ' f'{str_part_3:<18}'
                 )
+
         print_go_back()
-        # Get player input
+
         text = orange("Input choice (0-5):")
         user_choice = input(f'\n{text}')
-        if validate_input(user_choice, 5):
-            if int(user_choice) > 0:
-                # Make sure location has been purchased first
-                if stats['location'][str(user_choice)]['purchased']:
-                    # Check if remaining cash will above 0 after purchase, if
-                    # so continue, else loop
-                    staff_level = stats['location'][str(user_choice)]['staff_lvl']
-                    if staff_level == 5:
-                        print_error_message("Already at max level.")
-                    else:
-                        remaining_cash = stats["cash"] - STAFF_PRICE[staff_level]
-                        if remaining_cash >= 0:
-                            new_staff_lvl = staff_level + 1
-                            stats['location'][str(user_choice)]['staff_lvl'] = new_staff_lvl
-                            stats["cash"] = remaining_cash
-                            loc = int(user_choice) - 1
-                            text = f'Staff level {new_staff_lvl} purchased for\
+
+        if not validate_input(user_choice, 5):
+            continue
+
+        if int(user_choice) == 0:
+            break
+
+        # Make sure location has been purchased first
+        if not stats['location'][str(user_choice)]['purchased']:
+            print_error_message("Purchase Land")
+            continue
+
+        # Check if remaining cash < 0 after purchase, if
+        # so continue, else pass
+        staff_level = stats['location'][str(user_choice)]['staff_lvl']
+        if staff_level == 5:
+            print_error_message("Already at max level.")
+            continue
+
+        remaining_cash = stats["cash"] - STAFF_PRICE[staff_level]
+        if remaining_cash < 0:
+            print_error_message("Not enough funds")
+            continue
+
+        new_staff_lvl = staff_level + 1
+        stats['location'][str(user_choice)]['staff_lvl'] = new_staff_lvl
+        stats["cash"] = remaining_cash
+        loc = int(user_choice) - 1
+        text = f'Staff level {new_staff_lvl} purchased for\
  {LOC_NAME[loc]} for £{STAFF_PRICE[staff_level]}.'
-                            print(green(text))
-                            text = f'Remaining balance\
- {print_current_balance(stats)}'
-                            print(cyan(text))
-                            print_press_enter_to("Press Enter to continue...")
-                        else:
-                            print_error_message("Not enough funds")
-                else:
-                    print_error_message("Purchase Land")
-            else:
-                break
+        print(green(text))
+        text = f'Remaining balance {print_current_balance(stats)}'
+        print(cyan(text))
+        print_press_enter_to("Press Enter to continue...")
+
     daily_menu(stats)
 
 
