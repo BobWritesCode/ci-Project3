@@ -326,7 +326,6 @@ def run_day(stats):
 
                 # Base selling price > what customer likes pay at location.
                 osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[i]]
-
                 if price > osp:
                     goto_1 = True
                 else:
@@ -396,18 +395,16 @@ def run_day(stats):
         if hour == 12 and minute == 00:
             for i in range(total_locations):
                 sold += cust_count[i]
-
             stats = deduct_stock(stats, sold)
             data = [
                 cust_count, sold,
                 open_loc_name, loc_sale_value,
                 sold_out_text, feedback, rep_score
             ]
-
             clear_terminal()
             text = cyan("12 noon time sales report:")
             print(f'{text}')
-            sales_report(stats, data)
+            stats = sales_report(stats, data)
             break
 
         elif hour == 17:
@@ -422,11 +419,51 @@ def run_day(stats):
             clear_terminal()
             text = cyan("End of day sales report:")
             print(f'{text}')
-            sales_report(stats, data)
+            stats = sales_report(stats, data)
             break
 
     stats["day"] += 0.5
     daily_menu(stats)
+
+
+def rep_change(stats, rep_score, sold):
+    '''
+    Calculates if reputations needs to be changed after daily sales
+    performance. Then updates player stats.
+    '''
+    rep_percent = rep_score / sold
+    c_rep = stats["reputation"]
+
+    print(f'{cyan("Reputation update:")}')
+    print('------------------------------------')
+
+    if rep_percent > 0.5:
+        print('HAPPY CUSTOMERS and GREAT PERFORMANCE!')
+    elif rep_percent < 0.5:
+        print('Bad performance... Check feedback on what to change.')
+
+    if rep_percent > 0.5 and c_rep < 5:
+        stats["reputation"] += 0.5
+        print(
+            f"{green('Reputation increase:')}\
+                {gold('-' + str(stats['reputation']))}"
+            )
+    elif rep_percent > 0.5 and c_rep == 5:
+        print(gold("Reputation already at a 5!"))
+    elif rep_percent < 0.5 and c_rep > 0:
+        stats["reputation"] -= 0.5
+        print(
+            f"{red('Reputation decrease:')}\
+            {gold('-' + str(stats['reputation']))}"
+            )
+    elif rep_percent < 0.5 and c_rep == 0:
+        print(red("Reputation already at 0."))
+    else:
+        print("No reputation change")
+
+    print('------------------------------------')
+
+    return stats
 
 
 def sales_report(stats, data):
@@ -457,15 +494,16 @@ def sales_report(stats, data):
     text = green(f'{sold}')
     print(f'Total daily units sold: {text}')
     text = green(f'£{floor(total_sale_value*100)/100}')
-    print(f'Total daily sales value: {text}')
-    print('\nSales values are net profit (Sold price minus product cost.\
- Var +/- £0.01)')
-    print_press_enter_to("Press Enter to see feedback..\n")
+    print(f'Total daily sales value: {text} (var +/- £0.01')
+    print('\nSales values are net profit (Sold price minus product cost.')
+    print_press_enter_to("Press Enter to see feedback..")
+    print(f'\n{cyan("Customer feedback / improvemnts")}')
     print('-----------------------------------------------------------')
     print(f'{"Location":<13}{"-":<3}{"Amount":<6}{"-":<3}{"Comment":<13}')
     print('-----------------------------------------------------------')
     txt_bought = orange('(Bought)')
     txt_decline = red('(Declined)')
+
     for count, i in enumerate(cust_count):
         first = True
         for j in feedback:
@@ -491,11 +529,17 @@ def sales_report(stats, data):
             print(
                 '-----------------------------------------------------------'
                 )
+
+    print_press_enter_to("Press Enter to see if any reputation update...\n")
+    rep_change(stats, rep_score, sold)
+
     if (stats["day"] % 1) == 0:
         print_press_enter_to("Press Enter to continue to MID-DAY\
  PREPARATION...")
     else:
         print_press_enter_to("Press Enter to continue to NEXT DAY...")
+    
+    return stats
 
 
 def deduct_stock(stats, sold):
