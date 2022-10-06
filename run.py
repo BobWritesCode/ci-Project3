@@ -283,9 +283,14 @@ def run_day(stats):
     }
     rep_score = 0  # Daily Repscore
     sold_out_text = 0
-    rep_modifier = (stats["reputation"] + 2) / 2
+    rep_modifier = 1 + (stats["reputation"] / 4)
     prod_markup = constants.PRODUCT_VALUE_MAX_INCREASE
-    prod_value = cost_to_make(stats) * prod_markup  # Product Value
+
+    prod_value = (  # Product Value
+        cost_to_make(stats) *
+        prod_markup *
+        rep_modifier
+      )
 
     for count, i in enumerate(constants.LOCATION_NAMES):
         if (
@@ -326,6 +331,7 @@ def run_day(stats):
 
                 # Base selling price > what customer likes pay at location.
                 osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[i]]
+                osp = osp * rep_modifier
                 if price > osp:
                     goto_1 = True
                 else:
@@ -931,8 +937,8 @@ def puchase_staff_menu(stats):
     '''
     Hire and train staff menu
     '''
-    LOC_NAME = constants.LOCATION_NAMES
-    STAFF_PRICE = constants.STAFF_COSTS
+    loc_name = constants.LOCATION_NAMES
+    staff_price = constants.STAFF_COSTS
 
     while True:
         clear_terminal()
@@ -948,7 +954,7 @@ def puchase_staff_menu(stats):
         print(f'{text}: Each location will need a cart before they sell any\
  hotdogs.\n')
 
-        for count, key in enumerate(LOC_NAME, start=1):
+        for count, key in enumerate(loc_name, start=1):
             staff_level = stats['location'][str(count)]['staff_lvl']
             str_part_1 = f'{count}. {key}'
             if staff_level == 0:
@@ -961,13 +967,13 @@ def puchase_staff_menu(stats):
                 text = 'Purchase location first'
                 str_part_3 = red(text)
             elif staff_level == 0:
-                text = f'PURCHASE for £ {STAFF_PRICE[staff_level]}'
+                text = f'PURCHASE for £ {staff_price[staff_level]}'
                 str_part_3 = green(text)
             elif staff_level == 5:
                 text = 'No traning required'
                 str_part_3 = gold(text)
             else:
-                text = f'TRAIN for £{STAFF_PRICE[staff_level]}'
+                text = f'TRAIN for £{staff_price[staff_level]}'
                 str_part_3 = green(text)
             print(
                 f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<23}' +
@@ -997,7 +1003,7 @@ def puchase_staff_menu(stats):
             print_error_message("Already at max level.")
             continue
 
-        remaining_cash = stats["cash"] - STAFF_PRICE[staff_level]
+        remaining_cash = stats["cash"] - staff_price[staff_level]
         if remaining_cash < 0:
             print_error_message("Not enough funds")
             continue
@@ -1007,7 +1013,7 @@ def puchase_staff_menu(stats):
         stats["cash"] = remaining_cash
         loc = int(user_choice) - 1
         text = f'Staff level {new_staff_lvl} purchased for\
- {LOC_NAME[loc]} for £{STAFF_PRICE[staff_level]}.'
+ {loc_name[loc]} for £{staff_price[staff_level]}.'
         print(green(text))
         text = f'Remaining balance {print_current_balance(stats)}'
         print(cyan(text))
