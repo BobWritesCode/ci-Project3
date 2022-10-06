@@ -48,6 +48,7 @@ def main_menu():
     Display main menu and options
     '''
     clear_terminal()
+    
     while True:
         print(utils.main_menu_header(255, 0, 0, 'Welcome to Hotdog Tycoon'))
         print(constants.MAIN_MENU_OPTIONS)
@@ -55,6 +56,7 @@ def main_menu():
         user_choice = input(f'\n{text}')
         if validate_input(user_choice, 4):
             break
+
     if user_choice == '1':
         new_game()
     elif user_choice == '2':
@@ -136,7 +138,10 @@ def set_up_character(data, new_player):
     else:
         to_check = [14, 17, 20, 23, 26, 29]
         for i in to_check:
-            data[i] = False if data[i] == "FALSE" else True
+            if data[i] == "FALSE":
+                data[i] = False
+            else:
+                data[i] = True
 
     stats = {
         "user_id": data[0],  # 0
@@ -193,10 +198,12 @@ def daily_menu(stats):
     Daily player menu to purchase upgrades and make changes to recipes
     '''
     clear_terminal()
+
     if (stats["day"] % 1) == 0:
         text_time_of_day = utils.colored(255, 105, 180, "Morning")
     else:
         text_time_of_day = utils.colored(255, 105, 180, "Afternoon")
+
     while True:
         text = utils.colored(0, 255, 255, "Daily preparation")
         print(text)
@@ -212,8 +219,10 @@ def daily_menu(stats):
         # Get player input
         text = utils.colored(255, 165, 0, "Input choice:")
         user_choice = input(f'\n{text}')
+
         if validate_input(user_choice, 8):
             break
+
     if user_choice == '1':
         purchase_location(stats)
     elif user_choice == '2':
@@ -247,10 +256,12 @@ def run_day(stats):
     Each minute is a chance for something to happen.
     '''
     clear_terminal()
+
     if (stats["day"] % 1) == 0:
         hour = 8  # Game time, hours
     else:
         hour = 12  # Game time, hours
+
     price = stats["selling_price"]  # Selling Price
     minute = 00  # Game time, minute
     cust_count = []  # Temp customer count for AM and PM
@@ -269,6 +280,7 @@ def run_day(stats):
     rep_modifier = (stats["reputation"] + 2) / 2
     prod_markup = constants.PRODUCT_VALUE_MAX_INCREASE
     prod_value = cost_to_make(stats) * prod_markup  # Product Value
+
     for count, i in enumerate(constants.LOCATION_NAMES):
         if (
             stats["location"][f"{count+1}"]["purchased"] and
@@ -278,55 +290,74 @@ def run_day(stats):
             cust_count.append(0)
             open_loc_name.append(constants.LOCATION_NAMES[count])
             open_loc_num.append(count+1)
-            total_locations = len(open_loc_name)
             loc_sale_value.append(0)
             feedback["cost"].append(0)
             feedback["cost buy"].append(0)
             feedback["value"].append(0)
             feedback["value buy"].append(0)
+
+    total_locations = len(open_loc_name)
     cust_chance = []
     product_cost = cost_to_make(stats)
     portions = get_portions_avaliable(stats)
     FOOTFALL = constants.LOCATION_FOOTFALL
+
     for i in range(total_locations):
         SFI = constants.STAFF_FOOTFALL_INCREASE
         staff_lvl = stats["location"][str(open_loc_num[i])]["staff_lvl"]
         z = 1 + ((SFI * staff_lvl) / 100)
         cust_chance.append((540 / (FOOTFALL[i] * rep_modifier * z))*100)
+
     while True:
         for i in range(total_locations):
             x = randrange(floor(cust_chance[i]))
+
             while x <= 100:
                 osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[i]]
+                goto_1 = False
+                goto_2 = False
+                goto_3 = False
+
                 # Base selling price < optimal customer pay at location.
                 # True: next check. False: check if customer still buy.
                 if price <= osp:
-                    # Product value * max markup is > base selling price.
-                    # True: sell. False: check if customer still buy.
-                    if (prod_value >= price):
-                        will_buy = True
-                    else:
-                        diff = price - prod_value
-                        if (diff / prod_markup) * 100 <= randrange(100):
-                            feedback["value buy"][i] += 1
-                            rep_score -= 1
-                            will_buy = True
-                        else:
-                            will_buy = False
-                            feedback["value"][i] += 1
-                            rep_score -= 2
+                    goto_2 = True
                 else:
-                    # Base selling price <= optimal + max increase.
-                    # True: Rand check to sell. False: No sell.
-                    MPOO = constants.MAX_PRICE_OVER_OPTIMAL
-                    if (price - osp) / MPOO < randrange(100):
-                        will_buy = True
-                        feedback["cost buy"][i] += 1
-                        rep_score -= 1
-                    else:
-                        will_buy = False
-                        feedback["cost"][i] += 1
-                        rep_score -= 2
+                    goto_1 = True
+
+                # Base selling price <= optimal + max increase.
+                # True: Rand check to sell. False: No sell.
+                MPOO = constants.MAX_PRICE_OVER_OPTIMAL
+
+                if goto_1 and (price - osp) / MPOO < randrange(100):
+                    will_buy = True
+                    feedback["cost buy"][i] += 1
+                    rep_score -= 1
+                else:
+                    will_buy = False
+                    feedback["cost"][i] += 1
+                    rep_score -= 2
+
+                # Product value * max markup is > base selling price.
+                # True: sell. False: check if customer still buy.
+                if goto_2 and (prod_value >= price):
+                    will_buy = True
+                else:
+                    goto_3 = True
+
+                # Diff between .
+                # True: Rand check to sell. False: No sell.
+                diff = price - prod_value
+
+                if goto_3 and (diff / prod_markup) * 100 <= randrange(100):
+                    feedback["value buy"][i] += 1
+                    rep_score -= 1
+                    will_buy = True
+                else:
+                    will_buy = False
+                    feedback["value"][i] += 1
+                    rep_score -= 2
+
                 # Customer is happy to buy product
                 # True: buy. False: Skip
                 if will_buy:
@@ -341,51 +372,62 @@ def run_day(stats):
                     sales_value = (price * spm) - product_cost
                     loc_sale_value[i] += sales_value
                     stats["cash"] += sales_value
+
                     if portions == 0:
                         break
+
                 x = randrange(floor(cust_chance[i]))
+
             if portions == 0:
                 break
+
         if portions == 0:
             sold_out_text = utils.colored(
                 255, 0, 0, f'SOLD OUT at {hour}:{minute}')
+
             if hour < 12:
                 hour = 11
             else:
                 hour = 16
+
             minute = 59
         minute += 1
+
         if minute == 60:
             minute = 00
             hour += 1
-            if hour == 12:
-                for i in range(total_locations):
-                    sold += cust_count[i]
-                stats = deduct_stock(stats, sold)
-                data = [
-                    cust_count, sold,
-                    open_loc_name, loc_sale_value,
-                    sold_out_text, feedback, rep_score
-                ]
-                clear_terminal()
-                text = utils.colored(0, 255, 255, "12 noon time sales report:")
-                print(f'{text}')
-                sales_report(stats, data)
-                break
-            elif hour == 17:
-                for i in range(total_locations):
-                    sold += cust_count[i]
-                stats = deduct_stock(stats, sold)
-                data = [
-                    cust_count, sold,
-                    open_loc_name, loc_sale_value,
-                    sold_out_text, feedback, rep_score
-                ]
-                clear_terminal()
-                text = utils.colored(0, 255, 255, "End of day sales report:")
-                print(f'{text}')
-                sales_report(stats, data)
-                break
+
+        if hour == 12 and minute == 00:
+            for i in range(total_locations):
+                sold += cust_count[i]
+
+            stats = deduct_stock(stats, sold)
+            data = [
+                cust_count, sold,
+                open_loc_name, loc_sale_value,
+                sold_out_text, feedback, rep_score
+            ]
+            clear_terminal()
+            text = utils.colored(0, 255, 255, "12 noon time sales report:")
+            print(f'{text}')
+            sales_report(stats, data)
+            break
+
+        elif hour == 17:
+            for i in range(total_locations):
+                sold += cust_count[i]
+            stats = deduct_stock(stats, sold)
+            data = [
+                cust_count, sold,
+                open_loc_name, loc_sale_value,
+                sold_out_text, feedback, rep_score
+            ]
+            clear_terminal()
+            text = utils.colored(0, 255, 255, "End of day sales report:")
+            print(f'{text}')
+            sales_report(stats, data)
+            break
+
     stats["day"] += 0.5
     daily_menu(stats)
 
@@ -559,20 +601,18 @@ def retrieve_save():
         print_go_back()
         text = utils.colored(255, 165, 0, "Enter Game ID:")
         user_input = input(f'\n{text}')
-        i = 0
         # Cycle through rows in Google sheet until GAME ID finds a Match
         text = utils.colored(0, 255, 255, "SEARCHING...")
         print(f'\n{text}')
-        for cell_value in col_array:
-            i += 1
+        for i, cell_value in enumerate(col_array):
             if cell_value == user_input:
                 found = True
                 text = utils.colored(0, 255, 255, "GAME FOUND...")
                 print(f'\n{text}')
                 # Copy data from row where GAME ID matches
-                data = worksheet.row_values(i)
+                data = worksheet.row_values(i+1)
                 stats = set_up_character(data, False)
-                stats["game_save_row"] = i
+                stats["game_save_row"] = i+1
                 text = utils.colored(50, 205, 50, "GAME LOADED.")
                 print(f'\n{text}')
                 print_press_enter_to("Press Enter to continue...")
@@ -596,11 +636,10 @@ def purchase_location(stats):
         print('------------------------------------')
         text = utils.colored(50, 205, 50, print_current_balance(stats))
         print(f'Current balance {text}\n')
-        print('Each location purchase means more customer to sell to. The\
- better the location the more potential customers.\n')
+        print('Each location purchase means more customer to sell to. The better the location the more potential customers.\n')
         text = utils.colored(255, 105, 180, "TIP")
-        print(f'{text}: Each location will need a cart and a staff member\
- before they sell any hotdogs.\n')
+        print(f'{text}: Each location will need a cart and a staff member before they sell any hotdogs.\n')
+
         for x, y in enumerate(LOC_NAME, start=1):
             str_part_1 = f'{x}. {y}'
             if not stats['location'][str(x)]['purchased']:
@@ -614,29 +653,37 @@ def purchase_location(stats):
             else:
                 str_part_2 = utils.colored(255, 215, 0, "Purchased")
                 print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<52}')
+
         print_go_back()
-        # Get player input
+
         text = utils.colored(255, 165, 0, "Input choice:")
         user_choice = input(f'\n{text}')
-        if validate_input(user_choice, 5):
-            if int(user_choice) > 0:
-                if not stats['location'][str(user_choice)]['purchased']:
-                    # Check if remaining cash will above 0 after purchase, if so continue, else loop
-                    remaining_cash = stats["cash"] - LOC_COST[int(user_choice)-1]
-                    if remaining_cash >= 0:
-                        stats['location'][str(user_choice)]['purchased'] = True
-                        text = f'Your purchased {LOC_NAME[int(user_choice)-1]} for £{LOC_COST[int(user_choice)-1]}'
-                        print(utils.colored(50, 205, 50, text))
-                        stats["cash"] = remaining_cash
-                        text = f'Remaining balance {print_current_balance(stats)}'
-                        print(utils.colored(0, 255, 255, text))
-                        print_press_enter_to("Press Enter to continue...")
-                    else:
-                        print_error_message("Not enough funds")
-                else:
-                    print_error_message('Already Purchased')
-            else:
-                break
+
+        check_1 = True if validate_input(user_choice, 5) else None
+        if check_1 and int(user_choice) > 0:
+            check_2 = True 
+        else:
+             break
+
+        if check_2 and not stats['location'][str(user_choice)]['purchased']:
+            
+            remaining_cash = stats["cash"] - LOC_COST[int(user_choice)-1]
+            check_3 = True
+        else:
+            print_error_message('Already Purchased')
+
+        # Check if remaining cash will remain >= 0
+        if check_3 and remaining_cash >= 0:
+            stats['location'][str(user_choice)]['purchased'] = True
+            text = f'Your purchased {LOC_NAME[int(user_choice)-1]} for £{LOC_COST[int(user_choice)-1]}'
+            print(utils.colored(50, 205, 50, text))
+            stats["cash"] = remaining_cash
+            text = f'Remaining balance {print_current_balance(stats)}'
+            print(utils.colored(0, 255, 255, text))
+            print_press_enter_to("Press Enter to continue...")
+        else:
+            print_error_message("Not enough funds")
+
     daily_menu(stats)
 
 
@@ -1019,15 +1066,18 @@ def set_selling_price(stats):
         text = utils.colored(50, 205, 50, "£"+"{:.2f}".format(stats["selling_price"]))
         print(f'\nCurrent selling price is {text}')
         net_profit = round(curr_price - production_cost, 2)
+
         if net_profit >= 0:
             text = utils.colored(50, 205, 50, "Profit per serving is:")
             print(f'\n{text}£{net_profit}')
         else:
             text = utils.colored(255, 0, 0, "Loss per serving is: ")
             print(f'\n{text}£{net_profit}')
+
         print_go_back()
         text = utils.colored(255, 165, 0, "Enter new price: £")
         new_price = input(f'\n{text}')
+
         if validate_price_change(new_price):
             if float(new_price) == 0:
                 break
@@ -1037,6 +1087,7 @@ def set_selling_price(stats):
  £{"{:.2f}".format(new_price)}')
             print(text)
             print_press_enter_to("Press Enter to continue...")
+
     daily_menu(stats)
 
 
@@ -1045,21 +1096,29 @@ def cost_to_make(stats):
     Works out the cost of making each hotdog
     '''
     bun = (
-        stats['recipe']['bun'] * constants.STOCK_COSTS['bun'][2] /
+        stats['recipe']['bun'] *
+        constants.STOCK_COSTS['bun'][2] /
         constants.STOCK_COSTS['bun'][1]
     )
+
     sausage = (
-        stats['recipe']['sausage'] * constants.STOCK_COSTS['sausage'][2] /
+        stats['recipe']['sausage'] *
+        constants.STOCK_COSTS['sausage'][2] /
         constants.STOCK_COSTS['sausage'][1]
     )
+
     onion = (
-        stats['recipe']['onion'] * constants.STOCK_COSTS['onion'][2] /
+        stats['recipe']['onion'] *
+        constants.STOCK_COSTS['onion'][2] /
         constants.STOCK_COSTS['onion'][1]
     )
+
     sauce = (
-        stats['recipe']['sauce'] * constants.STOCK_COSTS['sauce'][2] /
+        stats['recipe']['sauce'] *
+        constants.STOCK_COSTS['sauce'][2] /
         constants.STOCK_COSTS['sauce'][1]
     )
+
     return bun + sausage + onion + sauce
 
 
