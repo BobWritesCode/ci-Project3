@@ -54,7 +54,7 @@ def main_menu():
     Display main menu and options
     '''
     clear_terminal()
-    
+
     while True:
         print(pink('Welcome to Hotdog Tycoon'))
         print(constants.MAIN_MENU_OPTIONS)
@@ -306,68 +306,59 @@ def run_day(stats):
     cust_chance = []
     product_cost = cost_to_make(stats)
     portions = get_portions_avaliable(stats)
-    FOOTFALL = constants.LOCATION_FOOTFALL
+    footfall = constants.LOCATION_FOOTFALL
 
     for i in range(total_locations):
         SFI = constants.STAFF_FOOTFALL_INCREASE
         staff_lvl = stats["location"][str(open_loc_num[i])]["staff_lvl"]
         z = 1 + ((SFI * staff_lvl) / 100)
-        cust_chance.append((540 / (FOOTFALL[i] * rep_modifier * z))*100)
+        cust_chance.append((540 / (footfall[i] * rep_modifier * z))*100)
 
     while True:
         for i in range(total_locations):
             x = randrange(floor(cust_chance[i]))
 
             while x <= 100:
-                osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[i]]
+                will_buy = False
                 goto_1 = False
                 goto_2 = False
                 goto_3 = False
 
-                # Base selling price < optimal customer pay at location.
-                # True: next check. False: check if customer still buy.
-                if price <= osp:
-                    goto_2 = True
-                else:
+                # Base selling price > what customer likes pay at location.
+                osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[i]]
+
+                if price > osp:
                     goto_1 = True
+                else:
+                    goto_2 = True
 
                 # Base selling price <= optimal + max increase.
-                # True: Rand check to sell. False: No sell.
-                MPOO = constants.MAX_PRICE_OVER_OPTIMAL
-
-                if goto_1 and (price - osp) / MPOO < randrange(100):
+                max_markup = constants.MAX_PRICE_OVER_OPTIMAL
+                if goto_1 and (price - osp) / max_markup < randrange(100):
                     will_buy = True
                     feedback["cost buy"][i] += 1
-                    rep_score -= 1
-                else:
-                    will_buy = False
+                elif goto_1:
                     feedback["cost"][i] += 1
-                    rep_score -= 2
+                    rep_score -= 1
 
                 # Product value * max markup is > base selling price.
-                # True: sell. False: check if customer still buy.
-                if goto_2 and (prod_value >= price):
-                    will_buy = True
-                else:
+                if goto_2 and (price >= prod_value):
                     goto_3 = True
+                elif goto_2:
+                    will_buy = True
+                    rep_score += 1
 
                 # Diff between .
-                # True: Rand check to sell. False: No sell.
                 diff = price - prod_value
-
                 if goto_3 and (diff / prod_markup) * 100 <= randrange(100):
-                    feedback["value buy"][i] += 1
-                    rep_score -= 1
                     will_buy = True
-                else:
-                    will_buy = False
+                    feedback["value buy"][i] += 1
+                elif goto_3:
                     feedback["value"][i] += 1
-                    rep_score -= 2
+                    rep_score -= 1
 
                 # Customer is happy to buy product
-                # True: buy. False: Skip
                 if will_buy:
-                    rep_score += 1
                     cust_count[i] += 1
                     portions -= 1
                     CSI = constants.CART_SELLING_INCREASE
@@ -389,13 +380,13 @@ def run_day(stats):
 
         if portions == 0:
             sold_out_text = red(f'SOLD OUT at {hour}:{minute}')
+            minute = 59
 
             if hour < 12:
                 hour = 11
             else:
                 hour = 16
 
-            minute = 59
         minute += 1
 
         if minute == 60:
@@ -412,6 +403,7 @@ def run_day(stats):
                 open_loc_name, loc_sale_value,
                 sold_out_text, feedback, rep_score
             ]
+
             clear_terminal()
             text = cyan("12 noon time sales report:")
             print(f'{text}')
@@ -474,12 +466,12 @@ def sales_report(stats, data):
     print('-----------------------------------------------------------')
     txt_bought = orange('(Bought)')
     txt_decline = red('(Declined)')
-    for i in range(len(cust_count)):
+    for count, i in enumerate(cust_count):
         first = True
         for j in feedback:
-            if feedback[j][i] > 0:
+            if feedback[j][count] > 0:
                 if first:
-                    text = open_loc_name[i]
+                    text = open_loc_name[count]
                     dash = "-"
                     first = False
                 else:
@@ -493,11 +485,12 @@ def sales_report(stats, data):
                     text2 = f"{txt_bought}   A little expensive."
                 elif j == "cost":
                     text2 = f"{txt_decline} Well overpriced!"
-                text3 = feedback[j][i]
+                text3 = feedback[j][count]
                 print(f'{text:<13}{dash:<3}{text3:<6}{"-":<3}{text2:<13}')
         if not first:
-            print('-----------------------------------------------------------')
-    print(rep_score)
+            print(
+                '-----------------------------------------------------------'
+                )
     if (stats["day"] % 1) == 0:
         print_press_enter_to("Press Enter to continue to MID-DAY\
  PREPARATION...")
@@ -664,12 +657,12 @@ def purchase_location(stats):
 
         check_1 = True if validate_input(user_choice, 5) else None
         if check_1 and int(user_choice) > 0:
-            check_2 = True 
+            check_2 = True
         else:
-             break
+            break
 
         if check_2 and not stats['location'][str(user_choice)]['purchased']:
-            
+
             remaining_cash = stats["cash"] - LOC_COST[int(user_choice)-1]
             check_3 = True
         else:
@@ -678,8 +671,9 @@ def purchase_location(stats):
         # Check if remaining cash will remain >= 0
         if check_3 and remaining_cash >= 0:
             stats['location'][str(user_choice)]['purchased'] = True
-            text = f'Your purchased {LOC_NAME[int(user_choice)-1]} for £{LOC_COST[int(user_choice)-1]}'
-            print(green(text))
+            var_1 = LOC_NAME[int(user_choice)-1]
+            var_2 = LOC_COST[int(user_choice)-1]
+            print(green(f'Your purchased {var_1} for £{var_2}'))
             stats["cash"] = remaining_cash
             text = f'Remaining balance {print_current_balance(stats)}'
             print(cyan(text))
@@ -717,14 +711,11 @@ def purchase_cart_menu(stats):
                 text = 'Not currently owned'
                 str_part_2 = red(text)
             else:
-                text = f'Current level is {cart_level}'
-                str_part_2 = cyan(text)
+                str_part_2 = cyan(f'Current level is {cart_level}')
             if not stats['location'][str(x)]['purchased']:
-                text = 'Purchase location first'
-                str_part_3 = red(text)
+                str_part_3 = red('Purchase location first')
             elif cart_level == 0:
-                text = f'PURCHASE for £ {CART_PRICE[cart_level]}'
-                str_part_3 = green(text)
+                str_part_3 = green(f'PURCHASE for £ {CART_PRICE[cart_level]}')
             elif cart_level == 5:
                 text = 'No further upgrades'
                 str_part_3 = gold(text)
