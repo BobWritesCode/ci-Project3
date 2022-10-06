@@ -734,7 +734,7 @@ def purchase_cart_menu(stats):
     '''
     LOC_NAME = constants.LOCATION_NAMES
     CART_PRICE = constants.CART_COSTS
-    
+
     while True:
         clear_terminal()
         text = cyan("Purchase or upgrade carts at your\
@@ -772,7 +772,6 @@ def purchase_cart_menu(stats):
         
         print_go_back()
 
-        # Get player input
         text = orange("Input choice (0-5):")
         user_choice = input(f'\n{text}')
 
@@ -828,80 +827,101 @@ def purchase_stock_menu(stats):
  the amount of Hotdogs you want to sell.")
         text = orange("Input amount (max 99999): ")
         user_choice = input(f'\n{text}')
-        if validate_input(user_choice, 99999):
-            if int(user_choice) == 0:
-                break
-            else:
-                cost = 0
-                x = len(constants.STOCK_OPTIONS)
-                basket = {  # Create empty basket
-                    "stock": [],
-                    "recipe": [],
-                    "portions": [],
-                    "cost": [],
-                    "total_qty_r": [],  # Total Qty Required
-                    "total_qty_c": []  # Total cost for item
-                }
-                for i in range(x):
-                    y = constants.STOCK_OPTIONS[i]
-                    basket["stock"].append(stats[y])
-                    basket["recipe"].append(stats['recipe'][y])
-                    basket["portions"].append(constants.STOCK_COSTS[y][1])
-                    basket["cost"].append(constants.STOCK_COSTS[y][2])
-                    basket["total_qty_r"].append(
-                        ceil(
-                            (
-                                int(user_choice) -
-                                (basket["stock"][i] / basket["recipe"][i])
-                            ) /
-                            basket["portions"][i] * basket["recipe"][i]
-                            )
-                        )
 
-                    if basket["total_qty_r"][i] < 0:
-                        basket["total_qty_r"][i] = 0
-                    basket["total_qty_c"].append(
-                        basket["total_qty_r"][i] * basket["cost"][i]
+        if not validate_input(user_choice, 99999):
+            continue
+
+        if int(user_choice) == 0:
+            break
+
+        cost = 0
+        basket = {  # Create empty basket
+            "stock": [],
+            "recipe": [],
+            "portions": [],
+            "cost": [],
+            "total_qty_r": [],  # Total Qty Required
+            "total_qty_c": []  # Total cost for item
+        }
+
+        for count, i in enumerate(constants.STOCK_OPTIONS):
+            stock = constants.STOCK_OPTIONS[count]
+            basket["stock"].append(stats[stock])
+            basket["recipe"].append(stats['recipe'][stock])
+            basket["portions"].append(constants.STOCK_COSTS[stock][1])
+            basket["cost"].append(constants.STOCK_COSTS[stock][2])
+            basket["total_qty_r"].append(
+                ceil(
+                    (
+                        int(user_choice) -
+                        (
+                            basket["stock"][count] /
+                            basket["recipe"][count]
                         )
-                    cost += basket["total_qty_c"][i]
-                text = cyan("\nCheckout:")
-                print(f'{text}')
-                print(f'{"Item:":<10}{"Qty":<10}{"Portions":<10}{"SUB TOTAL:":<10}')
-                print('------------------------------------')
-                for i in range(x):
-                    text1 = constants.STOCK_OPTIONS[i]
-                    text2 = basket["total_qty_r"][i]
-                    text3 = basket["portions"][i]*basket["total_qty_r"][i]
-                    text4 = "{:.2f}".format(basket["total_qty_c"][i])
-                    print(f'{text1:<10} {text2:<10} {text3:<10} £{text4:<10}')
-                print('------------------------------------')
-                text = "{:.2f}".format(cost)
-                text = green(f"£{text}")
-                print(f'TOTAL COST: {text}')
-                text = orange("Would you like to make this purchase? (type: yes) ")
-                yes_no = input(f'\n{text}\n')
-                if validate_yes_no(yes_no):
-                    if yes_no.lower() in ['y', 'yes']:
-                        # Check if remaining cash will above 0 after purchase,
-                        # if so continue, else loop
-                        remaining_cash = stats["cash"] - cost
-                        if remaining_cash >= 0:
-                            # Update player stock with purchased items
-                            z = 0
-                            for i in constants.STOCK_OPTIONS:
-                                stats[i] += basket["portions"][z] * basket["total_qty_r"][z]
-                                z += 1
-                            print(green('Purchase Successful'))
-                            # Update player cash
-                            stats["cash"] = remaining_cash
-                            text = f'Remaining balance {print_current_balance(stats)}'
-                            print(cyan(text))
-                            print_press_enter_to("Press Enter to continue...")
-                        else:
-                            print_error_message("Not enough funds")
-                    else:
-                        print(red('Purchase Aborted'))
-                        print_press_enter_to("Press Enter to continue...")
+                    ) /
+                    basket["portions"][count] *
+                    basket["recipe"][count]
+                    )
+                )
+
+            if basket["total_qty_r"][count] < 0:
+                basket["total_qty_r"][count] = 0
+
+            basket["total_qty_c"].append(
+                basket["total_qty_r"][count] *
+                basket["cost"][count]
+                )
+
+            cost += basket["total_qty_c"][count]
+
+        text = cyan("\nCheckout:")
+        print(f'{text}')
+        print(f'{"Item:":<10}{"Qty":<10}{"Portions":<10}{"SUB TOTAL:":<10}')
+        print('------------------------------------')
+
+        for count, i in enumerate(constants.STOCK_OPTIONS):
+            text1 = constants.STOCK_OPTIONS[count]
+            text2 = basket["total_qty_r"][count]
+            text3 = basket["portions"][count] * basket["total_qty_r"][count]
+            text4 = "{:.2f}".format(basket["total_qty_c"][count])
+            print(f'{text1:<10} {text2:<10} {text3:<10} £{text4:<10}')
+
+        print('------------------------------------')
+        text = "{:.2f}".format(cost)
+        text = green(f"£{text}")
+        print(f'TOTAL COST: {text}')
+        text = orange("Would you like to make this purchase? (type: yes) ")
+        yes_no = input(f'\n{text}\n')
+
+        if not validate_yes_no(yes_no):
+            continue
+
+        if yes_no.lower() in ['y', 'yes']:
+            # Check if remaining cash will above 0 after purchase,
+            # if so continue, else loop
+            remaining_cash = stats["cash"] - cost
+
+            if remaining_cash < 0:
+                print_error_message("Not enough funds")
+                continue
+
+            # Update player stock with purchased items
+            for count, i in enumerate(constants.STOCK_OPTIONS):
+                stats[i] += (
+                    basket["portions"][count] *
+                    basket["total_qty_r"][count]
+                )
+
+            print(green('Purchase Successful'))
+            stats["cash"] = remaining_cash
+            text = f'Remaining balance {print_current_balance(stats)}'
+            print(cyan(text))
+            print_press_enter_to("Press Enter to continue...")
+
+        else:
+            print(red('Purchase Aborted'))
+            print_press_enter_to("Press Enter to continue...")
+
     daily_menu(stats)
 
 

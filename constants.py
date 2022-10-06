@@ -36,7 +36,6 @@ OPTIMAL_SELLING_PRICE = {
   LOCATION_NAMES[4]: 7.0
 }
 
-
 OPTIMAL_RECIPE = {
   # Location : Bun, Sausage, Onion, Sauce
   LOCATION_NAMES[0]: [1, 1, 1, 1],
@@ -47,10 +46,16 @@ OPTIMAL_RECIPE = {
 }
 
 PRODUCT_VALUE_MAX_INCREASE = 3  # 300% (Product value * 300%)
-
 STAFF_COSTS = [200, 400, 600, 1000, 1600]
 STAFF_FOOTFALL_INCREASE = 10
-STOCK_OPTIONS = ['bun', 'sausage', 'onion', 'sauce']
+
+STOCK_OPTIONS = [
+  'bun',
+  'sausage',
+  'onion',
+  'sauce'
+]
+
 STARTING_CASH = 1000
 
 STOCK_COSTS = {
