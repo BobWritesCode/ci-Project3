@@ -1,19 +1,3 @@
-'''
-test
-'''
-
-def main_menu_header(red, green, blue, text):
-    colored_text = colored(red, green, blue, text)
-    return f"""
-************************************
-{colored_text}
-************************************
-MAIN MENU
-------------------------------------
-Can you prove that you are able to take a small hotdog stand and turn it into \
-a great hotdog empire?!"""
-
-
 def pink(text):
     '''
     Changes to PINK if printed to termail

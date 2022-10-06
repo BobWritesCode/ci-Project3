@@ -17,8 +17,8 @@ from utils import red
 from utils import yellow
 
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
-GAMETITLE = 'Hotdog Empire Tycoon'  # Name change pending
-print(f'Preparing to start {GAMETITLE}...\n')
+print(f'Preparing to start {constants.GAMETITLE}...\n')
+print(pink('Welcome to Hotdog Tycoon'))
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -66,9 +66,8 @@ def main_menu():
     clear_terminal()
 
     while True:
-        print(pink('Welcome to Hotdog Tycoon'))
         print(constants.MAIN_MENU_OPTIONS)
-        text = orange("Input choice:")
+        text = orange("Input choice: ")
         user_choice = input(f'\n{text}')
         if validate_input(user_choice, 4):
             break
@@ -231,8 +230,7 @@ def daily_menu(stats):
         text = gold(stats['reputation'])
         print(f'Company reputation: {text} / 5')
         print(constants.DAILY_MENU_OPTIONS)
-        # Get player input
-        text = orange("Input choice:")
+        text = orange("Input choice: ")
         user_choice = input(f'\n{text}')
 
         if validate_input(user_choice, 8):
@@ -379,7 +377,9 @@ def run_day(stats):
                     portions -= 1
                     cart_sell_inc = constants.CART_SELLING_INCREASE
                     # Location cart level
-                    cart_lvl = stats["location"][str(open_loc_num[key])]["cart_lvl"]
+                    cart_lvl = (
+                        stats["location"][str(open_loc_num[key])]["cart_lvl"]
+                    )
                     # Selling Price Modifier i.e 1.05
                     sell_price_mod = 1 + ((cart_sell_inc * cart_lvl) / 100)
                     sales_value = (price * sell_price_mod) - product_cost
@@ -669,7 +669,7 @@ def retrieve_save():
         print('------------------------------------')
         print('\nYou will need your game ID to retrieve a previous game.')
         print_go_back()
-        text = orange("Enter Game ID:")
+        text = orange("Enter Game ID: ")
         user_input = input(f'\n{text}')
         # Cycle through rows in Google sheet until GAME ID finds a Match
         text = cyan("SEARCHING...")
@@ -729,10 +729,10 @@ def purchase_location(stats):
 
         print_go_back()
 
-        text = orange("Input choice:")
+        text = orange("Input choice: ")
         user_choice = input(f'\n{text}')
 
-        check_1 = True if validate_input(user_choice, 5) else None
+        check_1 = True if validate_input(user_choice, 5) else False
         if check_1 and int(user_choice) > 0:
             check_2 = True
         else:
@@ -809,7 +809,7 @@ def purchase_cart_menu(stats):
 
         print_go_back()
 
-        text = orange("Input choice (0-5):")
+        text = orange("Input choice (0-5): ")
         user_choice = input(f'\n{text}')
 
         if not validate_input(user_choice, 5):
@@ -930,7 +930,7 @@ def purchase_stock_menu(stats):
         text = green(f"£{text}")
         print(f'TOTAL COST: {text}')
         text = orange("Would you like to make this purchase? (type: yes) ")
-        yes_no = input(f'\n{text}\n')
+        yes_no = input(f'\n{text}')
 
         if not validate_yes_no(yes_no):
             continue
@@ -1013,7 +1013,7 @@ def puchase_staff_menu(stats):
 
         print_go_back()
 
-        text = orange("Input choice (0-5):")
+        text = orange("Input choice (0-5): ")
         user_choice = input(f'\n{text}')
 
         if not validate_input(user_choice, 5):
@@ -1102,7 +1102,7 @@ def change_recipe_menu(stats):
 
         print('\nTo update your recipe type the ingrediant and amount i.e. \
  "3 4".\n')
-        user_choice = input(f'{orange("Enter change i.e. 3 4:")}')
+        user_choice = input(f'{orange("Enter change i.e. 3 4: ")}')
         user_choice = user_choice.split()
 
         if not validate_recipe_change(user_choice):
@@ -1163,7 +1163,7 @@ def end_game(stats):
     sum3 = 0
 
     for key in stats["location"]:
-        sum1 += 1 if stats["location"][str(key)]["purchased"] else None
+        sum1 += 1 if stats["location"][str(key)]["purchased"] else 0
         sum2 += stats["location"][str(key)]["cart_lvl"]
         sum3 += stats["location"][str(key)]["staff_lvl"]
 

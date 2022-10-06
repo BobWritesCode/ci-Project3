@@ -1,11 +1,13 @@
 from utils import pink
 from utils import yellow
 from utils import cyan
+from utils import gold
 
 # CONSTANTS START HERE
 
 CART_COSTS = [200, 400, 600, 1000, 1600]
 CART_SELLING_INCREASE = 5
+GAMETITLE = 'Hotdog Empire Tycoon'
 LAST_DAY = 20
 LOCATION_FOOTFALL = [20, 40, 80, 160, 320]
 LOCATION_NAMES = [
@@ -61,7 +63,7 @@ STOCK_OPTIONS = [
 
 BACKGROUND_STORY = f"""
 ------------------------------------
-Background
+{cyan('Background')}
 ------------------------------------
 
 You have hit some really hard times lately and nearly lost everything. \
@@ -82,6 +84,15 @@ Credits:
 
 
 MAIN_MENU_OPTIONS = f"""
+************************************
+{gold('HOTDOG EMPIRE TYCOON')}
+************************************
+
+{cyan('MAIN MENU')}
+------------------------------------
+Can you prove that you are able to take a small hotdog stand and turn it into \
+a great hotdog empire?!
+
 {cyan('Choose from the following options:')}
 ------------------------------------
 1. New Game
@@ -100,6 +111,8 @@ DAILY_MENU_OPTIONS = f"""
 6. Set selling prices
 
 {pink("7. Start trading")}
+
+{gold("8. Help")}
 
 {yellow('0. Save and quit')}"""
 
