@@ -42,6 +42,7 @@ def run_day(stats):
         "cost": []  # "I won't pay that here"
     }
     rep_score = 0  # Daily Repscore
+    potential_cust = 0  # Total count for all potential customers
     sold_out_text = 0
     rep_modifier = 1 + (stats["reputation"] / 4)
     prod_markup = constants.PRODUCT_VALUE_MAX_INCREASE
@@ -85,6 +86,7 @@ def run_day(stats):
         for key in range(total_locations):
 
             while cust_chance[key] * 100 >= randrange(0, 101):
+                potential_cust += 1
                 will_buy = False
                 goto_1 = False
                 goto_2 = False
@@ -166,7 +168,8 @@ def run_day(stats):
             data = [
                 cust_count, sold,
                 open_loc_name, loc_sale_value,
-                sold_out_text, feedback, rep_score
+                sold_out_text, feedback, rep_score,
+                potential_cust
             ]
             clear_terminal()
             text = cyan("12 noon time sales report:")
@@ -181,7 +184,8 @@ def run_day(stats):
             data = [
                 cust_count, sold,
                 open_loc_name, loc_sale_value,
-                sold_out_text, feedback, rep_score
+                sold_out_text, feedback, rep_score,
+                potential_cust
             ]
             clear_terminal()
             text = cyan("End of day sales report:")
@@ -199,28 +203,29 @@ def sales_report(stats, data):
     '''
     Print sales report to terminal
     '''
-    cust_count = data[0]
-    sold = data[1]
-    open_loc_name = data[2]
-    loc_sale_value = data[3]
-    sold_out_text = data[4]
-    feedback = data[5]
-    rep_score = data[6]
-    if sold_out_text:
-        print(sold_out_text)
+    # cust_count = data[0]
+    # sold = data[1]
+    # open_loc_name = data[2]
+    # loc_sale_value = data[3]
+    # sold_out_text = data[4]
+    # feedback = data[5]
+    # rep_score = data[6]
+    # potential_cust = data[7]
+    if data[4]:
+        print(data[4])
     total_sale_value = 0
-    for i in loc_sale_value:
+    for i in data[3]:
         total_sale_value += i
     print('------------------------------------')
     print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
     print('------------------------------------')
-    for count, i in enumerate(cust_count):
-        text = open_loc_name[count]
+    for count, i in enumerate(data[0]):
+        text = data[2][count]
         text2 = i
-        text3 = floor(loc_sale_value[count]*100)/100
+        text3 = floor(data[3][count]*100)/100
         print(f'{text:<13}{"-":<3}{text2:<8}{"-":<3}{text3:<8}')
     print('------------------------------------')
-    text = green(f'{sold}')
+    text = green(f'{data[1]}')
     print(f'Total daily units sold: {text}')
     text = green(f'£{floor(total_sale_value*100)/100}')
     print(f'Total daily sales value: {text} (var +/- £0.01)')
@@ -233,12 +238,12 @@ def sales_report(stats, data):
     txt_bought = orange('(Bought)')
     txt_decline = red('(Declined)')
 
-    for count, i in enumerate(cust_count):
+    for count, i in enumerate(data[0]):
         first = True
-        for j in feedback:
-            if feedback[j][count] > 0:
+        for j in data[5]:
+            if data[5][j][count] > 0:
                 if first:
-                    text = open_loc_name[count]
+                    text = data[2][count]
                     dash = "-"
                     first = False
                 else:
@@ -252,7 +257,7 @@ def sales_report(stats, data):
                     text2 = f"{txt_bought}   A little expensive."
                 elif j == "cost":
                     text2 = f"{txt_decline} Well overpriced!"
-                text3 = feedback[j][count]
+                text3 = data[5][j][count]
                 print(f'{text:<13}{dash:<3}{text3:<6}{"-":<3}{text2:<13}')
         if not first:
             print(
@@ -260,7 +265,7 @@ def sales_report(stats, data):
                 )
 
     print_press_enter_to("Press Enter to see if any reputation update...\n")
-    rep_change(stats, rep_score, sold)
+    rep_change(stats, data[6], data[7])
 
     if (stats["day"] % 1) == 0:
         print_press_enter_to("Press Enter to continue to MID-DAY\
@@ -283,12 +288,13 @@ def deduct_stock(stats, sold):
     return stats
 
 
-def rep_change(stats, rep_score, sold):
+def rep_change(stats, rep_score, oppotunities):
     '''
     Calculates if reputations needs to be changed after daily sales
     performance. Then updates player stats.
     '''
-    rep_percent = rep_score / sold
+    rep_percent = (rep_score / oppotunities) if oppotunities != 0 else 0
+
     c_rep = stats["reputation"]
 
     print(f'{cyan("Reputation update:")}')
