@@ -6,8 +6,13 @@ from math import floor
 import constants
 from utils import (
   cyan, red, clear_terminal, print_press_enter_to, orange, green, gold,
+  pink
   )
 from shared import (cost_to_make, get_portions_avaliable)
+from save_load import (save_loop, save_data)
+
+# gspread constants
+SHEET = constants.SHEET
 
 
 def run_day(stats):
@@ -315,3 +320,75 @@ def rep_change(stats, rep_score, sold):
     print('------------------------------------')
 
     return stats
+
+
+def end_game(stats):
+    '''
+    After last day has been completed, this function will save the player and
+    upload their score to the leaderboard if they are in the top X of players.
+    '''
+    clear_terminal()
+    stats["game_over"] = True
+    print(f'{gold("CONGRATULATIONS!")}')
+    print('\nYou completed the final day. Let\'s see how you did!')
+    print('But first lets save your game!')
+
+    save_data(stats, False)
+    clear_terminal()
+
+    cash = stats["cash"]
+    rep = stats["reputation"]
+    sum1 = 0
+    sum2 = 0
+    sum3 = 0
+
+    for key in stats["location"]:
+        sum1 += 1 if stats["location"][str(key)]["purchased"] else 0
+        sum2 += stats["location"][str(key)]["cart_lvl"]
+        sum3 += stats["location"][str(key)]["staff_lvl"]
+
+    print(f'{gold("Your final score!")}\n')
+    text = green("£" + str(floor(cash * 100) / 100))
+    print(f'You managed to earn a whooping {text}')
+    text = gold(str(sum1)) + pink(" / 5")
+    print(f'\n{text} Locations purchased!')
+    text = gold(str(sum2)) + pink(" / 25")
+    print(f'{text} Carts purchased and upgraded!')
+    text = gold(str(sum3)) + pink(" / 25")
+    print(f'{text } Hired and uptrained staff!')
+    text = gold(str(rep)) + pink(" / 5")
+    print(f'{text} Reputation!')
+    percent = (sum1 + sum2 + sum3 + rep) / 60
+    text = gold(str(floor(percent * 100)) + "%")
+    print(f'{text} Completion rating!')
+    print('\nI hope you are happy with what you have achieved becuase I am.')
+    print('Let\'s see if you managed to secure a place on our leaderboard.')
+
+    top_10 = check_top_10()
+    for count, key in enumerate(top_10[1:10], 2):
+        if cash > float(key[1]):
+            print(f'You placed {count - 1}')
+            row = count
+            data_to_save = [
+                stats["name"],
+                stats["cash"]
+            ]
+            worksheet = SHEET.worksheet("leaderboard")
+            save_loop(row, data_to_save, len(data_to_save), worksheet)
+            break
+    else:
+        print('Sadly you didn\'t make the top 10 this time. Maybe next time?')
+
+    print(f'\n{gold("THANK YOU FOR PLAYING!")}')
+    print_press_enter_to('Press Enter to quit.')
+    stats = {}
+    # main()
+
+
+def check_top_10():
+    '''
+    Checks top 10 of leaderboard to see if user qualifies
+    '''
+    highscore = SHEET.worksheet('leaderboard')
+    data = highscore.get_all_values()
+    return data
