@@ -1,7 +1,7 @@
 '''
 Daily game menu
 '''
-from math import ceil
+from math import (ceil, floor)
 from game import (run_day, end_game)
 from utils import (
   cyan, clear_terminal, gold, pink, green, print_go_back,
@@ -10,7 +10,7 @@ from utils import (
   validate_input, validate_yes_no, yellow
   )
 from save_load import (save_data)
-from shared import (cost_to_make)
+from shared import (cost_to_make, get_portions_avaliable)
 import constants
 
 
@@ -27,9 +27,40 @@ def daily_menu(stats):
 
     while True:
         print(menu_string(stats, text_time_of_day))
-        user_choice = input(orange(f'\n{"Input choice (0-8) :"}'))
-        if validate_input(user_choice, 8):
-            break
+        user_choice = input(orange(f'\n{"Input choice (0-8) : "}'))
+
+        if not validate_input(user_choice, 8):
+            continue
+
+        if (
+            not stats["location"]["1"]["purchased"] and
+            user_choice == '7'
+        ):
+            print_error_message("No locations purchased yet.")
+            continue
+
+        if (
+            stats["location"]["1"]["cart_lvl"] == 0 and
+            user_choice == '7'
+        ):
+            print_error_message("No carts purchased yet.")
+            continue
+
+        if (
+            stats["location"]["1"]["staff_lvl"] == 0 and
+            user_choice == '7'
+        ):
+            print_error_message("No staff purchased yet.")
+            continue
+
+        if (
+            get_portions_avaliable(stats) == 0 and
+            user_choice == '7'
+        ):
+            print_error_message("You have no stock to sell.")
+            continue
+
+        break
 
     if user_choice == '1':
         purchase_location(stats)
@@ -58,24 +89,52 @@ def menu_string(stats, text_time_of_day):
     '''
     Doc string for daily game menu
     '''
+    selling_price = "Base price: £{:.2f}".format(stats["selling_price"])
+    recipe = "Cost: £{:.2f}".format(cost_to_make(stats))
+    cash = "£{:.2f}".format(stats["cash"])
+    stock = f"Stock: {get_portions_avaliable(stats)}"
+
+    action_cart = ""
+    action_staff = ""
+    action_loc = ""
+
+    for key in stats["location"]:
+        if (
+            stats["location"][key]["purchased"] and
+            stats["location"][key]["cart_lvl"] == 0
+        ):
+            action_cart = "ACTION REQUIRED"
+            break
+
+    for key in stats["location"]:
+        if (
+            stats["location"][key]["purchased"] and
+            stats["location"][key]["staff_lvl"] == 0
+        ):
+            action_staff = "ACTION REQUIRED"
+            break
+
+    if not stats["location"]["1"]["purchased"]:
+        action_loc = "ACTION REQUIRED"
+
     return f"""
 {gold(stats["name"])}
 ------------------------------------
-Current balance {stats["cash"]}
-Day: {stats["day"]} out of {constants.LAST_DAY}
+Current balance {green(cash)}
+Day: {pink(floor(stats["day"]))} / {constants.LAST_DAY}
 Time of Day: {text_time_of_day}
-Company reputation:
+Company reputation: {gold(stats['reputation'])} / 5
 
 {cyan('Choose from the following options:')}
 ------------------------------------
-1. Purchase location
-2. Purchase / upgrade cart(s)
-3. Hire / upgrade staff
-4. Purchase stock
-5. Change Recipe
-6. Set selling prices
+{'1. Purchase location':<33}{red(action_loc):<10}
+{'2. Purchase / upgrade cart(s)':<33}{red(action_cart):<10}
+{'3. Hire / upgrade staff':<33}{red(action_staff):<10}
+{'4. Purchase stock':<33}{green(stock):<10}
+{'5. Change Recipe':<33}{f'{green(recipe)}':<10}
+{'6. Set selling prices':<33}{f'{green(selling_price)}':<10}
 
-{pink("7. Start trading")}
+{pink("7. Start trading")} - {text_time_of_day}
 {gold("8. Help")}
 {yellow('0. Save and quit')}"""
 
