@@ -230,7 +230,7 @@ def daily_menu(stats):
         text = gold(stats['reputation'])
         print(f'Company reputation: {text} / 5')
         print(constants.DAILY_MENU_OPTIONS)
-        text = orange("Input choice: ")
+        text = orange("Input choice (0-8): ")
         user_choice = input(f'\n{text}')
 
         if validate_input(user_choice, 8):
@@ -250,6 +250,8 @@ def daily_menu(stats):
         set_selling_price(stats)
     elif user_choice == '7':
         run_day(stats)
+    elif user_choice == '8':
+        help_menu(stats)
     elif user_choice == '0':
         save_data(stats, False)
         main()
@@ -260,6 +262,22 @@ def print_current_balance(stats):
     Print cash statment
     '''
     return f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}'
+
+
+def help_menu(stats):
+    '''
+    Displays help screen to the user
+    '''
+    clear_terminal()
+    print(constants.HELP_SCREEN1)
+    print_press_enter_to("Press Enter to continue...")
+    print(constants.HELP_SCREEN2)
+    print_press_enter_to("Press Enter to continue...")
+    print(constants.HELP_SCREEN3)
+    print_press_enter_to("Press Enter to continue...")
+    print(constants.HELP_SCREEN4)
+    print_press_enter_to("Press Enter to return to menu...")
+    daily_menu(stats)
 
 
 def run_day(stats):

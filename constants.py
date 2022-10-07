@@ -111,9 +111,7 @@ DAILY_MENU_OPTIONS = f"""
 6. Set selling prices
 
 {pink("7. Start trading")}
-
 {gold("8. Help")}
-
 {yellow('0. Save and quit')}"""
 
 PURCHASE_STOCK_OPTIONS = f"""
@@ -127,3 +125,50 @@ Onion (Makes {STOCK_COSTS['onion'][1]} portions) \
   £{STOCK_COSTS['onion'][2]}.00
 Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) \
   £{STOCK_COSTS['sauce'][2]}.00"""
+
+
+HELP_SCREEN1 = f"""
+{cyan('Help:')}
+-----------------------------------------------------------------------------
+{gold('Main Objective:')} Your main objective is to collect as much wealth
+before the final day. At the end your wealth will determine your score.
+
+{pink('Day cycle:')} Every day has 2 parts, morning and afternoon. The
+morning starts at 8am and finishes at 12noon, where you can do purchases.
+Then the afternoon is from 12noon to 5pm. The afternoon is slightly longer.
+
+{pink('Sales Report:')} After the morning and afternoon shifts you will get
+a sales report. This will show you how much product you sold at each
+location, the profit you made at each location, as well as feedback."""
+
+HELP_SCREEN2 = f"""
+{pink('Feedback:')} The feedback reports to you when customers are not fully
+satisfied. So new news if good news! Use this feedback to adjust your recipe
+and pricing to make sure you are maximising profit.
+
+{pink('Locations:')} You need to puchase locations to be able to set up new
+hotdog stands. The better the location, the more footfall you will have and
+the more the customer will be willing to spend."""
+
+HELP_SCREEN3 = f"""
+{pink('Carts:')} For each location you need to purchase a cart. As you
+upgrade the carts you will make a better product at that cart. The better the
+product the more the customer will be happy to pay for it.
+
+{pink('Staff:')} For each location you will need to hire a staff member. As
+you uptrain the staff, the more customers you will attract to that cart.
+
+{pink('Stock:')} Your stock is divided between all your carts on a first come
+first serve basis. So you just need to make sure you have enough stock to
+last the day. If you run out of stock that part of the day is over. Some
+good news though, stock will not perish day-to-day but does not count
+towards your wealth at the end of the last day."""
+
+HELP_SCREEN4 = f"""
+{pink('Recipe')} Customer don't want to always pay top dollar and get no
+value. So, you need to pay attention to customer feedback and adjust your
+recipe accordingly. Of course, the more ingredients you use the less profit
+margin there is in it for you. And if you want to be top of the leader board
+then this could matter!
+
+{gold('GOOD LUCK!')}"""
