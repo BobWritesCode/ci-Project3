@@ -580,14 +580,16 @@ def change_recipe_menu(stats):
 
         prod_cost = cost_to_make(stats)
         markup = constants.PRODUCT_VALUE_MAX_INCREASE
+        text = green(f'£{str("{:.2f}".format(prod_cost))}')
+        print(f'\nCost to make each hotdog you sell: {text}')
         prod_cost *= markup
-        text = pink(f'£{str("{:.2f}".format(prod_cost))}')
-        print(f'\nCurrent base product value is: {text}')
-        print_go_back()
-
+        text = gold(f'£{str("{:.2f}".format(prod_cost))}')
+        print(f'Current base product value is: {text}')
+        print(f'\n{pink("TIP:")} Use this to guide your selling price')
         print('\nTo update your recipe type the ingrediant and amount i.e. \
- "3 4".\n')
-        user_choice = input(f'{orange("Enter change i.e. 3 4: ")}')
+ "3 4".')
+        print_go_back()
+        user_choice = input(f'\n{orange("Enter change i.e. 3 4: ")}')
         user_choice = user_choice.split()
 
         if not validate_recipe_change(user_choice):
