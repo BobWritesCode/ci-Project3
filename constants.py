@@ -20,11 +20,12 @@ SHEET = GSPREAD_CLIENT.open('Hotdog_Tycoon_Data')
 
 # CONSTANTS START HERE
 
-CART_COSTS = [200, 400, 600, 1000, 1600]
+CART_COSTS = [50, 100, 200, 400, 800]
 CART_SELLING_INCREASE = 5
 GAMETITLE = 'Hotdog Empire Tycoon'
 LAST_DAY = 20
-LOCATION_FOOTFALL = [20, 40, 80, 160, 320]
+LOCATION_FOOTFALL = [0.04, 0.08, 0.12, 0.20, 0.32]
+
 LOCATION_NAMES = [
   "Cheap Street",
   "Meow Park",
@@ -33,17 +34,17 @@ LOCATION_NAMES = [
   "Fairground"
 ]
 
-LOCATION_COSTS = [200, 400, 600, 1000, 1600]
+LOCATION_COSTS = [50, 150, 300, 600, 1200]
 
 MAX_PRICE_OVER_OPTIMAL = 3  # £3 over optimal before 100% decline
 
 OPTIMAL_SELLING_PRICE = {
   # Location : Optimal selling price before any bonuses
-  LOCATION_NAMES[0]: 2.0,
-  LOCATION_NAMES[1]: 3.0,
+  LOCATION_NAMES[0]: 3.0,
+  LOCATION_NAMES[1]: 3.5,
   LOCATION_NAMES[2]: 4.0,
   LOCATION_NAMES[3]: 5.0,
-  LOCATION_NAMES[4]: 7.0
+  LOCATION_NAMES[4]: 6.0
 }
 
 OPTIMAL_RECIPE = {
@@ -56,10 +57,10 @@ OPTIMAL_RECIPE = {
 }
 
 PRODUCT_VALUE_MAX_INCREASE = 3  # 300% (Product value * 300%)
-STAFF_COSTS = [200, 400, 600, 1000, 1600]
-STAFF_FOOTFALL_INCREASE = 10
+STAFF_COSTS = [50, 200, 400, 600, 800]
+STAFF_FOOTFALL_INCREASE = 5
 
-STARTING_CASH = 1000
+STARTING_CASH = 500
 
 STOCK_COSTS = {
   # id : [name, portions, cost]
@@ -122,7 +123,7 @@ DAILY_MENU_OPTIONS = f"""
 2. Purchase / upgrade cart(s)
 3. Hire / upgrade staff
 4. Purchase stock
-5. Change Recipes
+5. Change Recipe
 6. Set selling prices
 
 {pink("7. Start trading")}
