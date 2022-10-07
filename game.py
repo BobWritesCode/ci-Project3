@@ -301,7 +301,7 @@ def rep_change(stats, rep_score, sold):
         stats["reputation"] += 0.5
         print(
             f"{green('Reputation increase:')}\
-                {gold('-' + str(stats['reputation']))}"
+                {gold('+' + str(stats['reputation']))}"
             )
     elif rep_percent > 0.5 and c_rep == 5:
         print(gold("Reputation already at a 5!"))
