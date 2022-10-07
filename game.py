@@ -291,10 +291,9 @@ def rep_change(stats, rep_score, sold):
 
     print(f'{cyan("Reputation update:")}')
     print('------------------------------------')
-
     if rep_percent > 0.5:
         print('HAPPY CUSTOMERS and GREAT PERFORMANCE!')
-    elif rep_percent < 0.5:
+    elif rep_percent < -0.5:
         print('Bad performance... Check feedback on what to change.')
 
     if rep_percent > 0.5 and c_rep < 5:
@@ -305,13 +304,13 @@ def rep_change(stats, rep_score, sold):
             )
     elif rep_percent > 0.5 and c_rep == 5:
         print(gold("Reputation already at a 5!"))
-    elif rep_percent < 0.5 and c_rep > 0:
+    elif rep_percent < -0.5 and c_rep > 0:
         stats["reputation"] -= 0.5
         print(
             f"{red('Reputation decrease:')}\
             {gold('-' + str(stats['reputation']))}"
             )
-    elif rep_percent < 0.5 and c_rep == 0:
+    elif rep_percent < -0.5 and c_rep == 0:
         print(red("Reputation already at 0."))
     else:
         print("No reputation change")
