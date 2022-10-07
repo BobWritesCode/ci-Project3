@@ -134,38 +134,38 @@ def set_up_character(data, new_player):
     if new_player:
         user_id = data[0]
         name = data[1]
-        data = [
-            user_id,  # 0
-            name,  # 1
-            1.0,  # 2
-            float(constants.STARTING_CASH),  # 3
-            float(0),  # 4
-            int(0),  # 5
-            int(0),  # 6
-            int(0),  # 7
-            int(0),  # 8
-            int(1),  # 9
-            int(1),  # 10
-            int(2),  # 11
-            int(1),  # 12
-            float(3.50),  # 13
-            False,  # 14
-            int(0),  # 15
-            int(0),  # 16
-            False,  # 17
-            int(0),  # 18
-            int(0),  # 19
-            False,  # 20
-            int(0),  # 21
-            int(0),  # 22
-            False,  # 23
-            int(0),  # 24
-            int(0),  # 25
-            False,  # 26
-            int(0),  # 27
-            int(0),  # 28
-            False,  # 29
-            0  # 30
+        data = [ # Player starting values
+            user_id,  # 0 Game ID
+            name,  # 1 Company name
+            1.0,  # 2 Day
+            float(constants.STARTING_CASH),  # 3 Cash
+            float(0),  # 4 Reputation
+            int(0),  # 5 Stock sausages
+            int(0),  # 6 Stock Buns
+            int(0),  # 7 Stock Onions
+            int(0),  # 8 Stock Sauce
+            int(1),  # 9 Recipe Buns
+            int(1),  # 10 Recipe Sausage
+            int(2),  # 11 Recipe Onions
+            int(1),  # 12 Recipe Sauce
+            float(2.00),  # 13 Selling Price
+            False,  # 14 Location 1 Purchased
+            int(0),  # 15 Location 1 Cart lvl
+            int(0),  # 16 Location 1 Staff lvl
+            False,  # 17 Location 2 Purchased
+            int(0),  # 18 Location 2 Cart lvl
+            int(0),  # 19 Location 2 Staff lvl
+            False,  # 20 Location 3 Purchased
+            int(0),  # 21 Location 3 Cart lvl
+            int(0),  # 22 Location 3 Staff lvl
+            False,  # 23 Location 4 Purchased
+            int(0),  # 24 Location 4 Cart lvl
+            int(0),  # 25 Location 4 Staff lvl
+            False,  # 26 Location 5 Purchased
+            int(0),  # 27 Location 5 Cart lvl
+            int(0),  # 28 Location 5 Staff lvl
+            False,  # 29 Game Over
+            0  # 30 Database Row
         ]
     else:
         to_check = [14, 17, 20, 23, 26, 29]
