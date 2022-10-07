@@ -679,36 +679,46 @@ def retrieve_save():
     '''
     worksheet = SHEET.worksheet("user_data")
     col_array = worksheet.col_values(1)
-    found = False
-    while not found:
+
+    while True:
         clear_terminal()
-        text = cyan("Retrieve a previous game")
-        print(f'{text}')
+
+        print(f'{cyan("Retrieve a previous game")}')
         print('------------------------------------')
         print('\nYou will need your game ID to retrieve a previous game.')
         print_go_back()
-        text = orange("Enter Game ID: ")
-        user_input = input(f'\n{text}')
-        # Cycle through rows in Google sheet until GAME ID finds a Match
-        text = cyan("SEARCHING...")
-        print(f'\n{text}')
-        for i, cell_value in enumerate(col_array):
-            if cell_value == user_input:
-                found = True
-                text = cyan("GAME FOUND...")
-                print(f'\n{text}')
-                # Copy data from row where GAME ID matches
-                data = worksheet.row_values(i+1)
-                stats = set_up_character(data, False)
-                stats["game_save_row"] = i+1
-                text = green("GAME LOADED.")
-                print(f'\n{text}')
-                print_press_enter_to("Press Enter to continue...")
-                daily_menu(stats)
+        user_input = input(f'\n{orange("Enter Game ID: ")}')
+
+        if user_input == '0':
+            break
+
+        if len(str(user_input)) != 5:
+            print_error_message("\nNot a valid Game ID.")
+            continue
+
+        print(f'\n{cyan("SEARCHING...")}')
+
+        # Cycle through rows in Google sheet until GAME ID finds a match
+        for count, key in enumerate(col_array):
+            if key != user_input:
+                continue
+
+            # Copy data from row where GAME ID matches
+            data = worksheet.row_values(count + 1)
+            stats = set_up_character(data, False)
+            stats["game_save_row"] = count + 1
+
+            if stats["game_over"]:
+                print_error_message("\nGame already completed")
                 break
-        # If no GAME ID match then show error.
-        if not found:
+
+            daily_menu(stats)
+            break
+        else:
+            # If no GAME ID match then show error.
             print_error_message("No game found")
+
+    main_menu()
 
 
 def purchase_location(stats):
@@ -1167,11 +1177,12 @@ def end_game(stats):
     upload their score to the leaderboard if they are in the top X of players.
     '''
     clear_terminal()
+    stats["game_over"] = True
     print(f'{gold("CONGRATULATIONS!")}')
     print('\nYou completed the final day. Let\'s see how you did!')
     print('But first lets save your game!')
 
-    # save_data(stats, False)
+    save_data(stats, False)
     clear_terminal()
 
     cash = stats["cash"]
