@@ -1458,7 +1458,7 @@ def print_go_back():
     '''
     Print 0. Go Back in yellow
     '''
-    print(f"\n{yellow('n0. Go Back')}")
+    print(f"\n{yellow('0. Go Back')}")
 
 
 def main():
