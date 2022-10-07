@@ -739,15 +739,14 @@ def validate_price_change(data):
     try:
         try:
             float_value = float(data)
-        except:
-            print_error_message("invalid input")
+        except TypeError:
+            print_error_message("Invalid input.")
             return False
         if float_value >= 0:
             return True
-        else:
-            raise ValueError()
-    except ValueError as e:
-        print_error_message("invalid input")
+        raise ValueError()
+    except ValueError:
+        print_error_message("Invalid input.")
         return False
     return True
 
@@ -824,15 +823,14 @@ def validate_input(value, max_value):
     try:
         try:
             int_value = int(value)
-        except:
-            print_error_message("invalid input")
+        except TypeError:
+            print_error_message("Invalid input.")
             return False
         if int_value >= 0 and int_value <= int(max_value):
             return True
-        else:
-            raise ValueError()
-    except ValueError as e:
-        print_error_message("invalid input")
+        raise ValueError()
+    except ValueError:
+        print_error_message("Invalid input.")
         return False
     return True
 
@@ -846,7 +844,7 @@ def validate_yes_no(value):
     if value.lower() in ['y', 'ye', 'yes', 'n', 'no']:
         return True
 
-    print_error_message("invalid input")
+    print_error_message("Invalid input.")
     return False
 
 
