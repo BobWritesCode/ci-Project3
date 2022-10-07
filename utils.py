@@ -1,7 +1,6 @@
 '''
 utils
 '''
-
 import os
 
 
@@ -90,7 +89,8 @@ def yellow(text):
 
 
 # Credit:
-# https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3
+# https://www.codegrepper.com/code-examples
+# /python/how+to+color+text+in+python+3
 def colored(c_red, c_green, c_blue, text):
     '''
     Allows to change text colour

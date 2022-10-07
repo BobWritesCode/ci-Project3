@@ -187,8 +187,7 @@ def purchase_location(stats):
 
     while True:
         clear_terminal()
-        text = cyan("Purchase hotdog pitch locations")
-        print(f'{text}')
+        print(f'{cyan("Purchase hotdog pitch locations")}')
         print('------------------------------------')
         text = green(print_current_balance(stats))
         print(f'Current balance {text}\n')
@@ -200,50 +199,70 @@ def purchase_location(stats):
 
         for count, key in enumerate(loc_name, start=1):
             str_part_1 = f'{count}. {key}'
-            if not stats['location'][str(count)]['purchased']:
+
+            if not purchase_loc_try(stats, count):
+                str_part_2 = red("Not yet avaliable")
+                text = f'PURCHASE for £{loc_cost[count - 1]}'
+                print(
+                    f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<53}'
+                    )
+            elif not stats['location'][str(count)]['purchased']:
                 str_part_2 = green("Avaliable")
                 text = f'PURCHASE for £{loc_cost[count - 1]}'
-                str_part_3 = cyan(text)
                 print(
                     f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<53}' +
-                    ' - ' f'{str_part_3:<30}'
+                    ' - ' f'{cyan(text):<30}'
                     )
             else:
                 str_part_2 = gold("Purchased")
                 print(f'{str_part_1:<16}' + ' - ' + f'{str_part_2:<52}')
 
         print_go_back()
+        user_choice = input(f'\n{orange("Input choice: ")}')
 
-        text = orange("Input choice: ")
-        user_choice = input(f'\n{text}')
+        if not validate_input(user_choice, 5):
+            continue
 
-        check_1 = True if validate_input(user_choice, 5) else False
-        if check_1 and int(user_choice) > 0:
-            check_2 = True
-        else:
+        if int(user_choice) == 0:
             break
 
-        if check_2 and not stats['location'][str(user_choice)]['purchased']:
-
+        if (
+            not stats['location'][str(user_choice)]['purchased'] and
+            purchase_loc_try(stats, int(user_choice))
+        ):
             remaining_cash = stats["cash"] - loc_cost[int(user_choice)-1]
-            check_3 = True
+        elif not purchase_loc_try(stats, int(user_choice)):
+            print_error_message('Can not make this purchase yet.')
+            continue
         else:
-            print_error_message('Already Purchased')
+            print_error_message('Already Purchased.')
+            continue
 
         # Check if remaining cash will remain >= 0
-        if check_3 and remaining_cash >= 0:
+        if remaining_cash >= 0:
             stats['location'][str(user_choice)]['purchased'] = True
             var_1 = loc_name[int(user_choice)-1]
             var_2 = loc_cost[int(user_choice)-1]
             print(green(f'Your purchased {var_1} for £{var_2}'))
             stats["cash"] = remaining_cash
-            text = f'Remaining balance {print_current_balance(stats)}'
-            print(cyan(text))
+            print(cyan(f'Remaining balance {print_current_balance(stats)}'))
             print_press_enter_to("Press Enter to continue...")
         else:
             print_error_message("Not enough funds")
 
     daily_menu(stats)
+
+
+def purchase_loc_try(stats, count):
+    '''
+    Error check for buying location
+    '''
+    try:
+        stats['location'][str(count - 1)]['purchased']
+    except KeyError:
+        return True
+    else:
+        return stats['location'][str(count-1)]['purchased']
 
 
 def purchase_cart_menu(stats):
