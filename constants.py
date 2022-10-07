@@ -3,7 +3,7 @@ Constants
 '''
 import gspread
 from google.oauth2.service_account import Credentials
-from utils import (cyan, pink, yellow, gold)
+from utils import (cyan, pink, gold)
 
 # gspread constants
 
@@ -115,20 +115,6 @@ a great hotdog empire?!
 2. Retrieve a previous game
 3. View leaderboard
 4. Credits"""
-
-DAILY_MENU_OPTIONS = f"""
-{cyan('Choose from the following options:')}
-------------------------------------
-1. Purchase location
-2. Purchase / upgrade cart(s)
-3. Hire / upgrade staff
-4. Purchase stock
-5. Change Recipe
-6. Set selling prices
-
-{pink("7. Start trading")}
-{gold("8. Help")}
-{yellow('0. Save and quit')}"""
 
 PURCHASE_STOCK_OPTIONS = f"""
 {cyan('Pricing for products:')}
