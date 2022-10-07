@@ -134,7 +134,7 @@ def set_up_character(data, new_player):
     if new_player:
         user_id = data[0]
         name = data[1]
-        data = [ # Player starting values
+        data = [  # Player starting values
             user_id,  # 0 Game ID
             name,  # 1 Company name
             1.0,  # 2 Day
@@ -148,7 +148,7 @@ def set_up_character(data, new_player):
             int(1),  # 10 Recipe Sausage
             int(2),  # 11 Recipe Onions
             int(1),  # 12 Recipe Sauce
-            float(2.00),  # 13 Selling Price
+            float(2.50),  # 13 Selling Price
             False,  # 14 Location 1 Purchased
             int(0),  # 15 Location 1 Cart lvl
             int(0),  # 16 Location 1 Staff lvl
