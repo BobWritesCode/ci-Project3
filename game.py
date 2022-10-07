@@ -73,14 +73,13 @@ def run_day(stats):
         staff_lvl = stats["location"][str(open_loc_num[key])]["staff_lvl"]
         staff_mod = 1 + ((staff_foot_inc * staff_lvl) / 100)
         cust_chance.append(
-            (540 / (footfall[key] * rep_modifier * staff_mod)) * 100
+          (footfall[key] * rep_modifier * staff_mod)
             )
 
     while True:
         for key in range(total_locations):
-            chance = randrange(floor(cust_chance[key]))
 
-            while chance <= 100:
+            while cust_chance[key] * 100 >= randrange(0, 101):
                 will_buy = False
                 goto_1 = False
                 goto_2 = False
@@ -136,8 +135,6 @@ def run_day(stats):
 
                     if portions == 0:
                         break
-
-                chance = randrange(floor(cust_chance[key]))
 
             if portions == 0:
                 break
@@ -221,7 +218,7 @@ def sales_report(stats, data):
     text = green(f'{sold}')
     print(f'Total daily units sold: {text}')
     text = green(f'£{floor(total_sale_value*100)/100}')
-    print(f'Total daily sales value: {text} (var +/- £0.01')
+    print(f'Total daily sales value: {text} (var +/- £0.01)')
     print('\nSales values are net profit (Sold price minus product cost.')
     print_press_enter_to("Press Enter to see feedback..")
     print(f'\n{cyan("Customer feedback / improvements to be made:")}')
