@@ -1,3 +1,45 @@
+'''
+utils
+'''
+
+import os
+
+
+def print_error_message(data):
+    '''
+    Function to provide appropriate error message
+    '''
+    if data:
+        text = red(data)
+    else:
+        text = red('Error.')
+    print(f'{text}')
+    print_press_enter_to("Press Enter to retry...")
+    clear_terminal()
+
+
+def clear_terminal():
+    '''
+    Clears terminal for better user experience
+    '''
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def print_press_enter_to(text):
+    '''
+    Print "Press Enter....
+    '''
+    text = orange(f'\n{text}')
+    input(f'{text}')
+
+
+def print_go_back():
+    '''
+    Print 0. Go Back in yellow
+    '''
+    print(f"\n{yellow('0. Go Back')}")
+
+
 def pink(text):
     '''
     Changes to PINK if printed to termail
@@ -49,10 +91,10 @@ def yellow(text):
 
 # Credit:
 # https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3
-def colored(red, green, blue, text):
+def colored(c_red, c_green, c_blue, text):
     '''
     Allows to change text colour
     '''
     return "\033[38;2;{};{};{}m{}\033[38;2;255;255;255m".format(
-        red, green, blue, text
+        c_red, c_green, c_blue, text
         )
