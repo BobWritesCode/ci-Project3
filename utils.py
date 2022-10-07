@@ -2,6 +2,61 @@
 utils
 '''
 import os
+from math import floor
+
+
+def validate_yes_no(value):
+    '''
+    Checks to make sure user typed expected response.
+    Acceptable ['y','ye','yes','n','no'], return True
+    Else return False.
+    '''
+    if value.lower() in ['y', 'ye', 'yes', 'n', 'no']:
+        return True
+
+    print_error_message("Invalid input.")
+    return False
+
+
+def validate_input(value, max_value):
+    '''
+    Inside the try, converts input string value into integer.
+    Raises ValueError if strings cannot be converted into int,
+    or if outside the expected range.
+    '''
+    try:
+        try:
+            int_value = int(value)
+        except TypeError:
+            print_error_message("Invalid input.")
+            return False
+        if int_value >= 0 and int_value <= int(max_value):
+            return True
+        raise ValueError()
+    except ValueError:
+        print_error_message("Invalid input.")
+        return False
+    return True
+
+
+def print_portions_in_stock(stats):
+    '''
+    Print how many portions from ingridants player currently has
+    '''
+    text = cyan("Your current stock:")
+    print(f'{text}')
+    print('------------------------------------')
+    print(f'{stats["bun"]} x Hotdog bun(s)')
+    print(f'{stats["sausage"]} x Hotdog sausage(s)')
+    print(f'{stats["onion"]} x Onion(s)')
+    print(f'{stats["sauce"]} x Special sauce(s)')
+
+
+def print_current_balance(stats):
+    '''
+    Print cash statment
+    '''
+    return f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}'
 
 
 def print_error_message(data):
