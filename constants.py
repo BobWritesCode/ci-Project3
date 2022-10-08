@@ -91,10 +91,18 @@ You make your way down to the local hotdog supplies market and have a look
 around. Most of what you see is outside your budget but see there are a few
 things around to get you started...."""
 
-CREDITS = f"""Credits:
+CREDITS = f"""{cyan('Credits:')}
 ------------------------------------
-{"Code by:":<20}{"Warwick Hart":<40}
-{"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}"""
+{"Code by:":<20}{gold("Warwick Hart"):<40}
+{"Inspired by:":<20}{gold("Lemonade Stand by Bob Jamison"):<40}
+
+{"Testers:":<20}{gold('ArcAnum')}
+
+Connect to me on LinkedIn:
+{gold('https://www.linkedin.com/in/warwickhart/')}
+
+See other projects at:
+{gold('https://github.com/BobWritesCode')}"""
 
 
 MAIN_MENU_OPTIONS = f"""************************************
