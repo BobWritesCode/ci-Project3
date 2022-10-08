@@ -416,8 +416,8 @@ def purchase_stock_menu(stats):
         print_portions_in_stock(stats)
         print(constants.PURCHASE_STOCK_OPTIONS)
         print_go_back()
-        print("\nThis will order the minimum amount of ingredants to fullfill\
- the amount of Hotdogs you want to sell.")
+        print(f"\n{pink('TIP: ')}This will order the minimum amount of\
+ ingredants to fullfill the amount of Hotdogs you want to have in stock.")
         text = orange("Input amount (max 99999): ")
         user_choice = input(f'\n{text}')
 
