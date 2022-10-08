@@ -115,7 +115,7 @@ def create_user_name():
             continue
 
         print(f'\n{gold(user_name)} has been born!\n')
-        yes_no = input(orange('(Are you happy with this name? (yes / no) '))
+        yes_no = input(orange('Are you happy with this name? (yes / no) '))
 
         if not validate_yes_no(yes_no):
             continue
