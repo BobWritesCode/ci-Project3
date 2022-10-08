@@ -236,7 +236,7 @@ def sales_report(stats, data):
     print_press_enter_to("Press Enter to see feedback..")
     print(f'\n{cyan("Customer feedback / improvements to be made:")}')
     print('-----------------------------------------------------------')
-    print(f'{"Location":<13}{"-":<3}{"Amount":<6}{"-":<3}{"Comment":<13}')
+    print(f'{"Location":<13}{"-":<3}{"Amount":<7}{"-":<3}{"Comment":<13}')
     print('-----------------------------------------------------------')
 
     txt_decline = red('(Declined)')
@@ -259,7 +259,7 @@ def sales_report(stats, data):
 
                 text3 = data[5][key][count[0]]
 
-                print(f'{text:<13}{dash:<3}{text3:<6}{"-":<3}{text2:<13}')
+                print(f'{text:<13}{dash:<3}{text3:<7}{"-":<3}{text2:<13}')
 
         if count[0] != 0:
             print(
@@ -375,8 +375,8 @@ def end_game(stats):
     top_10 = check_top_10()
     for count, key in enumerate(top_10[1:10], 2):
         if cash > float(key[1]):
-            print(green('CONGRATULATIONS!!!'))
-            print(f'You placed number {gold(count - 1)} on our leaderboard!')
+            print(f"\n{green('CONGRATULATIONS!!!')}")
+            print(f'You placed number {gold(count - 1)} on our leaderboard!\n')
             row = count
             data_to_save = [
                 stats["name"],
@@ -391,7 +391,7 @@ def end_game(stats):
     stats = {}
 
     while True:
-        print(f'\n{gold("THANK YOU FOR PLAYING!")}\n')
+        print(f'\n\n{gold("THANK YOU FOR PLAYING!")}\n')
         result = input(orange('Type "end" to go back to main menu.'))
         if result == str('end'):
             break
