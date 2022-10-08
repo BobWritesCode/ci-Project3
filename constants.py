@@ -116,13 +116,13 @@ a great hotdog empire?!
 PURCHASE_STOCK_OPTIONS = f"""
 {cyan('Pricing for products:')}
 ------------------------------------
-Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) \
+{'Pack of Hotdog buns':<22} (pack of {STOCK_COSTS['bun'][1]}) \
   £{STOCK_COSTS['bun'][2]}.00
-Pack of Hotdogs (pack of {STOCK_COSTS['sausage'][1]}) \
+{'Pack of Hotdogs':<22} (pack of {STOCK_COSTS['sausage'][1]}) \
   £{STOCK_COSTS['sausage'][2]}.00
-Onion (Makes {STOCK_COSTS['onion'][1]} portions) \
+{'Onion':<22} ({STOCK_COSTS['onion'][1]} portions) \
   £{STOCK_COSTS['onion'][2]}.00
-Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) \
+{'Jar of Special Sauce':<22} ({STOCK_COSTS['sauce'][1]} portions) \
   £{STOCK_COSTS['sauce'][2]}.00"""
 
 
