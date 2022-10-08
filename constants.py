@@ -77,8 +77,7 @@ STOCK_OPTIONS = [
   'sauce'
 ]
 
-BACKGROUND_STORY = f"""
-------------------------------------
+BACKGROUND_STORY = f"""------------------------------------
 {cyan('Background')}
 ------------------------------------
 
@@ -92,15 +91,13 @@ You make your way down to the local hotdog supplies market and have a \
 look around. Most of what you see is outside your budget but see there \
 are a few things around to get you started...."""
 
-CREDITS = f"""
-Credits:
+CREDITS = f"""Credits:
 ------------------------------------
 {"Code by:":<20}{"Warwick Hart":<40}
 {"Inspired by:":<20}{"Lemonade Stand by Bob Jamison":<40}"""
 
 
-MAIN_MENU_OPTIONS = f"""
-************************************
+MAIN_MENU_OPTIONS = f"""************************************
 {gold('HOTDOG EMPIRE TYCOON')}
 ************************************
 
@@ -116,8 +113,7 @@ a great hotdog empire?!
 3. View leaderboard
 4. Credits"""
 
-PURCHASE_STOCK_OPTIONS = f"""
-{cyan('Pricing for products:')}
+PURCHASE_STOCK_OPTIONS = f"""{cyan('Pricing for products:')}
 ------------------------------------
 Pack of Hotdog buns (pack of {STOCK_COSTS['bun'][1]}) \
   £{STOCK_COSTS['bun'][2]}.00
@@ -129,8 +125,7 @@ Jar of Special Sauce ({STOCK_COSTS['sauce'][1]} portions) \
   £{STOCK_COSTS['sauce'][2]}.00"""
 
 
-HELP_SCREEN1 = f"""
-{cyan('Help:')}
+HELP_SCREEN1 = f"""{cyan('Help:')}
 -----------------------------------------------------------------------------
 {gold('Main Objective:')} Your main objective is to collect as much wealth
 before the final day. At the end your wealth will determine your score.
