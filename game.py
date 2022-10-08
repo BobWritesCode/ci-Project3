@@ -4,10 +4,8 @@ Runs the main part of the game
 from random import randrange
 from math import floor
 import constants
-from utils import (
-  cyan, red, clear_terminal, print_press_enter_to, green, gold,
-  pink
-  )
+from utils import (cyan, red, clear_terminal, print_press_enter_to, green,
+                   gold, pink, orange)
 from shared import (cost_to_make, get_portions_avaliable)
 from save_load import (save_loop, save_data)
 
@@ -226,10 +224,9 @@ def sales_report(stats, data):
     print('------------------------------------')
 
     for count, key in enumerate(data[0]):
-        text = data[2][count]
-        text2 = key
-        text3 = floor(data[3][count]*100)/100
-        print(f'{text:<13}{"-":<3}{text2:<8}{"-":<3}{text3:<8}')
+        print(f'{data[2][count]:<13}{"-":<3}'
+              + f'{key:<8}{"-":<3}'
+              + f'{floor(data[3][count]*100)/100:<8}')
 
     print('------------------------------------')
     print(f'Total daily units sold: {green(data[1])}')
@@ -244,24 +241,27 @@ def sales_report(stats, data):
 
     txt_decline = red('(Declined)')
 
-    for count, i in enumerate(data[0]):
-        first = True
-        for j in data[5]:
-            if data[5][j][count] > 0:
-                if first:
-                    text = data[2][count]
+    for count in enumerate(data[0]):
+        for key in data[5]:
+            if data[5][key][count[0]] > 0:
+
+                if count[0] == 0:
+                    text = data[2][count[0]]
                     dash = "-"
-                    first = False
                 else:
                     text = ""
                     dash = ""
-                if j == "value":
+
+                if key == "value":
                     text2 = f"{txt_decline} Add more ingredients."
-                elif j == "cost":
+                elif key == "cost":
                     text2 = f"{txt_decline} Overpriced!"
-                text3 = data[5][j][count]
+
+                text3 = data[5][key][count[0]]
+
                 print(f'{text:<13}{dash:<3}{text3:<6}{"-":<3}{text2:<13}')
-        if not first:
+
+        if count[0] != 0:
             print(
                 '-----------------------------------------------------------'
                 )
@@ -270,11 +270,11 @@ def sales_report(stats, data):
     rep_change(stats, data[6], data[7])
 
     if (stats["day"] % 1) == 0:
-        print_press_enter_to("Press Enter to continue to MID-DAY\
- PREPARATION...")
-    else:
-        print_press_enter_to("Press Enter to continue to NEXT DAY...")
+        print_press_enter_to("Press Enter to continue to MID-DAY "
+                             + "PREPARATION...")
+        return stats
 
+    print_press_enter_to("Press Enter to continue to NEXT DAY...")
     return stats
 
 
@@ -375,7 +375,8 @@ def end_game(stats):
     top_10 = check_top_10()
     for count, key in enumerate(top_10[1:10], 2):
         if cash > float(key[1]):
-            print(f'You placed {count - 1}')
+            print(green('CONGRATULATIONS!!!'))
+            print(f'You placed number {gold(count - 1)} on our leaderboard!')
             row = count
             data_to_save = [
                 stats["name"],
@@ -387,9 +388,13 @@ def end_game(stats):
     else:
         print('Sadly you didn\'t make the top 10 this time. Maybe next time?')
 
-    print(f'\n{gold("THANK YOU FOR PLAYING!")}')
-    print_press_enter_to('Press Enter to quit.')
     stats = {}
+
+    while True:
+        print(f'\n{gold("THANK YOU FOR PLAYING!")}\n')
+        result = input(orange('Type "end" to go back to main menu.'))
+        if result == str('end'):
+            break
 
 
 def check_top_10():
