@@ -17,36 +17,6 @@ def daily_menu(stats):
     Daily player menu to purchase upgrades and make changes to recipes
     '''
 
-    def choice(result, stats):
-        '''
-        Takes user to the correct place based on their input from the menu.
-        '''
-        if user_choice == '1':
-            purchase_location(stats)
-        elif user_choice == '2':
-            purchase_cart_menu(stats)
-        elif user_choice == '3':
-            puchase_staff_menu(stats)
-        elif user_choice == '4':
-            purchase_stock_menu(stats)
-        elif user_choice == '5':
-            change_recipe_menu(stats)
-        elif user_choice == '6':
-            set_selling_price(stats)
-        elif user_choice == '7':
-            result, stats = run_day(stats)
-            if result:
-                end_game(stats)
-            else:
-                daily_menu(stats)
-        elif user_choice == '8':
-            help_menu(stats)
-        elif user_choice == '0':
-            print(f'\n{pink("IMPORTANT: ")} Make sure you write down your '
-                  + 'Game ID as you will need it to return to this game.')
-            print(f'\nGame ID: {gold(stats["user_id"])}')
-            save_data(stats, False)
-
     while True:
         clear_terminal()
 
@@ -84,7 +54,31 @@ def daily_menu(stats):
 
         break
 
-    choice(user_choice, stats)
+    if user_choice == '1':
+        purchase_location(stats)
+    elif user_choice == '2':
+        purchase_cart_menu(stats)
+    elif user_choice == '3':
+        puchase_staff_menu(stats)
+    elif user_choice == '4':
+        purchase_stock_menu(stats)
+    elif user_choice == '5':
+        change_recipe_menu(stats)
+    elif user_choice == '6':
+        set_selling_price(stats)
+    elif user_choice == '7':
+        result, stats = run_day(stats)
+        if result:
+            end_game(stats)
+        else:
+            daily_menu(stats)
+    elif user_choice == '8':
+        help_menu(stats)
+    elif user_choice == '0':
+        print(f'\n{pink("IMPORTANT: ")} Make sure you write down your '
+              + 'Game ID as you will need it to return to this game.')
+        print(f'\nGame ID: {gold(stats["user_id"])}')
+        save_data(stats, False)
 
 
 def menu_string(stats, text_time_of_day):
@@ -224,44 +218,6 @@ def purchase_cart_menu(stats):
     Purchase cart menu for player
     '''
 
-    def choice(result):
-        '''
-        Action based on user input
-        True = continue
-        False = break
-        '''
-        if not validate_input(result, 5):
-            return True
-
-        if int(result) == 0:
-            return False
-
-        # Make sure location has been purchased first
-        if not stats['location'][str(result)]['purchased']:
-            print_error_message("Purchase Land")
-            return True
-
-        # Check if remaining cash will above 0 after purchase, if so
-        # continue, else loop
-        cart_level = stats['location'][str(result)]['cart_lvl']
-        if cart_level == 5:
-            print_error_message("Already at max level.")
-            return True
-
-        remaining_cash = stats["cash"] - cart_price[cart_level]
-        if remaining_cash >= 0:
-            new_cart_lvl = cart_level + 1
-            stats['location'][str(result)]['cart_lvl'] = new_cart_lvl
-            stats["cash"] = remaining_cash
-            loc = int(result) - 1
-            print(green(f'Cart level {new_cart_lvl} purchased for ')
-                  + green(f'{loc_name[loc]} for £{cart_price[cart_level]}.'))
-            print(cyan(f'Remaining balance {print_current_balance(stats)}'))
-            print_press_enter_to("Press Enter to continue...")
-            return True
-        print_error_message("Not enough funds")
-        return True
-
     loc_name = constants.LOCATION_NAMES
     cart_price = constants.CART_COSTS
 
@@ -304,12 +260,40 @@ def purchase_cart_menu(stats):
 
         print_go_back()
 
-        user_choice = input(f'\n{orange("Input choice (0-5): ")}')
+        result = input(f'\n{orange("Input choice (0-5): ")}')
 
-        result = choice(user_choice)
-        if result:
+        if not validate_input(result, 5):
             continue
-        break
+
+        if int(result) == 0:
+            break
+
+        # Make sure location has been purchased first
+        if not stats['location'][str(result)]['purchased']:
+            print_error_message("Purchase Land")
+            continue
+
+        # Check if remaining cash will above 0 after purchase, if so
+        # continue, else loop
+        cart_level = stats['location'][str(result)]['cart_lvl']
+        if cart_level == 5:
+            print_error_message("Already at max level.")
+            continue
+
+        remaining_cash = stats["cash"] - cart_price[cart_level]
+        if remaining_cash >= 0:
+            new_cart_lvl = cart_level + 1
+            stats['location'][str(result)]['cart_lvl'] = new_cart_lvl
+            stats["cash"] = remaining_cash
+            loc = int(result) - 1
+            print(green(f'Cart level {new_cart_lvl} purchased for ')
+                  + green(f'{loc_name[loc]} for £{cart_price[cart_level]}.'))
+            print(cyan(f'Remaining balance {print_current_balance(stats)}'))
+            print_press_enter_to("Press Enter to continue...")
+            continue
+
+        print_error_message("Not enough funds")
+        continue
 
     daily_menu(stats)
 
@@ -318,46 +302,6 @@ def puchase_staff_menu(stats):
     '''
     Hire and train staff menu
     '''
-
-    def choice(result):
-        '''
-        Action based on user input
-        True = continue
-        False = break
-        '''
-        if not validate_input(result, 5):
-            return True
-
-        if int(result) == 0:
-            return False
-
-        # Make sure location has been purchased first
-        if not stats['location'][str(result)]['purchased']:
-            print_error_message("Purchase Land")
-            return True
-
-        # Check if remaining cash < 0 after purchase, if
-        # so return True, else pass
-        staff_level = stats['location'][str(result)]['staff_lvl']
-        if staff_level == 5:
-            print_error_message("Already at max level.")
-            return True
-
-        remaining_cash = stats["cash"] - staff_price[staff_level]
-        if remaining_cash < 0:
-            print_error_message("Not enough funds")
-            return True
-
-        new_staff_lvl = staff_level + 1
-        stats['location'][str(result)]['staff_lvl'] = new_staff_lvl
-        stats["cash"] = remaining_cash
-        loc = int(result) - 1
-        print(green(f'Staff level {new_staff_lvl} purchased for')
-              + green(f'{loc_name[loc]} for £{staff_price[staff_level]}.'))
-        text = f'Remaining balance {print_current_balance(stats)}'
-        print(cyan(text))
-        print_press_enter_to("Press Enter to continue...")
-        return True
 
     loc_name = constants.LOCATION_NAMES
     staff_price = constants.STAFF_COSTS
@@ -396,10 +340,39 @@ def puchase_staff_menu(stats):
 
         user_choice = input(f'\n{orange("Input choice (0-5): ")}')
 
-        result = choice(user_choice)
-        if result:
+        if not validate_input(user_choice, 5):
             continue
-        break
+
+        if int(user_choice) == 0:
+            break
+
+        # Make sure location has been purchased first
+        if not stats['location'][str(user_choice)]['purchased']:
+            print_error_message("Purchase Land")
+            continue
+
+        # Check if remaining cash < 0 after purchase, if
+        # so continue, else pass
+        staff_level = stats['location'][str(user_choice)]['staff_lvl']
+        if staff_level == 5:
+            print_error_message("Already at max level.")
+            continue
+
+        remaining_cash = stats["cash"] - staff_price[staff_level]
+        if remaining_cash < 0:
+            print_error_message("Not enough funds")
+            continue
+
+        new_staff_lvl = staff_level + 1
+        stats['location'][str(user_choice)]['staff_lvl'] = new_staff_lvl
+        stats["cash"] = remaining_cash
+        loc = int(user_choice) - 1
+        print(green(f'Staff level {new_staff_lvl} purchased for')
+              + green(f'{loc_name[loc]} for £{staff_price[staff_level]}.'))
+        text = f'Remaining balance {print_current_balance(stats)}'
+        print(cyan(text))
+        print_press_enter_to("Press Enter to continue...")
+        continue
 
     daily_menu(stats)
 
@@ -408,40 +381,6 @@ def purchase_stock_menu(stats):
     '''
     Purchase stock menu
     '''
-
-    def choice(result):
-        '''
-        Action based on user input
-        True = continue
-        False = break
-        '''
-        if not validate_yes_no(result):
-            return True
-
-        if result.lower() in ['y', 'yes']:
-            # Check if remaining cash will above 0 after purchase,
-            # if so continue, else loop
-            remaining_cash = stats["cash"] - cost
-
-            if remaining_cash < 0:
-                print_error_message("Not enough funds")
-                return True
-
-            # Update player stock with purchased items
-            for count, i in enumerate(constants.STOCK_OPTIONS):
-                stats[i] += (basket["portions"][count]
-                             * basket["total_qty_r"][count])
-
-            print(green('Purchase Successful'))
-            stats["cash"] = remaining_cash
-            print(cyan(f'Remaining balance {print_current_balance(stats)}'))
-            print_press_enter_to("Press Enter to continue...")
-            return True
-
-        print(red('Purchase Aborted'))
-        print_press_enter_to("Press Enter to continue...")
-        return True
-        # def choice() ends here
 
     # Main function line stats here.
     while True:
@@ -455,8 +394,8 @@ def purchase_stock_menu(stats):
 
         print_go_back()
 
-        print(f"\n{pink('TIP: ')}This will order the minimum amount of "
-              + "ingredants to fullfill the amount of \nhotdogs you want to "
+        print(f"\n{pink('TIP: ')}This will purchase the minimum amount of "
+              + "ingredients to fullfill the amount of hotdogs you want to "
               + "have in stock.")
 
         user_choice = input(f'\n{orange("Input amount (max 99999): ")}')
@@ -507,28 +446,57 @@ def purchase_stock_menu(stats):
 
             cost += basket["total_qty_c"][count]
 
-        print(f'\n{cyan("Checkout:")}')
-        print(f'{"Item:":<10}{"Qty":<10}{"Portions":<10}{"SUB TOTAL:":<10}')
-        print('------------------------------------')
+        while True:
+            clear_terminal()
+            print(f'\n{cyan("Checkout:")}')
+            print('--------------------------------------------------------')
+            print(f'{"Item:":<23}{"Qty:":<10}{"Portions:":<12}'
+                  + f'{"Sub total:":<10}')
+            print('--------------------------------------------------------')
 
-        for count in enumerate(constants.STOCK_OPTIONS):
-            text = (basket["portions"][count[0]]
-                    * basket["total_qty_r"][count[0]])
-            print(f'{constants.STOCK_OPTIONS[count[0]]:<10} '
-                  + f'{basket["total_qty_r"][count[0]]:<10} '
-                  + f'{text:<10} '
-                  + f'£{"{:.2f}".format(basket["total_qty_c"][count[0]]):<10}')
+            for count, key in enumerate(constants.STOCK_COSTS):
+                text = (basket["portions"][count]
+                        * basket["total_qty_r"][count])
 
-        print('------------------------------------')
-        print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
+                text = basket["total_qty_c"][count]
+                print(f'{constants.STOCK_COSTS[key][0]:<23}'
+                      + f'{basket["total_qty_r"][count]:<12}'
+                      + f'{text:<10}'
+                      + f'£{"{:.2f}".format(text):<10}')
 
-        user_choice = input(f'\n{orange("Would you like to make this")}'
-                            + f'{orange("purchase? (type: yes) ")}')
+            print('--------------------------------------------------------')
+            print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
 
-        result = choice(user_choice)
-        if result:
-            continue
-        break
+            user_choice = input(f'\n{orange("Would you like to make this")}'
+                                + f'{orange(" purchase? (yes / no) ")}')
+
+            if not validate_yes_no(user_choice):
+                continue
+
+            if user_choice.lower() in ['y', 'yes']:
+                # Check if remaining cash will above 0 after purchase,
+                # if so continue, else loop
+                remaining_cash = stats["cash"] - cost
+
+                if remaining_cash < 0:
+                    print_error_message("Not enough funds")
+                    break
+
+                # Update player stock with purchased items
+                for count, i in enumerate(constants.STOCK_OPTIONS):
+                    stats[i] += (basket["portions"][count]
+                                 * basket["total_qty_r"][count])
+
+                print(green('Purchase Successful'))
+                stats["cash"] = remaining_cash
+                print(cyan('Remaining balance '
+                      + f'{print_current_balance(stats)}'))
+                print_press_enter_to("Press Enter to continue...")
+                break
+
+            print(red('Purchase Aborted'))
+            print_press_enter_to("Press Enter to continue...")
+            break
 
     daily_menu(stats)
 
@@ -537,46 +505,6 @@ def change_recipe_menu(stats):
     '''
     Player is able to change recipe menu
     '''
-
-    def choice(result):
-        '''
-        Action based on user input
-        True = continue
-        False = break
-        '''
-        if not validate_recipe_change(result):
-            return True
-
-        if int(result[0]) == 0:
-            return False
-
-        if int(result[0]) > 4:
-            print_error_message("Invalid choice.")
-            return True
-
-        if ((int(result[0]) == 1 and int(result[1]) > 1)
-                or (int(result[0]) == 2 and int(result[1]) > 2)
-                or (int(result[0]) == 3 and int(result[1]) > 5)
-                or (int(result[0]) == 4 and int(result[1]) > 5)):
-            print_error_message("Check maximum amounts.")
-            return True
-
-        if ((int(result[0]) == 1 and int(result[1]) < 1)
-                or (int(result[0]) == 2 and int(result[1]) < 1)
-                or (int(result[0]) == 3 and int(result[1]) < 0)
-                or (int(result[0]) == 4 and int(result[1]) < 0)):
-            print_error_message("Check minimum amounts.")
-            return True
-
-        stock_choosen = (constants.STOCK_OPTIONS[int(result[0])-1])
-        stats['recipe'][stock_choosen] = int(result[1])
-
-        print(green(f'Updated {stock_choosen.capitalize()} to '
-                    + f'{result[1]} per serving.'))
-
-        print_press_enter_to("Press Enter to continue...")
-        return True
-        # def choice() end here
 
     def validate_recipe_change(data):
         '''
@@ -606,7 +534,7 @@ def change_recipe_menu(stats):
         print('------------------------------------')
         print(cyan("\nCurrent Recipe:"))
         print('------------------------------------')
-        print(f'{cyan("Ingrediant"):<12}{"|":<2}'
+        print(f'{cyan("Ingrediant "):<12}{"|":<2}'
               + f'{cyan("Portions per serving"):<0}')
         print('------------------------------------')
         print(f'{"1. Buns":<12}{"|":<2}{f"{bun}":<4} (Min 1 - Max 1)')
@@ -619,21 +547,50 @@ def change_recipe_menu(stats):
         text = green(f'£{str("{:.2f}".format(prod_cost))}')
         print(f'\nCost to make each hotdog you sell: {text}')
         prod_cost *= markup
-        text = gold(f'£{str("{:.2f}".format(prod_cost))}')
-        print(f'Current base product value is: {text}')
-        print(f'\n{pink("TIP:")} Use this to guide your selling price')
-        print('\nTo update your recipe type the ingrediant and amount i.e.'
-              + ' "3 4".')
+        text = gold(f'£{str("{:.2f}".format(prod_cost + .50))}')
+        print(f'Recommended retail price: {text}')
+        print(f'\n{pink("TIP:")} Use this to guide your selling price.')
+
         print_go_back()
 
-        user_choice = input(f'\n{orange("Enter change i.e. 3 4: ")}')
-        user_choice = user_choice.split()
+        print(f'\n{pink("HOW: ")}To update your recipe ty0pe the ingrediant'
+              + ' and amount i.e. "3 4".')
+        result = input(f'\n{orange("Enter change i.e. 3 4: ")}')
 
-        result = choice(user_choice)
+        result = result.split()
 
-        if result:
+        if not validate_recipe_change(result):
             continue
-        break
+
+        if int(result[0]) == 0:
+            break
+
+        if int(result[0]) > 4:
+            print_error_message("Invalid choice.")
+            continue
+
+        if ((int(result[0]) == 1 and int(result[1]) > 1)
+                or (int(result[0]) == 2 and int(result[1]) > 2)
+                or (int(result[0]) == 3 and int(result[1]) > 5)
+                or (int(result[0]) == 4 and int(result[1]) > 5)):
+            print_error_message("Check maximum amounts.")
+            continue
+
+        if ((int(result[0]) == 1 and int(result[1]) < 1)
+                or (int(result[0]) == 2 and int(result[1]) < 1)
+                or (int(result[0]) == 3 and int(result[1]) < 0)
+                or (int(result[0]) == 4 and int(result[1]) < 0)):
+            print_error_message("Check minimum amounts.")
+            continue
+
+        stock_choosen = (constants.STOCK_OPTIONS[int(result[0])-1])
+        stats['recipe'][stock_choosen] = int(result[1])
+
+        print(green(f'Updated {stock_choosen.capitalize()} to '
+                    + f'{result[1]} per serving.'))
+
+        print_press_enter_to("Press Enter to continue...")
+        continue
 
     daily_menu(stats)
 
