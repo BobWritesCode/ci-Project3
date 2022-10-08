@@ -41,15 +41,18 @@ def daily_menu(stats):
         elif user_choice == '8':
             help_menu(stats)
         elif user_choice == '0':
+            print(f'\n{pink("IMPORTANT: ")} Make sure you write down your '
+                  + 'Game ID as you will need it to return to this game.')
+            print(f'\nGame ID: {gold(stats["user_id"])}')
             save_data(stats, False)
 
     while True:
         clear_terminal()
 
         if (stats["day"] % 1) == 0:
-            text_time_of_day = pink("Morning")
+            text_time_of_day = "Morning"
         else:
-            text_time_of_day = pink("Afternoon")
+            text_time_of_day = "Afternoon"
 
         print(menu_string(stats, text_time_of_day))
         user_choice = input(orange(f'\n{"Input choice (0-8) : "}'))
@@ -110,11 +113,15 @@ def menu_string(stats, text_time_of_day):
     if not stats["location"]["1"]["purchased"]:
         action_loc = "ACTION REQUIRED"
 
-    return f"""{gold(stats["name"])}
+    game_id = f'(GAME ID : {cyan(stats["user_id"])})'
+    company_name = stats['name']
+    day = floor(stats["day"])
+
+    return f"""{gold(company_name)} - {game_id}
 ------------------------------------
 Current balance {green(cash)}
-Day: {pink(floor(stats["day"]))} / {constants.LAST_DAY}
-Time of Day: {text_time_of_day}
+Day: {pink(day)} / {constants.LAST_DAY}
+Time of Day: {pink(text_time_of_day)}
 Company reputation: {gold(stats['reputation'])} / 5
 
 {cyan('Choose from the following options:')}
@@ -123,10 +130,10 @@ Company reputation: {gold(stats['reputation'])} / 5
 {'2. Purchase / upgrade cart(s)':<33}{red(action_cart):<10}
 {'3. Hire / upgrade staff':<33}{red(action_staff):<10}
 {'4. Purchase stock':<33}{green(stock):<10}
-{'5. Change Recipe':<33}{f'{green(recipe)}':<10}
-{'6. Set selling prices':<33}{f'{green(selling_price)}':<10}
+{'5. Change Recipe':<33}{green(recipe):<10}
+{'6. Set selling prices':<33}{green(selling_price):<10}
 
-{pink("7. Start trading")} - {text_time_of_day}
+{pink("7. Start trading")} - Day {day} - {text_time_of_day}
 {gold("8. Help")}
 {yellow('0. Save and quit')}"""
 
@@ -593,7 +600,7 @@ def change_recipe_menu(stats):
         onion = green(stats['recipe']['onion'])
         sauce = green(stats['recipe']['sauce'])
 
-        print(f'\n{cyan("Make changes to your recipe")}')
+        print(f'{cyan("Make changes to your recipe")}')
         print('------------------------------------')
         print(cyan("\nCurrent Recipe:"))
         print('------------------------------------')
