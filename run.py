@@ -30,11 +30,12 @@ def show_leaderboard_data():
     print(f'{yellow("************************************")}')
     print(f'{cyan("Top 10 highscores for classic mode")}')
     print(f'{yellow("************************************")}\n')
-    print(f"{data[0][0]:<20}{data[0][1]:<20}")
+    print(f"{data[0][0]:<20}{ data[0][1]:<20}")
+
     print('------------------------------------')
 
     for key in data[1:10]:
-        print(f"{key[0]:<20}{key[1]:<20}")
+        print(f"{key[0]:<20}{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
 
     print_press_enter_to("Press Enter to return to main menu...")
     main_menu()
