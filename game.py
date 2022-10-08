@@ -5,7 +5,7 @@ from random import randrange
 from math import floor
 import constants
 from utils import (
-  cyan, red, clear_terminal, print_press_enter_to, orange, green, gold,
+  cyan, red, clear_terminal, print_press_enter_to, green, gold,
   pink
   )
 from shared import (cost_to_make, get_portions_avaliable)
@@ -102,9 +102,11 @@ def run_day(stats):
 
                 # Base selling price <= optimal + max increase.
                 max_markup = constants.MAX_PRICE_OVER_OPTIMAL
-                if goto_1 and (price - osp) / max_markup < randrange(100):
+                if goto_1 and (
+                    ((price - osp) / max_markup) * 100 <
+                    randrange(100)
+                ):
                     will_buy = True
-                    feedback["cost buy"][key] += 1
                 elif goto_1:
                     feedback["cost"][key] += 1
                     rep_score -= 1
@@ -120,7 +122,6 @@ def run_day(stats):
                 diff = price - prod_value
                 if goto_3 and (diff / prod_markup) * 100 <= randrange(100):
                     will_buy = True
-                    feedback["value buy"][key] += 1
                 elif goto_3:
                     feedback["value"][key] += 1
                     rep_score -= 1
@@ -203,6 +204,7 @@ def sales_report(stats, data):
     '''
     Print sales report to terminal
     '''
+    # For reference:
     # cust_count = data[0]
     # sold = data[1]
     # open_loc_name = data[2]
@@ -211,31 +213,35 @@ def sales_report(stats, data):
     # feedback = data[5]
     # rep_score = data[6]
     # potential_cust = data[7]
+
     if data[4]:
         print(data[4])
+
     total_sale_value = 0
     for i in data[3]:
         total_sale_value += i
+
     print('------------------------------------')
     print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
     print('------------------------------------')
-    for count, i in enumerate(data[0]):
+
+    for count, key in enumerate(data[0]):
         text = data[2][count]
-        text2 = i
+        text2 = key
         text3 = floor(data[3][count]*100)/100
         print(f'{text:<13}{"-":<3}{text2:<8}{"-":<3}{text3:<8}')
+
     print('------------------------------------')
-    text = green(f'{data[1]}')
-    print(f'Total daily units sold: {text}')
+    print(f'Total daily units sold: {green(data[1])}')
     text = green(f'£{floor(total_sale_value*100)/100}')
     print(f'Total daily sales value: {text} (var +/- £0.01)')
-    print('\nSales values are net profit (Sold price minus product cost.')
+    print('\nSales values are net profit (Sold price minus product cost).')
     print_press_enter_to("Press Enter to see feedback..")
     print(f'\n{cyan("Customer feedback / improvements to be made:")}')
     print('-----------------------------------------------------------')
     print(f'{"Location":<13}{"-":<3}{"Amount":<6}{"-":<3}{"Comment":<13}')
     print('-----------------------------------------------------------')
-    txt_bought = orange('(Bought)')
+
     txt_decline = red('(Declined)')
 
     for count, i in enumerate(data[0]):
@@ -249,12 +255,8 @@ def sales_report(stats, data):
                 else:
                     text = ""
                     dash = ""
-                if j == "value buy":
-                    text2 = f"{txt_bought}   Add a litttle more value."
-                elif j == "value":
-                    text2 = f"{txt_decline} Add much more value."
-                elif j == "cost buy":
-                    text2 = f"{txt_bought}   A little expensive."
+                if j == "value":
+                    text2 = f"{txt_decline} Add more ingredients."
                 elif j == "cost":
                     text2 = f"{txt_decline} Well overpriced!"
                 text3 = data[5][j][count]
@@ -388,7 +390,6 @@ def end_game(stats):
     print(f'\n{gold("THANK YOU FOR PLAYING!")}')
     print_press_enter_to('Press Enter to quit.')
     stats = {}
-    # main()
 
 
 def check_top_10():
