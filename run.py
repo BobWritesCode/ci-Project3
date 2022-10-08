@@ -6,7 +6,7 @@ import string
 from utils import (
     yellow, green, cyan, pink, gold, orange,
     print_press_enter_to, clear_terminal,
-    validate_input, validate_yes_no
+    validate_input, validate_yes_no, print_error_message
     )
 import constants
 from save_load import (retrieve_save, set_up_character, save_data)
@@ -74,7 +74,7 @@ def new_game():
     print(cyan("Let\' get you set up:"))
     print('------------------------------------')
     print('Welcome to your new game. The first thing we need to do is set you\
- up with a new account.\n')
+ up with a new account.')
     user_name = create_user_name()
     user_id = create_user_id()
     data = [user_id, user_name]
@@ -98,24 +98,32 @@ def create_user_name():
     Allow user to create their own name for the game
     '''
     while True:
-        text = orange("Choose a name for your hotdog empire!")
-        user_name = input(f'{text}\n')
+        print(pink("\nChoose a name for your hotdog empire!"))
+        print(
+            f'\n{pink("Tip: ")}Must be more than 5 and less then \
+ 20 characters'
+            )
+        user_name = input(f'\n{orange("Company name: ")}')
 
         if not user_name:
             continue
 
-        while True:
-            print(f'\n{gold(user_name)} has been born!\n')
-            text = orange("Are you happy with this name? (yes / no) ")
-            yes_no = input(f'{text}')
+        length = len(user_name)
+        if length < 5 or length > 20:
+            print_error_message(
+                "Company name must be least 5 and no more than 20 characters"
+                )
+            continue
 
-            if not validate_yes_no(yes_no):
-                continue
+        print(f'\n{gold(user_name)} has been born!\n')
+        text = orange("Are you happy with this name? (yes / no) ")
+        yes_no = input(f'{text}')
 
-            if yes_no.lower() in ['y', 'ye', 'yes']:
-                return user_name
+        if not validate_yes_no(yes_no):
+            continue
 
-            break
+        if yes_no.lower() in ['y', 'ye', 'yes']:
+            return user_name
 
 
 def create_user_id():
