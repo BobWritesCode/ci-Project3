@@ -258,7 +258,7 @@ def sales_report(stats, data):
                 if j == "value":
                     text2 = f"{txt_decline} Add more ingredients."
                 elif j == "cost":
-                    text2 = f"{txt_decline} Well overpriced!"
+                    text2 = f"{txt_decline} Overpriced!"
                 text3 = data[5][j][count]
                 print(f'{text:<13}{dash:<3}{text3:<6}{"-":<3}{text2:<13}')
         if not first:
