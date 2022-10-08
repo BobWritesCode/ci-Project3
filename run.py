@@ -73,10 +73,10 @@ def new_game():
     Create new user and set up for a new game
     '''
     clear_terminal()
-    print(cyan("Let\' get you set up:"))
+    print(cyan("Let\'s get you set up:"))
     print('------------------------------------')
     print('Welcome to your new game. The first thing we need to do is set '
-          + 'you up with a new account.')
+          + 'you up with a new \naccount.')
     user_name = create_user_name()
     user_id = create_user_id()
     data = [user_id, user_name]
