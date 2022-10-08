@@ -42,28 +42,28 @@ def main_menu():
     '''
     Display main menu and options
     '''
-    clear_terminal()
-
     while True:
+        clear_terminal()
         print(constants.MAIN_MENU_OPTIONS)
         text = orange("Input choice (1-4): ")
         user_choice = input(f'\n{text}')
-        if validate_input(user_choice, 4):
-            break
 
-    if user_choice == '1':
-        new_game()
-    elif user_choice == '2':
-        stats = retrieve_save()
-        if stats is not None:
-            daily_menu(stats)
-        main_menu()
-    elif user_choice == '3':
-        show_leaderboard_data()
-    elif user_choice == '4':
-        show_credits()
-    elif user_choice == '0':
-        main()
+        if not validate_input(user_choice, 4):
+            continue
+
+        if user_choice == '1':
+            new_game()
+        elif user_choice == '2':
+            stats = retrieve_save()
+            if stats is not None:
+                daily_menu(stats)
+            main_menu()
+        elif user_choice == '3':
+            show_leaderboard_data()
+        elif user_choice == '4':
+            show_credits()
+        elif user_choice == '0':
+            main()
 
 
 def new_game():
