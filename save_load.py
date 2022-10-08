@@ -28,8 +28,7 @@ def save_data(stats, first_save):
     '''
 
     if not first_save:
-        text = cyan("Please do not close.")
-        print(f'\n{text}')
+        print(f'\n{cyan("Please do not close.")}')
 
     data_to_save = []
     data_to_save = convert_dict_to_array(stats, data_to_save)
@@ -49,8 +48,7 @@ def save_data(stats, first_save):
                         )
                     break
 
-        text = green("Data saved. Safe to continue.")
-        print(f'{text}', end='\r')
+        print(f'{green("Data saved. Safe to continue.")}', end='\r')
 
     if not found or first_save:
         worksheet.append_row(data_to_save)
@@ -97,10 +95,12 @@ def retrieve_save():
         print('------------------------------------')
         print('\nYou will need your game ID to retrieve a previous game.')
         print_go_back()
+
         user_input = input(f'\n{orange("Enter Game ID: ")}')
 
         if user_input == '0':
-            return None
+            break
+
         if len(str(user_input)) != 6:
             print_error_message("\nNot a valid Game ID.")
             continue

@@ -32,8 +32,10 @@ def show_leaderboard_data():
     print(f'{yellow("************************************")}\n')
     print(f"{data[0][0]:<20}{data[0][1]:<20}")
     print('------------------------------------')
+
     for key in data[1:10]:
         print(f"{key[0]:<20}{key[1]:<20}")
+
     print_press_enter_to("Press Enter to return to main menu...")
     main_menu()
 
@@ -73,8 +75,8 @@ def new_game():
     clear_terminal()
     print(cyan("Let\' get you set up:"))
     print('------------------------------------')
-    print('Welcome to your new game. The first thing we need to do is set you\
- up with a new account.')
+    print('Welcome to your new game. The first thing we need to do is set '
+          + 'you up with a new account.')
     user_name = create_user_name()
     user_id = create_user_id()
     data = [user_id, user_name]
@@ -99,10 +101,8 @@ def create_user_name():
     '''
     while True:
         print(pink("\nChoose a name for your hotdog empire!"))
-        print(
-            f'\n{pink("Tip: ")}Must be more than 5 and less then \
- 20 characters'
-            )
+        print(f'\n{pink("Tip: ")}Must be more than 5 and less then 20 '
+              + 'characters')
         user_name = input(f'\n{orange("Company name: ")}')
 
         if not user_name:
@@ -110,14 +110,12 @@ def create_user_name():
 
         length = len(user_name)
         if length < 5 or length > 20:
-            print_error_message(
-                "Company name must be least 5 and no more than 20 characters"
-                )
+            print_error_message("Company name must be least 5 and no more "
+                                + "than 20 characters")
             continue
 
         print(f'\n{gold(user_name)} has been born!\n')
-        text = orange("Are you happy with this name? (yes / no) ")
-        yes_no = input(f'{text}')
+        yes_no = input(orange('(Are you happy with this name? (yes / no) '))
 
         if not validate_yes_no(yes_no):
             continue
@@ -133,6 +131,7 @@ def create_user_id():
     '''
     user_id = ''
     print('\nPlease wait why your new user ID is created...')
+
     while True:
         user_id = "".join(
             string.ascii_uppercase[random.randrange(0, 25)] for x in range(6)
@@ -141,16 +140,13 @@ def create_user_id():
         cell_list = user_data.findall(user_id)
         if len(cell_list) == 0:
             break
+
     clear_terminal()
     print(f'{cyan("User ID created")}')
     print('------------------------------------')
-    print(
-        f'\nYour new user ID is: {green(user_id)}\n'
-        )
-    text = (
-        'Please keep this safe as this is how you can retrieve your progress.'
-    )
-    print(f'{pink("Important:")} {text}')
+    print(f'\nYour new user ID is: {green(user_id)}\n')
+    print(f'{pink("Important: ")}Please keep this safe as this is how you '
+          + 'can retrieve your progress.')
     return user_id
 
 
