@@ -23,13 +23,13 @@ SHEET = GSPREAD_CLIENT.open('Hotdog_Tycoon_Data')
 CART_COSTS = [50, 100, 200, 400, 800]
 CART_SELLING_INCREASE = 5
 GAMETITLE = 'Hotdog Empire Tycoon'
-LAST_DAY = 20
+LAST_DAY = 10
 LOCATION_FOOTFALL = [0.04, 0.08, 0.12, 0.20, 0.32]
 
 LOCATION_NAMES = [
   "Cheap Street",
-  "Meow Park",
-  "Downtown",
+  "Central Park",
+  "The Beach",
   "The Mall",
   "Fairground"
 ]
