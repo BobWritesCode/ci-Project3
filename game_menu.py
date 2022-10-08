@@ -37,7 +37,8 @@ def daily_menu(stats):
             result, stats = run_day(stats)
             if result:
                 end_game(stats)
-            daily_menu(stats)
+            else:
+                daily_menu(stats)
         elif user_choice == '8':
             help_menu(stats)
         elif user_choice == '0':
@@ -82,6 +83,7 @@ def daily_menu(stats):
             continue
 
         break
+
     choice(user_choice, stats)
 
 
@@ -150,10 +152,10 @@ def purchase_location(stats):
         print(f'{cyan("Purchase hotdog pitch locations")}')
         print('------------------------------------')
         print(f'Current balance {green(print_current_balance(stats))}\n')
-        print('Each location purchase means more customer to sell to.'
-              + 'The better the location the more potential customers.\n')
-        print(f'{pink("TIP")}: Each location will need a cart and a staff'
-              + 'member before they sell any hotdogs.\n')
+        print('Each location purchase means more customer to sell to. '
+              + 'The better the location \nthe more potential customers.\n')
+        print(f'{pink("TIP")}: Each location will need a cart and a staff '
+              + 'member before they sell any \nhotdogs.\n')
 
         for count, key in enumerate(loc_name, start=1):
             str_part_1 = f'{count}. {key}'
@@ -271,8 +273,8 @@ def purchase_cart_menu(stats):
         print(f'Current balance {green(print_current_balance(stats))}\n')
         print('Each upgrade on a cart will produce better quality hotdogs.'
               + f' So you will sell {constants.CART_SELLING_INCREASE}% more'
-              + 'for each level on top the base selling price without an'
-              + 'penelties at that location.')
+              + ' for each level on top the base selling price without an'
+              + 'penelties at that \nlocation.')
         print(f'\n{pink("TIP")}: Each location will need a staff member'
               + 'before they sell any hotdogs.\n')
 
@@ -367,9 +369,9 @@ def puchase_staff_menu(stats):
         print('------------------------------------')
         print(f'Current balance {green(print_current_balance(stats))}\n')
         print('Better trained staff encourage returning customers meaning more'
-              + 'footfall.\n')
+              + ' footfall.\n')
         print(f'{pink("TIP")}: Each location will need a cart before they sell'
-              + 'any hotdogs.\n')
+              + ' any hotdogs.\n')
 
         for count, key in enumerate(loc_name, start=1):
             staff_level = stats['location'][str(count)]['staff_lvl']
@@ -453,9 +455,9 @@ def purchase_stock_menu(stats):
 
         print_go_back()
 
-        print(f"\n{pink('TIP: ')}This will order the minimum amount of"
-              + "ingredants to fullfill the amount of Hotdogs you want to have"
-              + "in stock.")
+        print(f"\n{pink('TIP: ')}This will order the minimum amount of "
+              + "ingredants to fullfill the amount of \nhotdogs you want to "
+              + "have in stock.")
 
         user_choice = input(f'\n{orange("Input amount (max 99999): ")}')
 
@@ -653,7 +655,7 @@ def set_selling_price(stats):
         net_profit = round(curr_price - production_cost, 2)
 
         if net_profit >= 0:
-            print(f'\n{green("Profit per serving is:")}£{net_profit}')
+            print(f'\n{green("Profit per serving is: ")}£{net_profit}')
         else:
             print(f'\n{red("Loss per serving is: ")}£{net_profit}')
 
