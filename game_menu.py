@@ -398,7 +398,7 @@ def purchase_stock_menu(stats):
               + "ingredients to fullfill the amount of hotdogs you want to "
               + "have in stock.")
 
-        user_choice = input(f'\n{orange("Input amount (max 99999): ")}')
+        user_choice = input(f'\n{orange("Input amount : ")}')
 
         if not validate_input(user_choice, 99999):
             continue
