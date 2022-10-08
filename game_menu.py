@@ -110,8 +110,7 @@ def menu_string(stats, text_time_of_day):
     if not stats["location"]["1"]["purchased"]:
         action_loc = "ACTION REQUIRED"
 
-    return f"""
-{gold(stats["name"])}
+    return f"""{gold(stats["name"])}
 ------------------------------------
 Current balance {green(cash)}
 Day: {pink(floor(stats["day"]))} / {constants.LAST_DAY}
