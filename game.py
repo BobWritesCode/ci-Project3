@@ -372,21 +372,7 @@ def end_game(stats):
     print('\nI hope you are happy with what you have achieved becuase I am.')
     print('Let\'s see if you managed to secure a place on our leaderboard.')
 
-    top_10 = check_top_10()
-    for count, key in enumerate(top_10[1:10], 2):
-        if cash > float(key[1]):
-            print(f"\n{green('CONGRATULATIONS!!!')}")
-            print(f'You placed number {gold(count - 1)} on our leaderboard!\n')
-            row = count
-            data_to_save = [
-                stats["name"],
-                stats["cash"]
-            ]
-            worksheet = SHEET.worksheet("leaderboard")
-            save_loop(row, data_to_save, len(data_to_save), worksheet)
-            break
-    else:
-        print('Sadly you didn\'t make the top 10 this time. Maybe next time?')
+    check_top_10(stats)
 
     stats = {}
 
@@ -397,10 +383,34 @@ def end_game(stats):
             break
 
 
-def check_top_10():
+def check_top_10(stats):
     '''
     Checks top 10 of leaderboard to see if user qualifies
+    If qualifies:
+        - Move entries below new entry down one
+        - Remove bottom entry
+        - Add new entry in
+        - Save new table to Google Worksheet
     '''
     highscore = SHEET.worksheet('leaderboard')
     data = highscore.get_all_values()
-    return data
+    # Go through current leader board entries and see if placed higher than any
+    # of the current entries.
+    for count, key in enumerate(data[1:10], 2):
+        # Player has placed higher then a player.
+        if stats["cash"] > float(key[1]):
+            print(f"\n{green('CONGRATULATIONS!!!')}")
+            print(f'You placed number {gold(count - 1)} on our leaderboard!\n')
+            # Insert data of player into correct place
+            data.insert(count - 1, [stats["name"], stats["cash"]])
+            # Remove data for player who is no in 11th place.
+            data.pop()
+            # Update Google sheet
+            SHEET.values_update(
+                'leaderboard!A1',
+                params={'valueInputOption': 'RAW'},
+                body={'values': data}
+                )
+            break
+    else:
+        print('Sadly you didn\'t make the top 10 this time. Maybe next time?')
