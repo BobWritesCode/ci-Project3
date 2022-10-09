@@ -65,7 +65,7 @@ STARTING_CASH = 500
 STOCK_COSTS = {
   # id : [name, portions, cost]
   'bun': ['Pack of Hotdog Buns', 6, 1],
-  'sausage': ['Pack of Hotdog Sausage', 8, 2],
+  'sausage': ['Pack of Sausages', 8, 2],
   'onion': ['Onion', 10, 1],
   'sauce': ['Jar of Special Sauce', 20, 5]
 }
@@ -77,9 +77,11 @@ STOCK_OPTIONS = [
   'sauce'
 ]
 
-BACKGROUND_STORY = f"""------------------------------------
-{cyan('Background')}
-------------------------------------
+LINE = """---------------------------------------\
+--------------------------------------"""
+
+BACKGROUND_STORY = f"""{cyan('Background')}
+{LINE}
 
 You have hit some really hard times lately and nearly lost everything. Your
 down to your last £{STARTING_CASH}. Luckily your friend has told you about
@@ -92,7 +94,7 @@ around. Most of what you see is outside your budget but see there are a few
 things around to get you started...."""
 
 CREDITS = f"""{cyan('Credits:')}
-------------------------------------
+{LINE}
 {"Code by:":<20}{gold("Warwick Hart"):<40}
 {"Inspired by:":<20}{gold("Lemonade Stand by Bob Jamison"):<40}
 
@@ -112,24 +114,24 @@ MAIN_MENU_OPTIONS = f"""************************************
 ************************************
 
 {cyan('MAIN MENU')}
-------------------------------------
-Can you prove that you are able to take a small hotdog stand and turn it into \
+{LINE}
+Can you prove that you are able to take a small hotdog stand and turn it into
 a great hotdog empire?!
 
 {cyan('Choose from the following options:')}
-------------------------------------
+{LINE}
 1. New Game
 2. Retrieve a previous game
 3. View leaderboard
 4. Credits"""
 
 PURCHASE_STOCK_OPTIONS = f"""
-{cyan('Pricing for products:')}
-------------------------------------
-{'Pack of Hotdog buns':<22} (pack of {STOCK_COSTS['bun'][1]}) \
-  £{STOCK_COSTS['bun'][2]}.00
-{'Pack of Hotdogs':<22} (pack of {STOCK_COSTS['sausage'][1]}) \
-  £{STOCK_COSTS['sausage'][2]}.00
+{cyan('Pricing:')}
+{LINE}
+{'Hotdog buns':<22} (Pack of {STOCK_COSTS['bun'][1]}) \
+    £{STOCK_COSTS['bun'][2]}.00
+{'Sausages':<22} (Pack of {STOCK_COSTS['sausage'][1]}) \
+    £{STOCK_COSTS['sausage'][2]}.00
 {'Onion':<22} ({STOCK_COSTS['onion'][1]} portions) \
   £{STOCK_COSTS['onion'][2]}.00
 {'Jar of Special Sauce':<22} ({STOCK_COSTS['sauce'][1]} portions) \
@@ -137,7 +139,7 @@ PURCHASE_STOCK_OPTIONS = f"""
 
 
 HELP_SCREEN1 = f"""{cyan('Help:')}
------------------------------------------------------------------------------
+{LINE}
 {gold('Main Objective:')} Your main objective is to collect as much wealth
 before the final day. At the end your wealth will determine your score.
 
