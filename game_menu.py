@@ -5,7 +5,7 @@ from math import (ceil, floor)
 from game import (run_day, end_game)
 from utils import (cyan, clear_terminal, gold, pink, green, print_go_back,
                    print_press_enter_to, red, orange, print_error_message,
-                   print_current_balance, print_portions_in_stock,
+                   print_current_balance,
                    validate_input, validate_yes_no, yellow)
 from save_load import (save_data)
 from shared import (cost_to_make, get_portions_avaliable)
@@ -114,14 +114,14 @@ def menu_string(stats, text_time_of_day):
     day = floor(stats["day"])
 
     return f"""{gold(company_name)} - {game_id}
-------------------------------------
+{constants.LINE}
 Current balance {green(cash)}
 Day: {pink(day)} / {constants.LAST_DAY}
 Time of Day: {pink(text_time_of_day)}
 Company reputation: {gold(stats['reputation'])} / 5
 
 {cyan('Choose from the following options:')}
-------------------------------------
+{constants.LINE}
 {'1. Purchase location':<33}{red(action_loc):<10}
 {'2. Purchase / upgrade cart(s)':<33}{red(action_cart):<10}
 {'3. Hire / upgrade staff':<33}{red(action_staff):<10}
@@ -144,10 +144,12 @@ def purchase_location(stats):
     while True:
         clear_terminal()
         print(f'{cyan("Purchase hotdog pitch locations")}')
-        print('------------------------------------')
+        print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}\n')
+
         print('Each location purchase means more customers to sell to. '
               + 'The better the location \nthe more potential customers.\n')
+
         print(f'{pink("TIP")}: Each location will need a cart and a staff '
               + 'member before they sell any \nhotdogs.\n')
 
@@ -225,7 +227,7 @@ def purchase_cart_menu(stats):
         clear_terminal()
         print(f'{cyan("Purchase or upgrade carts at your hotdog pitch")}'
               + f'{cyan("locations")}')
-        print('------------------------------------')
+        print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}\n')
         print('Each upgrade on a cart will produce better quality hotdogs.'
               + f' So you will sell {constants.CART_SELLING_INCREASE}% more'
@@ -310,7 +312,7 @@ def puchase_staff_menu(stats):
         clear_terminal()
         print(cyan("Hire and train staff for your hotdog pitch")
               + cyan("locations."))
-        print('------------------------------------')
+        print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}\n')
         print('Better trained staff encourage returning customers meaning more'
               + ' footfall.\n')
@@ -382,23 +384,33 @@ def purchase_stock_menu(stats):
     Purchase stock menu
     '''
 
-    # Main function line stats here.
+    # Main function constants.line stats here.
     while True:
         clear_terminal()
 
-        print(f'{cyan("Purchase consumable stock to purchase")}')
-        print('------------------------------------')
-        print(f'Current balance {green(print_current_balance(stats))}\n')
-        print_portions_in_stock(stats)
+        print(f'{cyan("Purchase consumable stock")}')
+        print(constants.LINE)
+        print(f'Current balance {green(print_current_balance(stats))}')
+        print('You have enough ingrediants to sell '
+              + f'{gold(get_portions_avaliable(stats))} hotdogs.\n')
+
+        print(f'{cyan("Current stock:")}')
+        print(constants.LINE)
+        print(f'{stats["bun"]:<5} x {"Hotdog bun(s)":<20}'
+              + f'| {stats["sausage"]:<5} x Sausage(s)')
+        print(f'{stats["onion"]:<5} x {"Onion(s)":<20}'
+              + f'| {stats["sauce"]:<5} x Special sauce(s)')
+
         print(constants.PURCHASE_STOCK_OPTIONS)
+
+        print(f"\n{pink('TIP: ')}This will purchase the amount of "
+              + "ingredients you \nneed for the amount of hotdogs "
+              + "you want to stock. All sales are final")
 
         print_go_back()
 
-        print(f"\n{pink('TIP: ')}This will purchase the minimum amount of "
-              + "ingredients to fullfill the amount of hotdogs you want to "
-              + "have in stock.")
-
-        user_choice = input(f'\n{orange("Input amount : ")}')
+        user_choice = input(orange('\nHow many hotdogs would you like to '
+                            + 'have in stock? '))
 
         if not validate_input(user_choice, 99999):
             continue
@@ -446,13 +458,18 @@ def purchase_stock_menu(stats):
 
             cost += basket["total_qty_c"][count]
 
+        if cost == 0:
+            print_error_message("\nYou already have this many hotdogs in "
+                                + "stock.")
+            continue
+
         while True:
             clear_terminal()
             print(f'\n{cyan("Checkout:")}')
-            print('--------------------------------------------------------')
+            print(constants.LINE)
             print(f'{"Item:":<23}{"Qty:":<10}{"Portions:":<12}'
                   + f'{"Sub total:":<10}')
-            print('--------------------------------------------------------')
+            print(constants.LINE)
 
             for count, key in enumerate(constants.STOCK_COSTS):
                 text = (basket["portions"][count]
@@ -464,7 +481,7 @@ def purchase_stock_menu(stats):
                       + f'{text:<10}'
                       + f'£{"{:.2f}".format(text):<10}')
 
-            print('--------------------------------------------------------')
+            print(constants.LINE)
             print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
 
             user_choice = input(f'\n{orange("Would you like to make this")}'
@@ -531,12 +548,12 @@ def change_recipe_menu(stats):
         sauce = green(stats['recipe']['sauce'])
 
         print(f'{cyan("Make changes to your recipe")}')
-        print('------------------------------------')
+        print(constants.LINE)
         print(cyan("\nCurrent Recipe:"))
-        print('------------------------------------')
+        print(constants.LINE)
         print(f'{cyan("Ingrediant "):<12}{"|":<2}'
               + f'{cyan("Portions per serving"):<0}')
-        print('------------------------------------')
+        print(constants.LINE)
         print(f'{"1. Buns":<12}{"|":<2}{f"{bun}":<4} (Min 1 - Max 1)')
         print(f'{"2. Sausages":<12}{"|":<2}{f"{sausage}":<4} (Min 1 - Max 2)')
         print(f'{"3. Onions":<12}{"|":<2}{f"{onion}":<4} (Min 0 - Max 5)')
@@ -603,7 +620,7 @@ def set_selling_price(stats):
         clear_terminal()
         curr_price = stats["selling_price"]
         print(f'{cyan("Set the selling price of your product")}')
-        print('------------------------------------')
+        print(constants.LINE)
         production_cost = cost_to_make(stats)
         text = green("£" + str(round(production_cost, 2)))
         print(f'\nThe current cost for to make your your product is {text}')
