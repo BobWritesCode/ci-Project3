@@ -3,11 +3,8 @@ functions to save and reload game data
 '''
 
 from math import (floor)
-from utils import (
-    cyan, green, orange, print_go_back, print_press_enter_to,
-    clear_terminal, print_error_message
-    )
-
+from utils import (cyan, green, orange, print_go_back, print_press_enter_to,
+                   clear_terminal, print_error_message)
 import constants
 
 # gspread constants
@@ -58,7 +55,7 @@ def save_data(stats, first_save):
 
 def save_loop(row, data, save_percent, worksheet):
     '''
-    Finds the correct row in Google sheet to save game data.
+    Saves data[] to the correct row in Google.
     '''
     for count, key in enumerate(data, 1):
         worksheet.update_cell(row, count, key)
@@ -92,7 +89,7 @@ def retrieve_save():
         clear_terminal()
 
         print(f'{cyan("Retrieve a previous game")}')
-        print('------------------------------------')
+        print(constants.LINE)
         print('\nYou will need your game ID to retrieve a previous game.')
         print_go_back()
 
@@ -123,7 +120,7 @@ def retrieve_save():
 
             return stats
         else:
-            # If no GAME ID match then show error.
+            # If no Game ID match then show error.
             print_error_message("No game found")
 
 
