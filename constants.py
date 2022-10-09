@@ -97,6 +97,8 @@ CREDITS = f"""{cyan('Credits:')}
 {"Inspired by:":<20}{gold("Lemonade Stand by Bob Jamison"):<40}
 
 {"Testers:":<20}{gold('ArcAnum')}
+{"":<20}{gold('Nick W (CI Student)')}
+{"":<20}{gold('Emily K (CI Student)')}
 
 Connect to me on LinkedIn:
 {gold('https://www.linkedin.com/in/warwickhart/')}
