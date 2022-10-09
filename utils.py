@@ -39,19 +39,6 @@ def validate_input(value, max_value):
     return True
 
 
-def print_portions_in_stock(stats):
-    '''
-    Print how many portions from ingridants player currently has
-    '''
-    text = cyan("Your current stock:")
-    print(f'{text}')
-    print('------------------------------------')
-    print(f'{stats["bun"]} x Hotdog bun(s)')
-    print(f'{stats["sausage"]} x Hotdog sausage(s)')
-    print(f'{stats["onion"]} x Onion(s)')
-    print(f'{stats["sauce"]} x Special sauce(s)')
-
-
 def print_current_balance(stats):
     '''
     Print cash statment
