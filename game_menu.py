@@ -109,7 +109,7 @@ def menu_string(stats, text_time_of_day):
     if not stats["location"]["1"]["purchased"]:
         action_loc = "ACTION REQUIRED"
 
-    game_id = f'(GAME ID : {cyan(stats["user_id"])})'
+    game_id = f'(Game ID : {cyan(stats["user_id"])})'
     company_name = stats['name']
     day = floor(stats["day"])
 
@@ -146,7 +146,7 @@ def purchase_location(stats):
         print(f'{cyan("Purchase hotdog pitch locations")}')
         print('------------------------------------')
         print(f'Current balance {green(print_current_balance(stats))}\n')
-        print('Each location purchase means more customer to sell to. '
+        print('Each location purchase means more customers to sell to. '
               + 'The better the location \nthe more potential customers.\n')
         print(f'{pink("TIP")}: Each location will need a cart and a staff '
               + 'member before they sell any \nhotdogs.\n')
@@ -229,10 +229,10 @@ def purchase_cart_menu(stats):
         print(f'Current balance {green(print_current_balance(stats))}\n')
         print('Each upgrade on a cart will produce better quality hotdogs.'
               + f' So you will sell {constants.CART_SELLING_INCREASE}% more'
-              + ' for each level on top the base selling price without an'
-              + 'penelties at that \nlocation.')
+              + ' for each level on top the base selling price without any'
+              + ' penelties at that \nlocation.')
         print(f'\n{pink("TIP")}: Each location will need a staff member'
-              + 'before they sell any hotdogs.\n')
+              + ' before they sell any hotdogs.\n')
 
         for count, key in enumerate(loc_name, start=1):
             cart_level = stats['location'][str(count)]['cart_lvl']
@@ -553,7 +553,7 @@ def change_recipe_menu(stats):
 
         print_go_back()
 
-        print(f'\n{pink("HOW: ")}To update your recipe ty0pe the ingrediant'
+        print(f'\n{pink("HOW: ")}To update your recipe type the ingredient'
               + ' and amount i.e. "3 4".')
         result = input(f'\n{orange("Enter change i.e. 3 4: ")}')
 
