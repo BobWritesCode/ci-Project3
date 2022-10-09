@@ -3,11 +3,9 @@ Main game module
 '''
 import random
 import string
-from utils import (
-    yellow, green, cyan, pink, gold, orange,
-    print_press_enter_to, clear_terminal,
-    validate_input, validate_yes_no, print_error_message
-    )
+from utils import (yellow, green, cyan, pink, gold, orange,
+                   print_press_enter_to, clear_terminal,
+                   validate_input, validate_yes_no, print_error_message)
 import constants
 from save_load import (retrieve_save, set_up_character, save_data)
 from game_menu import (daily_menu)
@@ -32,7 +30,7 @@ def show_leaderboard_data():
     print(f'{yellow("************************************")}\n')
     print(f"{data[0][0]:<20}{ data[0][1]:<20}")
 
-    print('------------------------------------')
+    print(constants.LINE)
 
     for key in data[1:10]:
         print(f"{key[0]:<20}{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
@@ -75,7 +73,7 @@ def new_game():
     '''
     clear_terminal()
     print(cyan("Let\'s get you set up:"))
-    print('------------------------------------')
+    print(constants.LINE)
     print('Welcome to your new game. The first thing we need to do is set '
           + 'you up with a new \naccount.')
     user_name = create_user_name()
@@ -144,7 +142,7 @@ def create_user_id():
 
     clear_terminal()
     print(f'{cyan("User ID created")}')
-    print('------------------------------------')
+    print(constants.LINE)
     print(f'\nYour new user ID is: {green(user_id)}\n')
     print(f'{pink("Important: ")}Please keep this safe as this is how you '
           + 'can retrieve your progress.')

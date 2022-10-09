@@ -219,25 +219,25 @@ def sales_report(stats, data):
     for i in data[3]:
         total_sale_value += i
 
-    print('------------------------------------')
+    print(constants.LINE)
     print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
-    print('------------------------------------')
+    print(constants.LINE)
 
     for count, key in enumerate(data[0]):
         print(f'{data[2][count]:<13}{"-":<3}'
               + f'{key:<8}{"-":<3}'
               + f'{floor(data[3][count]*100)/100:<8}')
 
-    print('------------------------------------')
+    print(constants.LINE)
     print(f'Total daily units sold: {green(data[1])}')
     text = green(f'£{floor(total_sale_value*100)/100}')
     print(f'Total daily sales value: {text} (var +/- £0.01)')
     print('\nSales values are net profit (Sold price minus product cost).')
     print_press_enter_to("Press Enter to see feedback..")
     print(f'\n{cyan("Customer feedback / improvements to be made:")}')
-    print('-----------------------------------------------------------')
+    print(constants.LINE)
     print(f'{"Location":<13}{"-":<3}{"Amount":<7}{"-":<3}{"Comment":<13}')
-    print('-----------------------------------------------------------')
+    print(constants.LINE)
 
     txt_decline = red('(Declined)')
 
@@ -262,9 +262,7 @@ def sales_report(stats, data):
                 print(f'{text:<13}{dash:<3}{text3:<7}{"-":<3}{text2:<13}')
 
         if count[0] != 0:
-            print(
-                '-----------------------------------------------------------'
-                )
+            print(constants.LINE)
 
     print_press_enter_to("Press Enter to see if any reputation update...\n")
     rep_change(stats, data[6], data[7])
@@ -300,7 +298,7 @@ def rep_change(stats, rep_score, oppotunities):
     c_rep = stats["reputation"]
 
     print(f'{cyan("Reputation update:")}')
-    print('------------------------------------')
+    print(constants.LINE)
     if rep_percent > 0.5:
         print('HAPPY CUSTOMERS and GREAT PERFORMANCE!')
     elif rep_percent < -0.5:
@@ -325,7 +323,7 @@ def rep_change(stats, rep_score, oppotunities):
     else:
         print("No reputation change")
 
-    print('------------------------------------')
+    print(constants.LINE)
 
     return stats
 
