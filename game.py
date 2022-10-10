@@ -170,6 +170,7 @@ def run_day(stats):
                 sold_out_text, feedback, rep_score,
                 potential_cust
             ]
+            save_data(stats, False)
             clear_terminal()
             text = cyan("12 noon time sales report:")
             print(f'{text}')
@@ -180,6 +181,7 @@ def run_day(stats):
             for i in range(total_locations):
                 sold += cust_count[i]
             stats = deduct_stock(stats, sold)
+            save_data(stats, False)
             data = [
                 cust_count, sold,
                 open_loc_name, loc_sale_value,
