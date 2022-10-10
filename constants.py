@@ -101,6 +101,9 @@ CREDITS = f"""{cyan('Credits:')}
 {"Testers:":<20}{gold('ArcAnum')}
 {"":<20}{gold('Nick W (CI Student)')}
 {"":<20}{gold('Emily K (CI Student)')}
+{"":<20}{gold('Kristyna M (CI Student)')}
+{"":<20}{gold('Rachel O (CI Student)')}
+{"":<20}{gold('Kelly H (CI Student)')}
 
 Connect to me on LinkedIn:
 {gold('https://www.linkedin.com/in/warwickhart/')}
