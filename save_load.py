@@ -26,7 +26,7 @@ def save_data(stats, first_save):
 
     if not first_save:
         print(f'\n{cyan("Please do not close.")}')
-        print(f'\n{gold("AUTO SAVING.")}')
+        print(f'{gold("AUTO SAVING.")}')
 
     data_to_save = []
     data_to_save = convert_dict_to_array(stats, data_to_save)
