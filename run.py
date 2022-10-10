@@ -81,6 +81,7 @@ def new_game():
     data = [user_id, user_name]
     stats = set_up_character(data, True)
     save_data(stats, True)
+    print_press_enter_to("Press Enter to continue...")
     background_story(stats)
 
 
