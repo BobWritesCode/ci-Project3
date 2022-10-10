@@ -36,24 +36,25 @@ def save_data(stats, first_save):
     if not first_save:
         if int(stats["game_save_row"]) != int(0):
             col = stats["game_save_row"]
-            found = save_loop(col, data_to_save, data_to_save, worksheet)
+            found = save_loop(col, data_to_save, worksheet)
         else:
             for col, key in enumerate(row_array, 1):
                 if key == stats['user_id']:
                     found = save_loop(
-                        col, data_to_save, data_to_save, worksheet
+                        col, data_to_save, worksheet
                         )
                     break
 
         print(f'{green("Data saved. Safe to continue.")}', end='\r')
 
     if not found or first_save:
-        worksheet.append_row(data_to_save)
+        col = len(worksheet.row_values(1)) + 1
+        found = save_loop(col, data_to_save, worksheet)
 
     print_press_enter_to("Press Enter to continue...")
 
 
-def save_loop(col, data, save_percent, worksheet):
+def save_loop(col, data, worksheet):
     '''
     Saves data[] to the correct row in Google.
     '''
