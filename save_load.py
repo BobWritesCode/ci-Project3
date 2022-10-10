@@ -30,18 +30,18 @@ def save_data(stats, first_save):
     data_to_save = []
     data_to_save = convert_dict_to_array(stats, data_to_save)
     worksheet = SHEET.worksheet("user_data")
-    col_array = worksheet.col_values(1)
+    row_array = worksheet.row_values(1)
     found = False
 
     if not first_save:
         if int(stats["game_save_row"]) != int(0):
-            row = stats["game_save_row"]
-            found = save_loop(row, data_to_save, len(data_to_save), worksheet)
+            col = stats["game_save_row"]
+            found = save_loop(col, data_to_save, data_to_save, worksheet)
         else:
-            for row, key in enumerate(col_array, 1):
+            for col, key in enumerate(row_array, 1):
                 if key == stats['user_id']:
                     found = save_loop(
-                        row, data_to_save, len(data_to_save), worksheet
+                        col, data_to_save, data_to_save, worksheet
                         )
                     break
 
@@ -53,14 +53,28 @@ def save_data(stats, first_save):
     print_press_enter_to("Press Enter to continue...")
 
 
-def save_loop(row, data, save_percent, worksheet):
+def save_loop(col, data, save_percent, worksheet):
     '''
     Saves data[] to the correct row in Google.
     '''
-    for count, key in enumerate(data, 1):
-        worksheet.update_cell(row, count, key)
-        text = cyan(f' SAVING... {floor((count/save_percent)*100)}%')
-        print(f'{text}', end='\r')
+
+    # CREDIT :
+    # https://stackoverflow.com/questions/23861680/convert-spreadsheet
+    # -number-to-column-letter
+    column_int = int(col)
+    start_index = 1  # it can start either at 0 or at 1
+    letter = ''
+    while column_int > 25 + start_index:
+        letter += chr(65 + int((column_int-start_index)/26) - 1)
+        column_int = column_int - (int((column_int-start_index)/26))*26
+    letter += chr(65 - start_index + (int(column_int)))
+
+    s_col = f'user_data!{letter}1'
+    SHEET.values_update(
+        s_col,
+        params={'valueInputOption': 'RAW'},
+        body={'values': data}
+    )
 
     return True
 
@@ -73,7 +87,7 @@ def convert_dict_to_array(data, data_to_save):
         if isinstance(data[f'{key}'], dict):
             convert_dict_to_array(data[f'{key}'], data_to_save)
         else:
-            data_to_save.append(data[f"{key}"])
+            data_to_save.append([data[f"{key}"]])
 
     return data_to_save
 
@@ -83,7 +97,7 @@ def retrieve_save():
     Retrieve saved game data and resume game from where last left off.
     '''
     worksheet = SHEET.worksheet("user_data")
-    col_array = worksheet.col_values(1)
+    row_array = worksheet.row_values(1)
 
     while True:
         clear_terminal()
@@ -105,12 +119,12 @@ def retrieve_save():
         print(f'\n{cyan("SEARCHING...")}')
 
         # Cycle through rows in Google sheet until GAME ID finds a match
-        for count, key in enumerate(col_array):
+        for count, key in enumerate(row_array):
             if key != user_input:
                 continue
 
             # Copy data from row where GAME ID matches
-            data = worksheet.row_values(count + 1)
+            data = worksheet.col_values(count + 1)
             stats = set_up_character(data, False)
             stats["game_save_row"] = count + 1
 
