@@ -4,7 +4,7 @@ functions to save and reload game data
 
 from math import (floor)
 from utils import (cyan, green, orange, print_go_back, print_press_enter_to,
-                   clear_terminal, print_error_message)
+                   clear_terminal, print_error_message, gold)
 import constants
 
 # gspread constants
