@@ -26,6 +26,7 @@ def save_data(stats, first_save):
 
     if not first_save:
         print(f'\n{cyan("Please do not close.")}')
+        print(f'\n{gold("AUTO SAVING.")}')
 
     data_to_save = []
     data_to_save = convert_dict_to_array(stats, data_to_save)
@@ -50,8 +51,6 @@ def save_data(stats, first_save):
     if not found or first_save:
         col = len(worksheet.row_values(1)) + 1
         found = save_loop(col, data_to_save, worksheet)
-
-    print_press_enter_to("Press Enter to continue...")
 
 
 def save_loop(col, data, worksheet):
