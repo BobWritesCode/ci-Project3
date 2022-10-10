@@ -75,10 +75,12 @@ def daily_menu(stats):
     elif user_choice == '8':
         help_menu(stats)
     elif user_choice == '0':
+        clear_terminal()
         print(f'\n{pink("IMPORTANT: ")} Make sure you write down your '
               + 'Game ID as you will need it to return to this game.')
         print(f'\nGame ID: {gold(stats["user_id"])}')
         save_data(stats, False)
+        print_press_enter_to("\nPress Enter to go to main menu...")
 
 
 def menu_string(stats, text_time_of_day):
