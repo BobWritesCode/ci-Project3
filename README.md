@@ -156,7 +156,7 @@ content.
 
 #### Colour Scheme
 
-I wanted to go for a vibrant eye catching look. I also tried to keep to a colour theme as much as possible and not use too many colours.
+I wanted to go for a vibrant eye-catching look. I also tried to keep to a colour theme as much as possible and not use too many colours.
 
 - Cyan - Used mainly for headers.
 - Pink - Used mainly for user tips.
@@ -187,10 +187,13 @@ def pink(text):
 
 #### Typography
 
+I do not use any external font outside the terminal except for the button provided by Code Institute to 'RUN PROGRAM'
+
 ---
 
 #### Imagery
 
+There is no imagery used for this project.
 
 ---
 
