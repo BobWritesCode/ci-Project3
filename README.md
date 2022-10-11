@@ -93,6 +93,14 @@ for the purpose of completing this project.***
 ## Brief
 
 ### Hotdog Empire Tycoon
+
+The goal of this site is to provide an interactive game where the user / player can compete for a place on the leader board. The final product should:
+
+- be programmatically error free,
+- be written using Python,
+- have replayability,
+- handle all user input errors gracefully and appropriately,
+- give clear instructions regarding use and valid inputs.
 ---
 
 ## UX &#8722; User Experience Design
