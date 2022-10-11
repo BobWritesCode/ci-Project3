@@ -109,13 +109,19 @@ Some example user stories which will affect the design
 
 #### First Time User
 
-> *"As a person who like likes to play games, I would like something that provides some challenges but not overly difficult to learn"*
+> *"As a person who like likes to play games, I would like something that provides some challenges but not overly difficult to learn."*
 >
-> *"As a competitive player, I would like to know how I compare with other users and go for top of a leader board"*
+> *"As a competitive player, I would like to know how I compare with other users and go for top of a leader board."*
 >
 > *"As someone unfamiliar with tycoon game concept, I would like something that is to pick up and provides adequate direction."*
 
 ### User Requirements
+
+> *"As a returning user, I would like to see a list of current high-scores."*
+>
+> *"I would like to be able to continue a game where I left off."*
+>
+> *"I would the experience to be different each time I play."*
 
 #### First Time User
 
