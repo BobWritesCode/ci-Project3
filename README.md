@@ -82,6 +82,12 @@
 
 ## Objective
 
+Design an interactive game that uses an existing API for to save user game data and a leader board.
+The project should run in a CLI, deployed via Heroku, using Python.
+
+***The needs within this project are not genuine and are made purely
+for the purpose of completing this project.***
+
 ---
 
 ## Brief
