@@ -203,11 +203,13 @@ There is no imagery used for this project.
 
 This chart shows what the user will expereience / see and is the concept of how the game will run
 
-![Flowchat for frontend](./readme-content/imgs/flowchat-frontend.png)
+![Flowchat for frontend](./readme-content/imgs/flowchart-frontend.png)
 
 ---
 
 ### Python Logic
+
+![Flowchat for backend](./readme-content/imgs/flowchart-backend.png)
 
 ---
 
