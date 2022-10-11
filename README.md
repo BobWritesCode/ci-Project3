@@ -156,6 +156,33 @@ content.
 
 #### Colour Scheme
 
+I wanted to go for a vibrant eye catching look. I also tried to keep to a colour theme as much as possible and not use too many colours.
+
+- Cyan - Used mainly for headers.
+- Pink - Used mainly for user tips.
+- Orange - Used mainly for when user input was required.
+- Red - Used mainly for errors and grabbing user attention.
+- Yellow - Used mainly to highlight '0. Go Back' to the user
+- Gold - Used mainly to highlight positive information to the user.
+- Green - Used mainly for cash balance and some areas to help separate information from each other.
+
+To create the different colour text in the game I used code found of [Grepper](https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3).
+
+```python
+def colored(r, g, b, text):
+    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
+```
+
+I then created specfic colour functions to have better readability, keep colours uniformed and make it quicker to add coloured text.
+
+```python
+def pink(text):
+    '''
+    Changes to PINK if printed to termail
+    '''
+    return colored(255, 105, 180, text)
+```
+
 ---
 
 #### Typography
