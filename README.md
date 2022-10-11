@@ -115,7 +115,7 @@ Some example user stories which will affect the design
 >
 > *"As someone unfamiliar with tycoon game concept, I would like something that is to pick up and provides adequate direction."*
 
-### User Requirements
+### Returning User
 
 > *"As a returning user, I would like to see a list of current high-scores."*
 >
@@ -123,11 +123,11 @@ Some example user stories which will affect the design
 >
 > *"I would the experience to be different each time I play."*
 
-#### First Time User
-
-#### Returning User
-
 #### Interested Party
+
+> *"As someone interested in how the application has been made, I am interested to see how user inputs have been validated and errors have been handled"*
+>
+>*"As someone interested in how the application wasm, I am interested to see any interesting code you made have used or created."*
 
 ---
 
