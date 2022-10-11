@@ -133,6 +133,18 @@ Some example user stories which will affect the design
 
 ### Initial Concept
 
+I intend to make a game application inspired by a childhood memory of Lemonade stand. The version I played was a flash game but learnt from starting this project that it all started with the [original created by Bob Jamison](https://en.wikipedia.org/wiki/Lemonade_Stand).
+
+I intend to:
+- use an API to store user game data, which the user can also use to retrieve a previous game they have not completed yet.
+- use an API to store a leader board, which users will be able to view.
+- write error proof logic.
+- a fun and interesting game.
+
+I do not intend:
+- to store any user sensitive information using the API.
+
+
 #### Wireframes
 
 ##### Desktop
