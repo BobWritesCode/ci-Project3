@@ -201,6 +201,10 @@ There is no imagery used for this project.
 
 ### Initial Flow
 
+This chart shows what the user will expereience / see and is the concept of how the game will run
+
+![Flowchat for frontend](./readme-content/imgs/flowchat-frontend.png)
+
 ---
 
 ### Python Logic
