@@ -1,8 +1,7 @@
 # Hotdog Empire Tycoon
 
 
-![Multiple Device Demo](
-  ./readme-content/imgs/preview.png)
+![Multiple Device Demo](./readme-content/imgs/preview.png)
 
 ## Live Site
 
@@ -33,7 +32,6 @@
     - [Initial Concept](#initial-concept)
       - [Wireframes](#wireframes)
         - [Desktop](#desktop)
-        - [Mobile](#mobile)
       - [Colour Scheme](#colour-scheme)
       - [Typography](#typography)
       - [Imagery](#imagery)
@@ -144,13 +142,15 @@ I intend to:
 I do not intend:
 - to store any user sensitive information using the API.
 
-
 #### Wireframes
+
+Due to the nature of this project the wireframes are very basic. There is only
+one page and the design does not change across any devices, only a change in
+content.
 
 ##### Desktop
 
-##### Mobile
-
+![Wireframe](./readme-content/imgs/wireframe.png)
 
 ---
 
