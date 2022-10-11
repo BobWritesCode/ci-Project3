@@ -105,6 +105,16 @@ The goal of this site is to provide an interactive game where the user / player 
 
 ## UX &#8722; User Experience Design
 
+Some example user stories which will affect the design
+
+#### First Time User
+
+> *"As a person who like likes to play games, I would like something that provides some challenges but not overly difficult to learn"*
+>
+> *"As a competitive player, I would like to know how I compare with other users and go for top of a leader board"*
+>
+> *"As someone unfamiliar with tycoon game concept, I would like something that is to pick up and provides adequate direction."*
+
 ### User Requirements
 
 #### First Time User
