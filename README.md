@@ -286,7 +286,7 @@ else:
 
 ![Purchase locations menu](./readme-content/imgs/purchase-locations.png)
 
-- Purchase carts
+- Purchase / upgrade carts
 
 Within this screen the user can purchase and upgrade carts. Logic is in place so the user can only purchase carts that they have already purchased the location for.
 
@@ -303,9 +303,14 @@ if cart_level == 5:
     continue
 ```
 
-![Purchase locations menu](./readme-content/imgs/purchase-carts.png)
+![Purchase / upgrade carts menu](./readme-content/imgs/purchase-carts.png)
 
-- Hire staff
+- Hire / train staff
+
+This screen is very similar to purchase / upgrade carts with the same logic to check which options can be purchases and are currently upgradable.
+
+![Hire / train staff menu](./readme-content/imgs/hire-staff.png)
+
 - Purchase stock
 - Change recipe
 - Set selling price
