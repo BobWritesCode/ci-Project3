@@ -269,6 +269,23 @@ This menu also provides valuable information to the player, so they don't have t
 ![Game Preview](./readme-content/imgs/preview.png)
 
 - Purchase locations
+
+Here the user can purchase locations they to sell at. Logic is in place so the user has to purchase each location in order.
+
+```python
+if (not stats['location'][str(user_choice)]['purchased']
+        and purchase_loc_try(stats, int(user_choice))):
+    remaining_cash = stats["cash"] - loc_cost[int(user_choice)-1]
+elif not purchase_loc_try(stats, int(user_choice)):
+    print_error_message('Can not make this purchase yet.')
+    continue
+else:
+    print_error_message('Already Purchased.')
+    continue
+```
+
+![Game Preview](./readme-content/imgs/purchase-locations.png)
+
 - Purchase carts
 - Hire staff
 - Purchase stock
