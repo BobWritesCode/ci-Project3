@@ -23,18 +23,25 @@ def show_leaderboard_data():
     Gets leaderbaord data from Google sheet and displays in terminal
     '''
     clear_terminal()
+
+    # Get highscores from Google worksheet
     highscore = SHEET.worksheet('leaderboard')
     data = highscore.get_all_values()
+
+    # Header
     print(f'{yellow("************************************")}')
     print(f'{cyan("Top 10 highscores for classic mode")}')
     print(f'{yellow("************************************")}\n')
-    print(f"{data[0][0]:<20}{ data[0][1]:<20}")
 
+    # Show table headings
+    print(f"{data[0][0]:<20}{ data[0][1]:<20}")
     print(constants.LINE)
 
+    # Show top 10 with scores
     for key in data[1:10]:
         print(f"{key[0]:<20}{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
 
+    # Get user input to exit to main menu.
     print_press_enter_to("Press Enter to return to main menu...")
     main_menu()
 
