@@ -371,11 +371,29 @@ Within this screen the user can change how many ingredients are used to make eac
 
 - Set selling price
 
-This is the most simple screen in the game. It quite simply allows the user to change the selling price of the product.
+This is simplest screen in the game. It quite simply allows the user to change the selling price of the product.
 
 ![Set selling price screen](./readme-content/imgs/set-selling-price.png)
 
 - Help section
+
+To assist the user to understand how to play the game, I have provided this help section. Due to the large blocks of text I have stored them in `constant.py` to avoid blocking up the code in `game_meny.py`.
+
+```python
+# Part of help text from constants.py
+HELP_SCREEN1 = f"""{cyan('Help:')}
+{LINE}
+{gold('Main Objective:')} Your main objective is to collect as much wealth
+before the final day. At the end your wealth will determine your score.
+
+{pink('Day cycle:')} Every day has 2 parts, morning and afternoon. The
+morning starts at 8am and finishes at 12noon, you can do purchases in the
+morning and afternoon. The afternoon is from 12noon to 5pm. The afternoon
+is slightly longer.
+```
+
+![Help screen](./readme-content/imgs/help-screen.png)
+
 - Save and quite
 - Auto save
 - Retrieve game
