@@ -558,11 +558,13 @@ def change_recipe_menu(stats):
     while True:
         clear_terminal()
 
+        # Set variables
         bun = green(stats['recipe']['bun'])
         sausage = green(stats['recipe']['sausage'])
         onion = green(stats['recipe']['onion'])
         sauce = green(stats['recipe']['sauce'])
 
+        # Display current recipe to user
         print(f'{cyan("Make changes to your recipe")}')
         print(constants.LINE)
         print(cyan("\nCurrent Recipe:"))
@@ -575,10 +577,13 @@ def change_recipe_menu(stats):
         print(f'{"3. Onions":<12}{"|":<2}{f"{onion}":<4} (Min 0 - Max 5)')
         print(f'{"4. Sauce":<12}{"|":<2}{f"{sauce}":<4} (Min 0 - Max 5)')
 
+        # Display cost to make each hotdog
         prod_cost = cost_to_make(stats)
         markup = constants.PRODUCT_VALUE_MAX_INCREASE
         text = green(f'£{str("{:.2f}".format(prod_cost))}')
         print(f'\nCost to make each hotdog you sell: {text}')
+
+        # Display recommended retail cost to user
         prod_cost *= markup
         text = gold(f'£{str("{:.2f}".format(prod_cost + .50))}')
         print(f'Recommended retail price: {text}')
@@ -586,29 +591,28 @@ def change_recipe_menu(stats):
 
         print_go_back()
 
+        # Show tip to user
         print(f'\n{pink("HOW: ")}To update your recipe type the ingredient'
               + ' and amount i.e. "3 4".')
-        result = input(f'\n{orange("Enter change i.e. 3 4: ")}')
 
+        # Get user input to change recipe
+        result = input(f'\n{orange("Enter change i.e. 3 4: ")}')
         result = result.split()
 
+        # Validate user input
         if not validate_recipe_change(result):
             continue
-
         if int(result[0]) == 0:
             break
-
         if int(result[0]) > 4:
             print_error_message("Invalid choice.")
             continue
-
         if ((int(result[0]) == 1 and int(result[1]) > 1)
                 or (int(result[0]) == 2 and int(result[1]) > 2)
                 or (int(result[0]) == 3 and int(result[1]) > 5)
                 or (int(result[0]) == 4 and int(result[1]) > 5)):
             print_error_message("Check maximum amounts.")
             continue
-
         if ((int(result[0]) == 1 and int(result[1]) < 1)
                 or (int(result[0]) == 2 and int(result[1]) < 1)
                 or (int(result[0]) == 3 and int(result[1]) < 0)
@@ -616,9 +620,11 @@ def change_recipe_menu(stats):
             print_error_message("Check minimum amounts.")
             continue
 
+        # Update variables
         stock_choosen = (constants.STOCK_OPTIONS[int(result[0])-1])
         stats['recipe'][stock_choosen] = int(result[1])
 
+        # Display ingredient being change and to what  new amount
         print(green(f'Updated {stock_choosen.capitalize()} to '
                     + f'{result[1]} per serving.'))
 
