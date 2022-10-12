@@ -312,6 +312,57 @@ This screen is very similar to purchase / upgrade carts with the same logic to c
 ![Hire / train staff menu](./readme-content/imgs/hire-staff.png)
 
 - Purchase stock
+
+The purchase stock screen has 2 stages. Firstly the main screen which shows the user information like how many ingredients they have in stock and how many products that makes based on their current recipe. At this stage the user can currently choose how many products they wish to have in stock ready to sell. If they input a number before the current stock level, logic will work out the amount of products need to be purchased and then show the user a checkout screen.
+
+```python
+def get_portions_avaliable(stats):
+    '''
+    Return how many portions of hotdogs are avaliable to sell
+    based on current stock and recipe.
+    '''
+    # Max portions that can be sold in 1 part of the day
+    max_por = 9999999
+    # Find out which ingrediant makes the least amount of hotdogs based
+    # on recipe.
+    for key in constants.STOCK_OPTIONS:
+        if stats["recipe"][key] > 0:
+            # How many hotdogs this ingredient will make
+            ing_max = stats[key] / stats["recipe"][key]
+            # Next, see if ing_max is smallest out of all ingredient, mearning
+            # max hotdogs
+            max_por = ing_max if ing_max < max_por else max_por
+
+    return floor(max_por)
+```
+
+![Purchase stock menu](./readme-content/imgs/purchase-stock.png)
+
+```python
+# Header
+print(f'\n{cyan("Checkout:")}')
+print(constants.LINE)
+print(f'{"Item:":<23}{"Qty:":<10}{"Portions:":<12}'
+      + f'{"Sub total:":<10}')
+print(constants.LINE)
+
+# Basket
+for count, key in enumerate(constants.STOCK_COSTS):
+    text = (basket["portions"][count]
+            * basket["total_qty_r"][count])
+    text2 = basket["total_qty_c"][count]
+    print(f'{constants.STOCK_COSTS[key][0]:<23}'
+          + f'{basket["total_qty_r"][count]:<12}'
+          + f'{text:<10}'
+          + f'£{"{:.2f}".format(text2):<10}')
+print(constants.LINE)
+
+# Basket total
+print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
+```
+
+![Purchase stock checkout](./readme-content/imgs/checkout.png)
+
 - Change recipe
 - Set selling price
 - Help section
