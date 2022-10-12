@@ -482,7 +482,7 @@ for count, key in enumerate(row_array):
 
 After the user has completed the game they are given a end game summary, as well as seeing if the made the leaderboard.
 
-![Making leaderboard](./readme-content/imgs/end-screen.png)
+![End game summary](./readme-content/imgs/end-screen.png)
 
 - Being added to leaderboard
 
@@ -544,9 +544,14 @@ for key in data[1:10]:
 
 ![Leaderboard](./readme-content/imgs/view-leaderboard.png)
 
-- sales report
-- reputation
 - View credits
+
+To pay homage to the original creator of the game that inspired this project and to also to the people who tested this game. I created a credits screen where I could show my appreciation.
+
+![Credits](./readme-content/imgs/credits.png)
+
+- Sales report
+- Reputation
 - Seemless transition back to menu (No random termination of prgramme)
 - Continuous validation
 - Error Handling
