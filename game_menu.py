@@ -386,17 +386,16 @@ def purchase_stock_menu(stats):
     '''
     Purchase stock menu
     '''
-
-    # Main function constants.line stats here.
     while True:
         clear_terminal()
-
+        # Header
         print(f'{cyan("Purchase consumable stock")}')
         print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}')
         print('You have enough ingrediants to sell '
               + f'{gold(get_portions_avaliable(stats))} hotdogs.\n')
 
+        # Show current ingredients in stock
         print(f'{cyan("Current stock:")}')
         print(constants.LINE)
         print(f'{stats["bun"]:<5} x {"Hotdog bun(s)":<20}'
@@ -404,23 +403,27 @@ def purchase_stock_menu(stats):
         print(f'{stats["onion"]:<5} x {"Onion(s)":<20}'
               + f'| {stats["sauce"]:<5} x Special sauce(s)')
 
+        # Show price list for ingredients
         print(constants.PURCHASE_STOCK_OPTIONS)
 
+        # Tip to show.
         print(f"\n{pink('TIP: ')}This will purchase the amount of "
               + "ingredients you \nneed for the amount of hotdogs "
               + "you want to stock. All sales are final")
 
         print_go_back()
 
+        # Get user input
         user_choice = input(orange('\nHow many hotdogs would you like to '
                             + 'have in stock? '))
 
+        # Validation checks
         if not validate_input(user_choice, 99999):
             continue
-
         if int(user_choice) == 0:
             break
 
+        # Setting up variables
         cost = 0
         basket = {  # Create empty basket
             "stock": [],
@@ -431,8 +434,9 @@ def purchase_stock_menu(stats):
             "total_qty_c": []  # Total cost for item
         }
 
+        # Calculate how many ingredients need to be purchased and thee
+        # costs including total cost.
         for count, key in enumerate(constants.STOCK_OPTIONS):
-            # stock = constants.STOCK_OPTIONS[count]
             basket["stock"].append(stats[key])
             basket["recipe"].append(stats['recipe'][key])
             basket["portions"].append(constants.STOCK_COSTS[key][1])
@@ -461,43 +465,50 @@ def purchase_stock_menu(stats):
 
             cost += basket["total_qty_c"][count]
 
+        # If cost is 0 then no ingredients required to be purchased
+        # Show error to user then go back to beginning of loop.
         if cost == 0:
             print_error_message("\nYou already have this many hotdogs in "
                                 + "stock.")
             continue
 
+        # Displaying checkout to the user
         while True:
             clear_terminal()
+            # Header
             print(f'\n{cyan("Checkout:")}')
             print(constants.LINE)
             print(f'{"Item:":<23}{"Qty:":<10}{"Portions:":<12}'
                   + f'{"Sub total:":<10}')
             print(constants.LINE)
 
+            # Basket
             for count, key in enumerate(constants.STOCK_COSTS):
                 text = (basket["portions"][count]
                         * basket["total_qty_r"][count])
-
-                text = basket["total_qty_c"][count]
+                text2 = basket["total_qty_c"][count]
                 print(f'{constants.STOCK_COSTS[key][0]:<23}'
                       + f'{basket["total_qty_r"][count]:<12}'
                       + f'{text:<10}'
-                      + f'£{"{:.2f}".format(text):<10}')
+                      + f'£{"{:.2f}".format(text2):<10}')
 
             print(constants.LINE)
+
+            # Basket total
             print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
 
+            # User input required
             user_choice = input(f'\n{orange("Would you like to make this")}'
                                 + f'{orange(" purchase? (yes / no) ")}')
 
+            # Validate user input
             if not validate_yes_no(user_choice):
                 continue
-
             if user_choice.lower() in ['y', 'yes']:
+
                 # Check if remaining cash will above 0 after purchase,
                 # if so continue, else loop
                 remaining_cash = stats["cash"] - cost
-
                 if remaining_cash < 0:
                     print_error_message("Not enough funds")
                     break
@@ -507,6 +518,7 @@ def purchase_stock_menu(stats):
                     stats[i] += (basket["portions"][count]
                                  * basket["total_qty_r"][count])
 
+                # Purchase successful, update user cash balance.
                 print(green('Purchase Successful'))
                 stats["cash"] = remaining_cash
                 print(cyan('Remaining balance '
@@ -514,6 +526,7 @@ def purchase_stock_menu(stats):
                 print_press_enter_to("Press Enter to continue...")
                 break
 
+            # Purchaser unsuccssgful
             print(red('Purchase Aborted'))
             print_press_enter_to("Press Enter to continue...")
             break
