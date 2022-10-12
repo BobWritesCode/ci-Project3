@@ -1,14 +1,12 @@
 '''
 functions to save and reload game data
 '''
-
 from math import (floor)
 from utils import (cyan, green, orange, print_go_back, print_press_enter_to,
                    clear_terminal, print_error_message, gold)
 import constants
 
 # gspread constants
-
 SCOPE = constants.SCOPE
 CREDS = constants.CREDS
 SCOPED_CREDS = constants.SCOPED_CREDS
@@ -19,37 +17,49 @@ SHEET = constants.SHEET
 def save_data(stats, first_save):
     '''
     Save player data to database.
-    The for loop looks through the coloumn 1 data from Google sheets.
-    If it finds a match it updates that row. Else creates a new row with data.
-    If "exit = True" go to main menu after save.
+    The for loop looks through row 1 data from Google sheets.
+    If it finds a match it updates that row. Else creates a new
+    coloumn with data.
     '''
-
+    # Do not run when character is set up.
     if not first_save:
         print(f'\n{cyan("Please do not close.")}')
-        print(f'{gold("AUTO SAVING.")}')
+        print(f'{gold("SAVING...")}')
 
+    # Set up vairables
     data_to_save = []
-    data_to_save = convert_dict_to_array(stats, data_to_save)
-    worksheet = SHEET.worksheet("user_data")
-    row_array = worksheet.row_values(1)
     found = False
 
+    # Run function to convert dict to list, and return list
+    data_to_save = convert_dict_to_array(stats, data_to_save)
+
+    # Get data from Google Sheet.
+    worksheet = SHEET.worksheet("user_data")
+    row_array = worksheet.row_values(1)
+
+    # Do not run when character is first set up
     if not first_save:
+        # If player stats already have save column saved then
+        # no need to search.
         if int(stats["game_save_row"]) != int(0):
             col = stats["game_save_row"]
+            # Run save_loop() - Saves data.
             found = save_loop(col, data_to_save, worksheet)
         else:
+            # If play stats do not have column save then search
+            # array for correct column.
             for col, key in enumerate(row_array, 1):
                 if key == stats['user_id']:
-                    found = save_loop(
-                        col, data_to_save, worksheet
-                        )
+                    # Run save_loop() - Saves data.
+                    found = save_loop(col, data_to_save, worksheet)
                     break
 
         print(f'{green("Data saved. Safe to continue.")}', end='\r')
 
     if not found or first_save:
+        # Last empty column in worksheet.
         col = len(worksheet.row_values(1)) + 1
+        # Run save_loop() - Saves data.
         found = save_loop(col, data_to_save, worksheet)
 
 
@@ -57,24 +67,26 @@ def save_loop(col, data, worksheet):
     '''
     Saves data[] to the correct row in Google.
     '''
-
+    # Coverts column number into letter notation used in spreadsheets
+    # for columns. Example: 26 = Z, 27 = AA, 28 = AB...
     # CREDIT :
     # https://stackoverflow.com/questions/23861680/convert-spreadsheet
     # -number-to-column-letter
     column_int = int(col)
-    start_index = 1  # it can start either at 0 or at 1
+    start_index = 1
     letter = ''
     while column_int > 25 + start_index:
         letter += chr(65 + int((column_int-start_index)/26) - 1)
         column_int = column_int - (int((column_int-start_index)/26))*26
     letter += chr(65 - start_index + (int(column_int)))
 
+    # Creates string for cell notation for spreadsheet.
     s_col = f'user_data!{letter}1'
-    SHEET.values_update(
-        s_col,
-        params={'valueInputOption': 'RAW'},
-        body={'values': data}
-    )
+
+    # Saves data to worksheet
+    SHEET.values_update(s_col,
+                        params={'valueInputOption': 'RAW'},
+                        body={'values': data})
 
     return True
 
@@ -85,8 +97,10 @@ def convert_dict_to_array(data, data_to_save):
     '''
     for key in data:
         if isinstance(data[f'{key}'], dict):
+            # If key is a dict then loop function
             convert_dict_to_array(data[f'{key}'], data_to_save)
         else:
+            # If key is not a fict then append to table.
             data_to_save.append([data[f"{key}"]])
 
     return data_to_save
@@ -102,32 +116,46 @@ def retrieve_save():
     while True:
         clear_terminal()
 
+        # Header
         print(f'{cyan("Retrieve a previous game")}')
         print(constants.LINE)
+
+        # Show instructions to user
         print('\nYou will need your game ID to retrieve a previous game.')
         print_go_back()
 
+        # Get user input of game ID.
         user_input = input(f'\n{orange("Enter Game ID: ")}')
 
+        # If user input is 0 go back to main menu.
         if user_input == '0':
             break
 
+        # If user input is not 6 character long show error message.
         if len(str(user_input)) != 6:
             print_error_message("\nNot a valid Game ID.")
             continue
 
         print(f'\n{cyan("SEARCHING...")}')
 
-        # Cycle through rows in Google sheet until GAME ID finds a match
+        # Cycle through row values until Game ID finds a match.
         for count, key in enumerate(row_array):
             if key != user_input:
                 continue
 
-            # Copy data from row where GAME ID matches
+            # Copy data from column where Game ID found match.
             data = worksheet.col_values(count + 1)
+
+            # Run function set_up_character()
+            # Converts data retrieved from worksheet into data format
+            # game uses.
             stats = set_up_character(data, False)
+
+            # To save searching again later for correct column when saving
+            # apply correct column to game data.
             stats["game_save_row"] = count + 1
 
+            # If game found but completed, show error message.
             if stats["game_over"]:
                 print_error_message("\nGame already completed")
                 break
