@@ -394,8 +394,69 @@ is slightly longer.
 
 ![Help screen](./readme-content/imgs/help-screen.png)
 
-- Save and quite
+- Save and quit
 - Auto save
+
+The game features a save functionality. The user can choose to save at the game menu or the game automatically save at each trading cycle, as well as one last time when the game is completed.
+
+There were a couple obstacles to overcome with the save function. 
+
+1) When saving using `gspread` it does not accept data in a dictionary format. So I had to convert a dictionary to a list. When searching for a solution I was unable myself to come across one. I had to write the code myself. I was able to do this with the solution below.\
+\
+Simply it takes the dictionary and goes through it key by key appending a blank table.\
+\
+If the next entry is a dictionary within the dictionary it sends that through a new thread of the function. And repeats that unto it reaches a non dictionary key.\
+\
+It then returns to the original thread and moves on to the next key.\
+\
+This repeated until the dictionary has been fully completed.
+
+```python
+def convert_dict_to_array(data, data_to_save):
+    '''
+    Convert dict game data to an array so it can be saved to Google Sheet
+    '''
+    for key in data:
+        if isinstance(data[f'{key}'], dict):
+            # If key is a dict then loop function
+            convert_dict_to_array(data[f'{key}'], data_to_save)
+        else:
+            # If key is not a fict then append to table.
+            data_to_save.append([data[f"{key}"]])
+
+    return data_to_save
+```
+
+2) When saving to a worksheet using `gspread`, saving to a row you can just use a number. But saving to a column you have to use letter notation. I was going to write the code myself but then thought there is a chance someone else has already done this and I can find the code online, which I did.\
+\
+CREDIT : https://stackoverflow.com/questions/23861680/convert-spreadsheet-number-to-column-letter
+
+```python
+def save_loop(col, data, worksheet):
+    '''
+    Saves data[] to the correct row in Google.
+    '''
+    # Coverts column number into letter notation used in spreadsheets
+    # for columns. Example: 26 = Z, 27 = AA, 28 = AB...
+    column_int = int(col)
+    start_index = 1
+    letter = ''
+    while column_int > 25 + start_index:
+        letter += chr(65 + int((column_int-start_index)/26) - 1)
+        column_int = column_int - (int((column_int-start_index)/26))*26
+    letter += chr(65 - start_index + (int(column_int)))
+
+    # Creates string for cell notation for spreadsheet.
+    s_col = f'user_data!{letter}1'
+
+    # Saves data to worksheet
+    SHEET.values_update(s_col,
+                        params={'valueInputOption': 'RAW'},
+                        body={'values': data})
+
+    return True
+```
+
 - Retrieve game
 - View leader board
 - Being added to leaderboard
