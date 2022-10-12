@@ -336,23 +336,32 @@ def end_game(stats):
     upload their score to the leaderboard if they are in the top X of players.
     '''
     clear_terminal()
+
+    # Save game for last time.
     stats["game_over"] = True
     save_data(stats, False)
-    print(f'{gold("CONGRATULATIONS!")}')
-    print('\nYou completed the final day. Let\'s see how you did!')
 
+    clear_terminal()
+
+    # Heading.
+    print(f'{gold("CONGRATULATIONS!")}')
+    print('\nYou completed the final day. Let\'s see how you did...')
+
+    # Set up variables.
     cash = stats["cash"]
     rep = stats["reputation"]
     sum1 = 0
     sum2 = 0
     sum3 = 0
 
+    # Add up players stats.
     for key in stats["location"]:
         sum1 += 1 if stats["location"][str(key)]["purchased"] else 0
         sum2 += stats["location"][str(key)]["cart_lvl"]
         sum3 += stats["location"][str(key)]["staff_lvl"]
 
-    print(f'{gold("Your final score!")}\n')
+    # Show summary to player.
+    print(f'\n{gold("Your final score!")}\n')
     text = green("£" + str(floor(cash * 100) / 100))
     print(f'You managed to earn a whooping {text}')
     text = gold(str(sum1)) + pink(" / 5")
@@ -366,15 +375,20 @@ def end_game(stats):
     percent = (sum1 + sum2 + sum3 + rep) / 60
     text = gold(str(floor(percent * 100)) + "%")
     print(f'{text} Completion rating!')
+
     print('\nI hope you are happy with what you have achieved becuase I am.')
     print('Let\'s see if you managed to secure a place on our leaderboard.')
 
+    # Run function to see if player made top 10 and if so update leaderboard.
     check_top_10(stats)
 
+    # Clear stats saved in memory, purely as a precaution.
     stats = {}
 
+    # Get user input to type a string, to stop user accidentally skipping
+    # summary screen.
     while True:
-        print(f'\n\n{gold("THANK YOU FOR PLAYING!")}\n')
+        print(f'\n{gold("THANK YOU FOR PLAYING!")}\n')
         result = input(orange('Type "end" to go back to main menu.'))
         if result == str('end'):
             break
@@ -389,21 +403,19 @@ def check_top_10(stats):
         - Add new entry in
         - Save new table to Google Worksheet
     '''
-    clear_terminal()
-
     # Get current leaderboard information from Google worksheet.
     highscore = SHEET.worksheet('leaderboard')
     data = highscore.get_all_values()
 
     # Go through current leaderboard entries and see if placed
     # higher than any of the current entries.
-    for count, key in enumerate(data[1:10], 2):
+    for count, key in enumerate(data[1:11], 2):
 
         # Player has placed higher then a player.
         if stats["cash"] > float(key[1]):
             print(f"\n{green('CONGRATULATIONS!!!')}")
             print(f'You placed number {gold(count - 1)} on our '
-                  + 'leaderboard!\n')
+                  + 'leaderboard!')
 
             # Insert data of player into correct place.
             data.insert(count - 1, [stats["name"], stats["cash"]])
