@@ -389,20 +389,29 @@ def check_top_10(stats):
         - Add new entry in
         - Save new table to Google Worksheet
     '''
+    clear_terminal()
+
+    # Get current leaderboard information from Google worksheet.
     highscore = SHEET.worksheet('leaderboard')
     data = highscore.get_all_values()
-    # Go through current leader board entries and see if placed higher than any
-    # of the current entries.
+
+    # Go through current leaderboard entries and see if placed
+    # higher than any of the current entries.
     for count, key in enumerate(data[1:10], 2):
+
         # Player has placed higher then a player.
         if stats["cash"] > float(key[1]):
             print(f"\n{green('CONGRATULATIONS!!!')}")
-            print(f'You placed number {gold(count - 1)} on our leaderboard!\n')
-            # Insert data of player into correct place
+            print(f'You placed number {gold(count - 1)} on our '
+                  + 'leaderboard!\n')
+
+            # Insert data of player into correct place.
             data.insert(count - 1, [stats["name"], stats["cash"]])
+
             # Remove data for player who is no in 11th place.
             data.pop()
-            # Update Google sheet
+
+            # Update Google worksheet.
             SHEET.values_update(
                 'leaderboard!A1',
                 params={'valueInputOption': 'RAW'},
@@ -410,4 +419,5 @@ def check_top_10(stats):
                 )
             break
     else:
-        print('Sadly you didn\'t make the top 10 this time. Maybe next time?')
+        print('\nSadly you didn\'t make the top 10 this time.'
+              + ' Maybe next time?')
