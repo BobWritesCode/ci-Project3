@@ -43,11 +43,14 @@ def get_portions_avaliable(stats):
     '''
     # Max portions that can be sold in 1 part of the day
     max_por = 9999999
+    # Find out which ingrediant makes the least amount of hotdogs based
+    # on recipe.
     for key in constants.STOCK_OPTIONS:
         if stats["recipe"][key] > 0:
-            # First, see make portions of hotdog from each ingredient
+            # How many hotdogs this ingredient will make
             ing_max = stats[key] / stats["recipe"][key]
             # Next, see if ing_max is smallest out of all ingredient, mearning
             # max hotdogs
             max_por = ing_max if ing_max < max_por else max_por
+
     return floor(max_por)
