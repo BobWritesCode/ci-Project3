@@ -79,7 +79,7 @@
 
 ## Objective
 
-Design an interactive game that uses an existing API for to save user game data and a leader board.
+Design an interactive game that uses an existing API for to save user game data and a leaderboard.
 The project should run in a CLI, deployed via Heroku, using Python.
 
 ***The needs within this project are not genuine and are made purely
@@ -91,7 +91,7 @@ for the purpose of completing this project.***
 
 ### Hotdog Empire Tycoon
 
-The goal of this site is to provide an interactive game where the user / player can compete for a place on the leader board. The final product should:
+The goal of this site is to provide an interactive game where the user / player can compete for a place on the leaderboard. The final product should:
 
 - be programmatically error free,
 - be written using Python,
@@ -108,7 +108,7 @@ Some example user stories which will affect the design
 
 > *"As a person who like likes to play games, I would like something that provides some challenges but not overly difficult to learn."*
 >
-> *"As a competitive player, I would like to know how I compare with other users and go for top of a leader board."*
+> *"As a competitive player, I would like to know how I compare with other users and go for top of a leaderboard."*
 >
 > *"As someone unfamiliar with tycoon game concept, I would like something that is to pick up and provides adequate direction."*
 
@@ -134,7 +134,7 @@ I intend to make a game application inspired by a childhood memory of Lemonade s
 
 I intend to:
 - use an API to store user game data, which the user can also use to retrieve a previous game they have not completed yet.
-- use an API to store a leader board, which users will be able to view.
+- use an API to store a leaderboard, which users will be able to view.
 - write error proof logic.
 - a fun and interesting game.
 
@@ -478,8 +478,30 @@ for count, key in enumerate(row_array):
 
 ![Retrieve Game](./readme-content/imgs/retrieve-game.png)
 
-- View leader board
+- View leaderboard
 
+Allows users to see leaderboard and provide a goal to aim for while playing the game. The scores are saved to a Google worksheet.
+
+```python
+  # Get highscores from Google worksheet
+  highscore = SHEET.worksheet('leaderboard')
+  data = highscore.get_all_values()
+
+  # Header
+  print(f'{yellow("************************************")}')
+  print(f'{cyan("Top 10 highscores for classic mode")}')
+  print(f'{yellow("************************************")}\n')
+
+  # Show table headings
+  print(f"{data[0][0]:<20}{ data[0][1]:<20}")
+  print(constants.LINE)
+
+  # Show top 10 with scores
+  for key in data[1:10]:
+      print(f"{key[0]:<20}{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
+```
+
+![Leaderboard](./readme-content/imgs/view-leaderboard.png)
 
 - Being added to leaderboard
 - View credits
