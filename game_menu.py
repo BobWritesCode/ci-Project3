@@ -392,7 +392,7 @@ def purchase_stock_menu(stats):
         print(f'{cyan("Purchase consumable stock")}')
         print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}')
-        print('You have enough ingrediants to sell '
+        print('You have enough ingredients to sell '
               + f'{gold(get_portions_avaliable(stats))} hotdogs.\n')
 
         # Show current ingredients in stock
@@ -567,7 +567,7 @@ def change_recipe_menu(stats):
         print(constants.LINE)
         print(cyan("\nCurrent Recipe:"))
         print(constants.LINE)
-        print(f'{cyan("Ingrediant "):<12}{"|":<2}'
+        print(f'{cyan("Ingredient "):<12}{"|":<2}'
               + f'{cyan("Portions per serving"):<0}')
         print(constants.LINE)
         print(f'{"1. Buns":<12}{"|":<2}{f"{bun}":<4} (Min 1 - Max 1)')
