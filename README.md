@@ -364,6 +364,11 @@ print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
 ![Purchase stock checkout](./readme-content/imgs/checkout.png)
 
 - Change recipe
+
+within this screen the user can change how many ingredients are used to make each hotdog. It also displays the cost to make each hotdog based on recipe and current recommended retail price (RRP) (cost to make * 3 + 0.5). 
+
+![Change recipe](./readme-content/imgs/change-recipe.png)
+
 - Set selling price
 - Help section
 - Save and quite
