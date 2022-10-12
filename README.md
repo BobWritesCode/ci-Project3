@@ -365,11 +365,16 @@ print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
 
 - Change recipe
 
-within this screen the user can change how many ingredients are used to make each hotdog. It also displays the cost to make each hotdog based on recipe and current recommended retail price (RRP) (cost to make * 3 + 0.5). 
+Within this screen the user can change how many ingredients are used to make each hotdog. It also displays the cost to make each hotdog based on recipe and current recommended retail price (RRP) (cost to make * 3 + 0.5). 
 
 ![Change recipe](./readme-content/imgs/change-recipe.png)
 
 - Set selling price
+
+This is the most simple screen in the game. It quite simply allows the user to change the selling price of the product.
+
+![Set selling price screen](./readme-content/imgs/set-selling-price.png)
+
 - Help section
 - Save and quite
 - Auto save
