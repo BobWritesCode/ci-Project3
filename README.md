@@ -478,69 +478,74 @@ for count, key in enumerate(row_array):
 
 ![Retrieve Game](./readme-content/imgs/retrieve-game.png)
 
-- View leaderboard
+- End Game Summary
 
-Allows users to see leaderboard and provide a goal to aim for while playing the game. The scores are saved to a Google worksheet.
+After the user has completed the game they are given a end game summary, as well as seeing if the made the leaderboard.
 
-```python
-  # Get highscores from Google worksheet
-  highscore = SHEET.worksheet('leaderboard')
-  data = highscore.get_all_values()
-
-  # Header
-  print(f'{yellow("************************************")}')
-  print(f'{cyan("Top 10 highscores for classic mode")}')
-  print(f'{yellow("************************************")}\n')
-
-  # Show table headings
-  print(f"{data[0][0]:<20}{ data[0][1]:<20}")
-  print(constants.LINE)
-
-  # Show top 10 with scores
-  for key in data[1:10]:
-      print(f"{key[0]:<20}{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
-```
-
-![Leaderboard](./readme-content/imgs/view-leaderboard.png)
+![Making leaderboard](./readme-content/imgs/end-screen.png)
 
 - Being added to leaderboard
 
 At the end of the game. Logic will check to see if the player's score has made the top 10 of the leaderboard. If so add player into list where they have placed and remove the bottom player. Then save new leaderboard to the database.
 
 ```python
-  # Get current leaderboard information from Google worksheet.
-  highscore = SHEET.worksheet('leaderboard')
-  data = highscore.get_all_values()
+# Get current leaderboard information from Google worksheet.
+highscore = SHEET.worksheet('leaderboard')
+data = highscore.get_all_values()
 
-  # Go through current leaderboard entries and see if placed
-  # higher than any of the current entries.
-  for count, key in enumerate(data[1:10], 2):
+# Go through current leaderboard entries and see if placed
+# higher than any of the current entries.
+for count, key in enumerate(data[1:10], 2):
 
-      # Player has placed higher then a player.
-      if stats["cash"] > float(key[1]):
-          print(f"\n{green('CONGRATULATIONS!!!')}")
-          print(f'You placed number {gold(count - 1)} on our '
-                + 'leaderboard!\n')
+    # Player has placed higher then a player.
+    if stats["cash"] > float(key[1]):
+        print(f"\n{green('CONGRATULATIONS!!!')}")
+        print(f'You placed number {gold(count - 1)} on our '
+              + 'leaderboard!\n')
 
-          # Insert data of player into correct place
-          data.insert(count - 1, [stats["name"], stats["cash"]])
+        # Insert data of player into correct place
+        data.insert(count - 1, [stats["name"], stats["cash"]])
 
-          # Remove data for player who is no in 11th place.
-          data.pop()
+        # Remove data for player who is no in 11th place.
+        data.pop()
 
-          # Update Google worksheet
-          SHEET.values_update(
-              'leaderboard!A1',
-              params={'valueInputOption': 'RAW'},
-              body={'values': data}
+        # Update Google worksheet
+        SHEET.values_update(
+            'leaderboard!A1',
+            params={'valueInputOption': 'RAW'},
+            body={'values': data}
               )
 ```
 
-![Leaderboard](./readme-content/imgs/make-leaderboard.png)
+![Making leaderboard](./readme-content/imgs/make-leaderboard.png)
+
+- View leaderboard
+
+Allows users to see leaderboard and provide a goal to aim for while playing the game. The scores are saved to a Google worksheet.
+
+```python
+# Get highscores from Google worksheet
+highscore = SHEET.worksheet('leaderboard')
+data = highscore.get_all_values()
+
+# Header
+print(f'{yellow("************************************")}')
+print(f'{cyan("Top 10 highscores for classic mode")}')
+print(f'{yellow("************************************")}\n')
+
+# Show table headings
+print(f"{data[0][0]:<20}{ data[0][1]:<20}")
+print(constants.LINE)
+
+# Show top 10 with scores
+for key in data[1:10]:
+    print(f"{key[0]:<20}{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
+```
+
+![Leaderboard](./readme-content/imgs/view-leaderboard.png)
 
 - sales report
 - reputation
-- end screen
 - View credits
 - Seemless transition back to menu (No random termination of prgramme)
 - Continuous validation
