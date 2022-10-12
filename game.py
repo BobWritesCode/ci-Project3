@@ -337,12 +337,9 @@ def end_game(stats):
     '''
     clear_terminal()
     stats["game_over"] = True
+    save_data(stats, False)
     print(f'{gold("CONGRATULATIONS!")}')
     print('\nYou completed the final day. Let\'s see how you did!')
-    print('But first lets save your game!')
-
-    save_data(stats, False)
-    clear_terminal()
 
     cash = stats["cash"]
     rep = stats["reputation"]
