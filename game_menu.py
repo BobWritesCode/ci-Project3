@@ -640,31 +640,48 @@ def set_selling_price(stats):
     '''
     while True:
         clear_terminal()
+
+        # Set variable(s)
         curr_price = stats["selling_price"]
+        production_cost = cost_to_make(stats)
+        net_profit = round(curr_price - production_cost, 2)
+
+        # Header
         print(f'{cyan("Set the selling price of your product")}')
         print(constants.LINE)
-        production_cost = cost_to_make(stats)
+
+        # Display text to user
         text = green("£" + str(round(production_cost, 2)))
         print(f'\nThe current cost for to make your your product is {text}')
         text = green("£"+"{:.2f}".format(stats["selling_price"]))
         print(f'\nCurrent selling price is {text}')
-        net_profit = round(curr_price - production_cost, 2)
 
+        # Change colour of profit margin based on positive or negative
+        # number.
         if net_profit >= 0:
             print(f'\n{green("Profit per serving is: ")}£{net_profit}')
         else:
             print(f'\n{red("Loss per serving is: ")}£{net_profit}')
 
         print_go_back()
+
+        # Get user input for new selling price.
         new_price = input(f'\n{orange("Enter new price: £")}')
 
+        # Validate user input
         if validate_price_change(new_price):
+
+            # If user puts 0, go back to game menu.
             if float(new_price) == 0:
                 break
+
+            # Update selling price to user input
             new_price = round(float(new_price), 2)
             stats["selling_price"] = float(new_price)
             print(green('\nUpdated selling price to '
                         + f'£{"{:.2f}".format(new_price)}'))
+
+            # User input to continue
             print_press_enter_to("Press Enter to continue...")
 
     daily_menu(stats)
