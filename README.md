@@ -458,7 +458,29 @@ def save_loop(col, data, worksheet):
 ```
 
 - Retrieve game
+
+As the game allows the user to save their game and provides then a Game ID. The user is able to retrieve their game providing it has not already been completed.
+
+```python
+# Cycle through row values until Game ID finds a match.
+for count, key in enumerate(row_array):
+    if key != user_input:
+        continue
+
+    # Copy data from column where Game ID found match.
+    data = worksheet.col_values(count + 1)
+
+    # Run function set_up_character()
+    # Converts data retrieved from worksheet into data format
+    # game uses.
+    stats = set_up_character(data, False)
+```
+
+![Retrieve Game](./readme-content/imgs/retrieve-game.png)
+
 - View leader board
+
+
 - Being added to leaderboard
 - View credits
 - Seemless transition back to menu (No random termination of prgramme)
