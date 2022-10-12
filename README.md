@@ -1,7 +1,7 @@
 # Hotdog Empire Tycoon
 
 
-![Multiple Device Demo](./readme-content/imgs/preview.png)
+![Game Preview](./readme-content/imgs/preview.png)
 
 ## Live Site
 
@@ -40,8 +40,7 @@
     - [Python Logic](#python-logic)
   - [Features](#features)
     - [Existing Features](#existing-features)
-      - [UX](#ux)
-      - [Keywords](#keywords)
+      - [UX](#ux))
     - [Features Left to Implement](#features-left-to-implement)
   - [Data Model](#data-model)
   - [Technologies Used](#technologies-used)
@@ -217,15 +216,81 @@ This chart shows what the user will expereience / see and is the concept of how 
 
 ### Existing Features
 
+**Main Menu**
+
+The main menu is the first screen a user will see, and give them 4 options to pink from:
+- New game
+- Load game
+- View leaderboard 
+- Credits
+
+![Main Menu](./readme-content/imgs/main-menu.png)
+
+Setting up a new Game
+
+The user will need to provide a new name for their new hotdog empire. This must be from 5 and up to 20 characters.
+
+```python
+if len(user_name) < 5 or length > 20:
+    print_error_message("Company name must be least 5 and no more "
+                        + "than 20 characters")
+    continue
+```
+
+After a game ID will be created and given to the player. This game ID is important as it will be how the user can retrieve their game save.
+
+```python
+while True:
+    user_id = "".join(
+        string.ascii_uppercase[random.randrange(0, 25)] for x in range(6)
+        )
+    user_data = SHEET.worksheet('user_data')
+    cell_list = user_data.findall(user_id)
+    if len(cell_list) == 0:
+        break
+```
+After this the user will be given a short back story that is pulled from `constants.py`
+
+**Game Menu**
+
+The game menu is the main screen a user will interact with while playing the game. The user menu gives the player 9 options to pick from, including:
+- Purchase location
+- Purchase / upgrade cart(s)
+- Hire / upgrade staff
+- Purchase stock
+- Change recipe
+- Set selling prices
+- Start trading
+- Help
+- Save and quit
+
+This menu also provides valuable information to the player, so they don't have to unnecessarily go in and out of menu options to get this information.
+
+![Game Preview](./readme-content/imgs/preview.png)
+
+- Purchase locations
+- Purchase carts
+- Hire staff
+- Purchase stock
+- Change recipe
+- Set selling price
+- Help section
+- Save and quite
+- Auto save
+- Retrieve game
+- View leader board
+- Being added to leaderboard
+- View credits
+- Seemless transition back to menu (No random termination of prgramme)
+- Continuous validation
+- Error Handling
+
 #### UX
 
----
-
-#### Keywords
-
----
 
 ### Features Left to Implement
+
+- Different day challanged (short version of 5 days)
 
 ---
 
