@@ -227,7 +227,7 @@ def purchase_cart_menu(stats):
 
     while True:
         clear_terminal()
-        print(f'{cyan("Purchase or upgrade carts at your hotdog pitch")}'
+        print(f'{cyan("Purchase or upgrade carts at your hotdog pitch ")}'
               + f'{cyan("locations")}')
         print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}\n')
@@ -272,18 +272,19 @@ def purchase_cart_menu(stats):
         if int(result) == 0:
             break
 
-        # Make sure location has been purchased first
+        # Make sure location has been purchased first.
         if not stats['location'][str(result)]['purchased']:
             print_error_message("Purchase Land")
             continue
 
-        # Check if remaining cash will above 0 after purchase, if so
-        # continue, else loop
+        # Check if cart is not already at max level.
         cart_level = stats['location'][str(result)]['cart_lvl']
         if cart_level == 5:
             print_error_message("Already at max level.")
             continue
 
+        # Check if remaining cash will above 0 after purchase, if so
+        # continue, else loop.
         remaining_cash = stats["cash"] - cart_price[cart_level]
         if remaining_cash >= 0:
             new_cart_lvl = cart_level + 1
