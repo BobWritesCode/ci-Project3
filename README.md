@@ -266,7 +266,7 @@ The game menu is the main screen a user will interact with while playing the gam
 
 This menu also provides valuable information to the player, so they don't have to unnecessarily go in and out of menu options to get this information.
 
-![Game Preview](./readme-content/imgs/preview.png)
+![Game menu](./readme-content/imgs/preview.png)
 
 - Purchase locations
 
@@ -284,9 +284,27 @@ else:
     continue
 ```
 
-![Game Preview](./readme-content/imgs/purchase-locations.png)
+![Purchase locations menu](./readme-content/imgs/purchase-locations.png)
 
 - Purchase carts
+
+Within this screen the user can purchase and upgrade carts. Logic is in place so the user can only purchase carts that they have already purchased the location for.
+
+```python
+# Make sure location has been purchased first.
+if not stats['location'][str(result)]['purchased']:
+    print_error_message("Purchase Land")
+    continue
+
+# Check if cart is not already at max level.
+cart_level = stats['location'][str(result)]['cart_lvl']
+if cart_level == 5:
+    print_error_message("Already at max level.")
+    continue
+```
+
+![Purchase locations menu](./readme-content/imgs/purchase-carts.png)
+
 - Hire staff
 - Purchase stock
 - Change recipe
