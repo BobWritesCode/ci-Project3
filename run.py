@@ -75,7 +75,7 @@ def new_game():
     print(cyan("Let\'s get you set up:"))
     print(constants.LINE)
     print('Welcome to your new game. The first thing we need to do is set '
-          + 'you up with a new \naccount.')
+          + 'you up with a\nnew account.')
     user_name = create_user_name()
     user_id = create_user_id()
     data = [user_id, user_name]
@@ -108,8 +108,7 @@ def create_user_name():
         if not user_name:
             continue
 
-        length = len(user_name)
-        if length < 5 or length > 20:
+        if len(user_name) < 5 or length > 20:
             print_error_message("Company name must be least 5 and no more "
                                 + "than 20 characters")
             continue
