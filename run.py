@@ -1,8 +1,8 @@
 '''
 Main game module
 '''
-import random
-import string
+from random import randrange
+from string import ascii_uppercase
 from utils import (yellow, green, cyan, pink, gold, orange,
                    print_press_enter_to, clear_terminal,
                    validate_input, validate_yes_no, print_error_message)
@@ -115,7 +115,7 @@ def create_user_name():
         if not user_name:
             continue
 
-        if len(user_name) < 5 or length > 20:
+        if len(user_name) < 5 or len(user_name) > 20:
             print_error_message("Company name must be least 5 and no more "
                                 + "than 20 characters")
             continue
@@ -140,7 +140,7 @@ def create_user_id():
 
     while True:
         user_id = "".join(
-            string.ascii_uppercase[random.randrange(0, 25)] for x in range(6)
+            ascii_uppercase[randrange(0, 25)] for x in range(6)
             )
         user_data = SHEET.worksheet('user_data')
         cell_list = user_data.findall(user_id)
