@@ -738,21 +738,44 @@ A Google Sheet was used to store users game data. No sesitive data is store in t
 
 ### Python Packages
 
-- ascii_uppercase from [string](https://docs.python.org/3/library/string.html): Used to create game id for user of 6 uppercase letters.
+- `ascii_uppercase` from [string](https://docs.python.org/3/library/string.html): Used to create game id for user of 6 uppercase letters.
 
 - [gspread](https://docs.gspread.org/en/latest/): Allows communication with Google Sheets.
 
-- floor from [math](https://docs.python.org/3/library/math.html): Rounds down a float to an integer.
+- `floor` from [math](https://docs.python.org/3/library/math.html): Rounds down a float to an integer.
 
-- ceil from [math](https://docs.python.org/3/library/math.html): Rounds up a float to an integer.
+- `ceil` from [math](https://docs.python.org/3/library/math.html): Rounds up a float to an integer.
 
-- randrange from [random](https://docs.python.org/3/library/random.html): Returns a random integer within a given range.
+- `randrange` from [random](https://docs.python.org/3/library/random.html): Returns a random integer within a given range.
 
-- system and name from [os](https://docs.python.org/3/library/os.html): Allows to clear the terminal.
+- `system` and `name` from [os](https://docs.python.org/3/library/os.html): Allows to clear the terminal.
 
 ---
 
+### VS Code extensions
+
+- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+
+- [Beautify](https://open-vsx.gitpod.io/extension/HookyQR/beautify)
+
+- [Auto Close Tag](https://open-vsx.gitpod.io/extension/formulahendry/auto-close-tag)
+
+---
 ### Other Tech
+
+- [Online Spellcheck](https://www.online-spellcheck.com/): To check spelling.
+
+- [Balsamiq](https://balsamiq.com/wireframes/): To create wireframe.
+
+- [Draw.io](https://app.diagrams.net/): To create flowcharts.
+
+- [ShareX](https://getsharex.com/): Used to snip screenshots.
+
+- [GitPod](https://gitpod.io/): Used as workspace and code editor.
+
+- [Heroku](https://www.heroku.com/): Used to deploy project for live use.
+
+- [Google Worksheet](https://www.google.co.uk/sheets/about/): Used as database.
 
 ---
 
