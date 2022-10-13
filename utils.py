@@ -1,7 +1,7 @@
 '''
 utils
 '''
-import os
+from os import system, name
 from math import floor
 
 
@@ -63,7 +63,7 @@ def clear_terminal():
     '''
     Clears terminal for better user experience
     '''
-    os.system('cls' if os.name == 'nt' else 'clear')
+    system('cls' if name == 'nt' else 'clear')
 
 
 def print_press_enter_to(text):
