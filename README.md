@@ -404,7 +404,7 @@ is slightly longer.
 ![Help screen](./readme-content/imgs/help-screen.png)
 
 ---
-- **Save and quit**
+- **Save and quit** and,
 - **Auto save**
 
 The game features a save functionality. The user can choose to save at the game menu or the game automatically save at the end each trading cycle, as well as one last time when the game is completed.
@@ -638,7 +638,7 @@ elif rep_percent > 0.5 and c_rep == 5:
 
 ---
 - **Seemless transition back to menu**\
-*(No random termination of prgramme)*
+*(No random termination of program)*
 
 It was very important to me that the user didn't reach the end of a function and the program just terminate. I spent time to make sure that as each function ended, it either had a `return` or I knew where it would go back to. An example of this is after the user completes the game. 
 
@@ -649,19 +649,80 @@ Once `end_game()` is completed it returns to `daily_menu()` then to either:
 And `main_menu()` is in never ever `while True:` loop.
 
 ---
-- **Continuous validation**
+- **Continuous validation** and,
+-  **Error Handling**
+
+There are several areas within the game the user is required to p
+input a string. Examples are: Choosing a name, navigating the menus, making changes to recipe.\
+To make sure that there are no unexpected errors there are validation checks being done after the user provides their inputs and feeds back to the user if an error is detected.
+
+```python
+# Example of validation check when user is navgiating the menus.
+def validate_input(value, max_value):
+    '''
+    Inside the try, converts input string value into integer.
+    Raises ValueError if strings cannot be converted into int,
+    or if outside the expected range.
+    '''
+    try:
+        try:
+            int_value = int(value)
+        except TypeError:
+            print_error_message("Invalid input.")
+            return False
+        if int_value >= 0 and int_value <= int(max_value):
+            return True
+        raise ValueError()
+    except ValueError:
+        print_error_message("Invalid input.")
+        return False
+    return True
+```
+
+```python
+    # Example of validation check when user is changing recipe
+
+    # Get user input to change recipe
+    result = input(f'\n{orange("Enter change i.e. 3 4: ")}')
+    # Split string into a list
+    result = result.split()
+
+    # Validate user input
+    if not validate_recipe_change(result):
+        continue
+
+def validate_recipe_change(data):
+    '''
+    Check user input for recipe change is valid
+    '''
+    if len(data) == 1 and data[0] == str(0):
+        return True
+    if len(data) != 2:
+        print(f'{red("Check instructions and try again.")}')
+        print_press_enter_to("Press Enter to continue...")
+    else:
+        if validate_input(data[0], 999) and validate_input(data[1], 999):
+            return True
+    return False
+```
+
+![Error handling](./readme-content/imgs/error-handling.png)
 
 ---
-- **Error Handling**
-
----
-#### UX
-
 
 ### Features Left to Implement
 
 - Random Events
-- Different day challanged (short version of 5 days)
+
+Part of my original plan I wanted to implement random events that could happen during trading. Example: Random hygiene inspection, or, influencer visits. And these events would have positive or negative results for sales performance that day.
+
+- Different day challenged (short version of 5 days)
+
+One of the testers mentioned she felt the game was a little too long. 
+
+> *"This is amazing I haven't seen anything like it! My only issues is its a little long, so I’m getting impatient to reach the end! Such a great one!"*
+
+This has given me the idea to implement a 5-day challenge for people who want to a quick blitz are the game.
 
 ---
 
