@@ -583,6 +583,23 @@ At the end of each trading session the user will get a report to show how well t
 
 - Feedback
 
+Based on the selling price and amount of ingredients used (to create value). Customers may think that the product is overpriced and decline to purchase. This section will let the user know, and if there is too much negative feedback for the user's liking they can make adjustments to their price and / or ingredients.
+
+```python
+# ((User selling price - optimal) / max increase) * 100
+# less then X, customer will purchase. 
+# Otherwise customer decline as overpriced.
+max_markup = constants.MAX_PRICE_OVER_OPTIMAL
+if goto_1 and (((price - osp) / max_markup)
+                * 100 < randrange(100)):
+    will_buy = True
+elif goto_1:
+    feedback["cost"][key] += 1
+    rep_score -= 1
+```
+
+![Feedback](./readme-content/imgs/feedback.png)
+
 - Reputation
 
 ![Reputation](./readme-content/imgs/reputation.png)
@@ -596,6 +613,7 @@ At the end of each trading session the user will get a report to show how well t
 
 ### Features Left to Implement
 
+- Random Events
 - Different day challanged (short version of 5 days)
 
 ---
