@@ -728,6 +728,10 @@ This has given me the idea to implement a 5-day challenge for people who want to
 
 ## Data Model
 
+A Google Sheet was used to store users game data. No sesitive data is store in the Google Sheet. The sheets consists of two worksheets, 'leaderboard' and 'user_data'.
+
+![Google Worksheet](./readme-content/imgs/google-worksheet.png)
+
 ## Technologies Used
 
 ### Python Packages
