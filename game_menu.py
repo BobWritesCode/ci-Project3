@@ -71,6 +71,7 @@ def daily_menu(stats):
         if result:
             end_game(stats)
         else:
+            save_data(stats, False)
             daily_menu(stats)
     elif user_choice == '8':
         help_menu(stats)
