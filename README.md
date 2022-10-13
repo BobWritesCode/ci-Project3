@@ -226,7 +226,8 @@ The main menu is the first screen a user will see, and give them 4 options to pi
 
 ![Main Menu](./readme-content/imgs/main-menu.png)
 
-Setting up a new Game
+---
+- **Setting up a new Game**
 
 The user will need to provide a new name for their new hotdog empire. This must be from 5 and up to 20 characters.
 
@@ -251,6 +252,7 @@ while True:
 ```
 After this the user will be given a short back story that is pulled from `constants.py`
 
+---
 **Game Menu**
 
 The game menu is the main screen a user will interact with while playing the game. The user menu gives the player 9 options to pick from, including:
@@ -268,7 +270,8 @@ This menu also provides valuable information to the player, so they don't have t
 
 ![Game menu](./readme-content/imgs/preview.png)
 
-- Purchase locations
+---
+- **Purchase locations**
 
 Here the user can purchase locations they to sell at. Logic is in place so the user has to purchase each location in order.
 
@@ -286,7 +289,8 @@ else:
 
 ![Purchase locations menu](./readme-content/imgs/purchase-locations.png)
 
-- Purchase / upgrade carts
+---
+- **Purchase / upgrade carts**
 
 Within this screen the user can purchase and upgrade carts. Logic is in place so the user can only purchase carts that they have already purchased the location for.
 
@@ -305,13 +309,15 @@ if cart_level == 5:
 
 ![Purchase / upgrade carts menu](./readme-content/imgs/purchase-carts.png)
 
-- Hire / train staff
+---
+- **Hire / train staff**
 
 This screen is very similar to purchase / upgrade carts with the same logic to check which options can be purchases and are currently upgradable.
 
 ![Hire / train staff menu](./readme-content/imgs/hire-staff.png)
 
-- Purchase stock
+---
+- **Purchase stock**
 
 The purchase stock screen has 2 stages. Firstly the main screen which shows the user information like how many ingredients they have in stock and how many products that makes based on their current recipe. At this stage the user can currently choose how many products they wish to have in stock ready to sell. If they input a number before the current stock level, logic will work out the amount of products need to be purchased and then show the user a checkout screen.
 
@@ -363,19 +369,22 @@ print('TOTAL COST: ' + green(f"£{'{:.2f}'.format(cost)}"))
 
 ![Purchase stock checkout](./readme-content/imgs/checkout.png)
 
-- Change recipe
+---
+- **Change recipe**
 
 Within this screen the user can change how many ingredients are used to make each hotdog. It also displays the cost to make each hotdog based on recipe and current recommended retail price (RRP) (cost to make * 3 + 0.5). 
 
 ![Change recipe](./readme-content/imgs/change-recipe.png)
 
-- Set selling price
+---
+- **Set selling price**
 
 This is simplest screen in the game. It quite simply allows the user to change the selling price of the product.
 
 ![Set selling price screen](./readme-content/imgs/set-selling-price.png)
 
-- Help section
+---
+- **Help section**
 
 To assist the user to understand how to play the game, I have provided this help section. Due to the large blocks of text I have stored them in `constant.py` to avoid blocking up the code in `game_meny.py`.
 
@@ -394,8 +403,9 @@ is slightly longer.
 
 ![Help screen](./readme-content/imgs/help-screen.png)
 
-- Save and quit
-- Auto save
+---
+- **Save and quit**
+- **Auto save**
 
 The game features a save functionality. The user can choose to save at the game menu or the game automatically save at the end each trading cycle, as well as one last time when the game is completed.
 
@@ -457,7 +467,8 @@ def save_loop(col, data, worksheet):
     return True
 ```
 
-- Retrieve game
+---
+- **Retrieve game**
 
 As the game allows the user to save their game and provides then a Game ID. The user is able to retrieve their game providing it has not already been completed.
 
@@ -478,13 +489,15 @@ for count, key in enumerate(row_array):
 
 ![Retrieve Game](./readme-content/imgs/retrieve-game.png)
 
-- End Game Summary
+---
+- **End Game Summary**
 
 After the user has completed the game they are given a end game summary, as well as seeing if the made the leaderboard.
 
 ![End game summary](./readme-content/imgs/end-screen.png)
 
-- Being added to leaderboard
+---
+- **Being added to leaderboard**
 
 At the end of the game. Logic will check to see if the player's score has made the top 10 of the leaderboard. If so add player into list where they have placed and remove the bottom player. Then save new leaderboard to the database.
 
@@ -519,7 +532,8 @@ for count, key in enumerate(data[1:10], 2):
 
 ![Making leaderboard](./readme-content/imgs/make-leaderboard.png)
 
-- View leaderboard
+---
+- **View leaderboard**
 
 Allows users to see leaderboard and provide a goal to aim for while playing the game. The scores are saved to a Google worksheet.
 
@@ -544,13 +558,15 @@ for key in data[1:10]:
 
 ![Leaderboard](./readme-content/imgs/view-leaderboard.png)
 
-- View credits
+---
+- **View credits**
 
 To pay homage to the original creator of the game that inspired this project and to also to the people who tested this game. I created a credits screen where I could show my appreciation.
 
 ![Credits](./readme-content/imgs/credits.png)
 
-- Sales Report
+---
+- **Sales Report**
 
 At the end of each trading session the user will get a report to show how well the day went. It nicely separates each locations performance, showing units sold and total net profit.
 
@@ -581,7 +597,8 @@ At the end of each trading session the user will get a report to show how well t
 
 ![Sales Report](./readme-content/imgs/sales-report.png)
 
-- Feedback
+---
+- **Feedback**
 
 Based on the selling price and amount of ingredients used (to create value). Customers may think that the product is overpriced and decline to purchase. This section will let the user know, and if there is too much negative feedback for the user's liking they can make adjustments to their price and / or ingredients.
 
@@ -600,14 +617,44 @@ elif goto_1:
 
 ![Feedback](./readme-content/imgs/feedback.png)
 
-- Reputation
+---
+- **Reputation**
+
+If the user has a day with little negative feedback vs sales made. Then their reputation will increase. If it's a bad day the reputation will decrease. Reputation provides bonuses to footfall, value and sales price.
+
+```python
+# If good score, increase reputation providing not already at max
+if rep_percent > 0.5 and c_rep < 5:
+    stats["reputation"] += 0.5
+    print(
+        f"{green('Reputation increase:')}\
+            {gold('+ 0.5')}"
+        )
+elif rep_percent > 0.5 and c_rep == 5:
+    print(gold("Reputation already at a 5!"))
+```
 
 ![Reputation](./readme-content/imgs/reputation.png)
 
-- Seemless transition back to menu (No random termination of prgramme)
-- Continuous validation
-- Error Handling
+---
+- **Seemless transition back to menu**\
+*(No random termination of prgramme)*
 
+It was very important to me that the user didn't reach the end of a function and the program just terminate. I spent time to make sure that as each function ended, it either had a `return` or I knew where it would go back to. An example of this is after the user completes the game. 
+
+Once `end_game()` is completed it returns to `daily_menu()` then to either:
+- `background_story()` > `new_game()` > `main_menu()`
+- or straight to `main_menu()` if it was a previous game loaded. 
+
+And `main_menu()` is in never ever `while True:` loop.
+
+---
+- **Continuous validation**
+
+---
+- **Error Handling**
+
+---
 #### UX
 
 
