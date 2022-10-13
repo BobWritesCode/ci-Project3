@@ -823,8 +823,6 @@ print('This is meant to be a very long '
 
 ### Python Testing
 
-
-
 #### Manual Python Testing
 
 <table>
@@ -2307,9 +2305,27 @@ print('This is meant to be a very long '
   </tr>
 </table>
 
-##### Manual Testing Documentation
-
+---
 #### PEP8 Testing
+
+The standard of testing [PEP8 Online](http://www.pep8online.com/) is currently down. So as a alternative option have installed a extension within VS Code to flag any errors.
+
+1) Run the command pip3 install pycodestyle  Note that this extension may already be installed, in which case this command will do nothing.
+
+2) In your workspace, press Ctrl+Shift+P (or Cmd+Shift+P on Mac).
+
+3) Type the word linter into the search bar that appears, and click on Python: Select Linter from the filtered results.
+
+4) Select pycodestyle from the list.
+
+5) PEP8 errors will now be underlined in red, as well as being listed in the PROBLEMS tab beside your terminal.
+
+Any styling errors would show up as a warning or critical error.\
+In the image below I have highlighted a red rectangle around the results. Left to right you have critical errors, warnings and info. We do not have to worry about the info flags.
+- There are 0 critical errors.
+- The 3 warnings as are shown relate to .gitpod.yml. These warnings are related to the template files from Code Institute and do not reflect my coding.
+
+![PEP8 Results](./readme-content/testing/pep8-results.png)
 
 #### Other Python Testing
 ---
