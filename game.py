@@ -81,16 +81,19 @@ def run_day(stats):
             )
 
     while True:
+        # Run for each location open.
         for key in range(total_locations):
 
             while cust_chance[key] * 100 >= randrange(0, 101):
+
+                # Set up varibles
                 potential_cust += 1
                 will_buy = False
                 goto_1 = False
                 goto_2 = False
                 goto_3 = False
 
-                # Base selling price > what customer likes pay at location.
+                # User selling price > what customer likes pay at location.
                 osp = constants.OPTIMAL_SELLING_PRICE[open_loc_name[key]]
                 osp = osp * rep_modifier
                 if price > osp:
@@ -98,26 +101,32 @@ def run_day(stats):
                 else:
                     goto_2 = True
 
-                # Base selling price <= optimal + max increase.
+                # ((User selling price - optimal) / max increase) * 100
+                # less then X, customer will purchase.
+                # Otherwise customer decline as overpriced.
                 max_markup = constants.MAX_PRICE_OVER_OPTIMAL
-                if goto_1 and (
-                    ((price - osp) / max_markup) * 100 <
-                    randrange(100)
-                ):
+                if goto_1 and (((price - osp) / max_markup)
+                               * 100 < randrange(100)):
                     will_buy = True
                 elif goto_1:
                     feedback["cost"][key] += 1
                     rep_score -= 1
 
-                # Product value * max markup is > base selling price.
+                # Is price being sold for more than the recommended
+                # retail price?
                 if goto_2 and (price >= prod_value):
                     goto_3 = True
                 elif goto_2:
                     will_buy = True
                     rep_score += 1
 
-                # Diff between .
+                # How much is price over the recommended retail price.
                 diff = price - prod_value
+
+                # ((% of diff against max that can be charge before charing
+                # too much and always being a decline) * 100
+                # If less then X, customer will purchase.
+                # Otherwise customer decline as undervalue.
                 if goto_3 and (diff / prod_markup) * 100 <= randrange(100):
                     will_buy = True
                 elif goto_3:
@@ -133,15 +142,17 @@ def run_day(stats):
                     cart_lvl = (
                         stats["location"][str(open_loc_num[key])]["cart_lvl"]
                     )
-                    # Selling Price Modifier i.e 1.05
+                    # Selling Price Modifier i.e 1 + (0.5*3) = 1.15
                     sell_price_mod = 1 + ((cart_sell_inc * cart_lvl) / 100)
                     sales_value = (price * sell_price_mod) - product_cost
                     loc_sale_value[key] += sales_value
                     stats["cash"] += sales_value
 
+                    # Has product sold out?
                     if portions == 0:
                         break
 
+            # Break chain if sold out
             if portions == 0:
                 break
 
@@ -234,6 +245,8 @@ def sales_report(stats, data):
               + f'{floor(data[3][count]*100)/100:<8}')
 
     print(constants.LINE)
+
+    # Totals
     print(f'Total daily units sold: {green(data[1])}')
     text = green(f'£{floor(total_sale_value*100)/100}')
     print(f'Total daily sales value: {text} (var +/- £0.01)')
@@ -311,17 +324,26 @@ def rep_change(stats, rep_score, oppotunities):
     Calculates if reputations needs to be changed after daily sales
     performance. Then updates player stats.
     '''
+
+    # Calculate reputation score based on feedback vs sales opportunities
     rep_percent = (rep_score / oppotunities) if oppotunities != 0 else 0
 
+    # Current reputation
     c_rep = stats["reputation"]
 
+    # Display result to the user
     print(f'{cyan("Reputation update:")}')
     print(constants.LINE)
+
+    # If good score.
     if rep_percent > 0.5:
         print('HAPPY CUSTOMERS and GREAT PERFORMANCE!')
+
+    # If bad score.
     elif rep_percent < -0.5:
         print('Bad performance... Check feedback on what to change.')
 
+    # If good score, increase reputation providing not already at max
     if rep_percent > 0.5 and c_rep < 5:
         stats["reputation"] += 0.5
         print(
@@ -330,6 +352,8 @@ def rep_change(stats, rep_score, oppotunities):
             )
     elif rep_percent > 0.5 and c_rep == 5:
         print(gold("Reputation already at a 5!"))
+
+    # If bad score, decrease reputation providing not already at min
     elif rep_percent < -0.5 and c_rep > 0:
         stats["reputation"] -= 0.5
         print(
@@ -338,6 +362,8 @@ def rep_change(stats, rep_score, oppotunities):
             )
     elif rep_percent < -0.5 and c_rep == 0:
         print(red("Reputation already at 0."))
+
+    # If neither good or bad.
     else:
         print("No reputation change")
 
