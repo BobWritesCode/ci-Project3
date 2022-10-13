@@ -397,7 +397,7 @@ is slightly longer.
 - Save and quit
 - Auto save
 
-The game features a save functionality. The user can choose to save at the game menu or the game automatically save at each trading cycle, as well as one last time when the game is completed.
+The game features a save functionality. The user can choose to save at the game menu or the game automatically save at the end each trading cycle, as well as one last time when the game is completed.
 
 There were a couple obstacles to overcome with the save function. 
 
@@ -550,8 +550,43 @@ To pay homage to the original creator of the game that inspired this project and
 
 ![Credits](./readme-content/imgs/credits.png)
 
-- Sales report
+- Sales Report
+
+At the end of each trading session the user will get a report to show how well the day went. It nicely separates each locations performance, showing units sold and total net profit.
+
+```python
+  # Add up total values from different locations.
+  total_sale_value = 0
+  for i in data[3]:
+      total_sale_value += i
+
+  # Show sales report to user. Location, units sold, net profit.
+  print(constants.LINE)
+  print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
+  print(constants.LINE)
+
+  for count, key in enumerate(data[0]):
+      print(f'{data[2][count]:<13}{"-":<3}'
+            + f'{key:<8}{"-":<3}'
+            + f'{floor(data[3][count]*100)/100:<8}')
+
+  print(constants.LINE)
+  
+  # Totals
+  print(f'Total daily units sold: {green(data[1])}')
+  text = green(f'£{floor(total_sale_value*100)/100}')
+  print(f'Total daily sales value: {text} (var +/- £0.01)')
+  print('\nSales values are net profit (Sold price minus product cost).')
+```
+
+![Sales Report](./readme-content/imgs/sales-report.png)
+
+- Feedback
+
 - Reputation
+
+![Reputation](./readme-content/imgs/reputation.png)
+
 - Seemless transition back to menu (No random termination of prgramme)
 - Continuous validation
 - Error Handling
