@@ -732,9 +732,23 @@ A Google Sheet was used to store users game data. No sesitive data is store in t
 
 ![Google Worksheet](./readme-content/imgs/google-worksheet.png)
 
+---
+
 ## Technologies Used
 
 ### Python Packages
+
+- ascii_uppercase from [string](https://docs.python.org/3/library/string.html): Used to create game id for user of 6 uppercase letters.
+
+- [gspread](https://docs.gspread.org/en/latest/): Allows communication with Google Sheets.
+
+- floor from [math](https://docs.python.org/3/library/math.html): Rounds down a float to an integer.
+
+- ceil from [math](https://docs.python.org/3/library/math.html): Rounds up a float to an integer.
+
+- randrange from [random](https://docs.python.org/3/library/random.html): Returns a random integer within a given range.
+
+- system and name from [os](https://docs.python.org/3/library/os.html): Allows to clear the terminal.
 
 ---
 
