@@ -170,8 +170,8 @@ def run_day(stats):
                 sold_out_text, feedback, rep_score,
                 potential_cust
             ]
-            save_data(stats, False)
             clear_terminal()
+            # Header for sales report
             text = cyan("12 noon time sales report:")
             print(f'{text}')
             stats = sales_report(stats, data)
@@ -181,7 +181,6 @@ def run_day(stats):
             for i in range(total_locations):
                 sold += cust_count[i]
             stats = deduct_stock(stats, sold)
-            save_data(stats, False)
             data = [
                 cust_count, sold,
                 open_loc_name, loc_sale_value,
@@ -189,6 +188,7 @@ def run_day(stats):
                 potential_cust
             ]
             clear_terminal()
+            # Header for sales report
             text = cyan("End of day sales report:")
             print(f'{text}')
             stats = sales_report(stats, data)
@@ -214,13 +214,16 @@ def sales_report(stats, data):
     # rep_score = data[6]
     # potential_cust = data[7]
 
+    # If sold out of prooduct during trading, show sold out message.
     if data[4]:
         print(data[4])
 
+    # Add up total values from different locations.
     total_sale_value = 0
     for i in data[3]:
         total_sale_value += i
 
+    # Show sales report to user. Location, units sold, net profit.
     print(constants.LINE)
     print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
     print(constants.LINE)
@@ -235,7 +238,11 @@ def sales_report(stats, data):
     text = green(f'£{floor(total_sale_value*100)/100}')
     print(f'Total daily sales value: {text} (var +/- £0.01)')
     print('\nSales values are net profit (Sold price minus product cost).')
+
+    # Get user input to continue.
     print_press_enter_to("Press Enter to see feedback..")
+
+    # Customer feedback
     print(f'\n{cyan("Customer feedback / improvements to be made:")}')
     print(constants.LINE)
     print(f'{"Location":<13}{"-":<3}{"Amount":<7}{"-":<3}{"Comment":<13}')
@@ -243,13 +250,18 @@ def sales_report(stats, data):
 
     txt_decline = red('(Declined)')
 
+    # Variable to count total feedback
+    t_count = 0
+
     for count in enumerate(data[0]):
+        f_count = 0
         for key in data[5]:
             if data[5][key][count[0]] > 0:
 
-                if count[0] == 0:
+                if f_count == 0:
                     text = data[2][count[0]]
                     dash = "-"
+                    t_count += 1
                 else:
                     text = ""
                     dash = ""
@@ -260,13 +272,17 @@ def sales_report(stats, data):
                     text2 = f"{txt_decline} Overpriced!"
 
                 text3 = data[5][key][count[0]]
-
                 print(f'{text:<13}{dash:<3}{text3:<7}{"-":<3}{text2:<13}')
+                f_count += 1
 
-        if count[0] != 0:
+        if f_count != 0:
             print(constants.LINE)
 
+    if t_count == 0:
+        print(green('\nNo feedback for improvment was given.'))
+
     print_press_enter_to("Press Enter to see if any reputation update...\n")
+
     rep_change(stats, data[6], data[7])
 
     if (stats["day"] % 1) == 0:
