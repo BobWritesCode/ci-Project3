@@ -779,11 +779,47 @@ A Google Sheet was used to store users game data. No sesitive data is store in t
 
 ---
 
-#### VSCode Extensions
-
----
-
 ## Testing
+
+### Testers
+
+Prior to this final testing. I asked others to try out the game and see what errors they could find. Most reported everything ran smoothly and there were no unexpected errors but some formatting in places seemed off. All testers have been included within the Credits of the game and below in the credits section on this ReadMe.
+
+> *"Hi. Just played your game 4 times, it's kinda addictive, unfortunately, it crashed once, and once the game did not save when accidentally going back into the menu. I'm not sure about the customer reviews and the formatting. I have attached a screenshot of the issue. My husband and I just spent over an hour playing this, so I would definitely say it's a job well done Wish you all the best!"*
+
+![Feedback error](./readme-content/testing/feedback-error.png)
+
+- I as unable to replicated the error of not saving when going back to main menu. If it was an error it seems to now be fixed.
+- I have fixed this so lines do not appeare when a location does not have any feedback to show. [commit: 528da9a](https://github.com/BobWritesCode/ci-Project3/commit/528da9a3b20c670ba178267e174cdeb28089011b)
+
+> *"This is amazing I haven't seen anything like it! My only issues is it's a little long, so I’m getting impatient to reach the end! Such a great one!"*
+
+- I have suggested in my future idas to implement, to include a shorter 5 day version of the game instead of the current 10.
+
+> *"This is absolutely fantastic! What a project, I love it.
+I got through the entire game, didn’t encounter any errors but did find a few typos I’ll add screen shots (so easy fixes). This is a colossal effort sir, well done indeed I made it to 4 on the leaderboard too."*
+
+- Typos were corrected. They were mainly caused by strings that forced a line of code to be longer then 78 characters. And when I then split the line of code into two lines, I forgot to take into account and inclue a space.
+
+```python
+# Example of before - WRONG!
+# No space after long
+print('This is meant to be a very long'
+      + 'string I need to split across two lines')
+
+'Output: the words long string would be joined as 1: longstring'
+
+# Example of after - CORRECT!
+# Space included after long
+print('This is meant to be a very long '
+      + 'string I need to split across two lines')
+
+'Output: the words long string would be separate: long string'
+```
+
+> *"It's so nice and slick and the user interface is epic. I don't have too much feedback other than it works perfectly! I didn't find it immediately obvious that the amount of ingredients being bought was the total amount (I thought that it was additional ingredients), but this is clearly user error and nothing wrong with the game. It could be worth making this a little more obvious to people like me who didn't quite get it, but that's just quality of life stuff/ dummy proofing. You should be really proud, your effort has totally paid off!"*
+
+- Taking this feedback on board, I changed the purchase stock screen to try and make it more obvious what was actually happening. [Commit 5725551](https://github.com/BobWritesCode/ci-Project3/commit/5725551feec0405289676eadb18051c45e424841)
 
 ### Python Testing
 
