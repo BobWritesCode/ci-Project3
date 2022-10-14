@@ -855,6 +855,240 @@ I am unaware of any current unresolved bugs.
 ### Resolved
 
 ---
+#### **Player got negative rep unintentionally**
+[commit: b42ac68](https://github.com/BobWritesCode/ci-Project3/commit/b42ac6888bad7ec81c15ac594c7e462176dfcf1d)\
+**What was meant to happy**: When a player does bad at sales and gets too much negative feedback, they would lose reputation.\
+**What was actually happening**: When player was not receiving enough negative feedback their reputation score lowered.\
+**Cause of problem**: The score range is from -1 (bad) to 1 (good). Where over 0.5 would give positive reputation and -0.5 would give negative. On the 3 lines of code I had forgot to make the bad score negative.
+```python
+# WRONG
+elif rep_percent < 0.5:
+elif rep_percent < 0.5 and c_rep > 0:
+elif rep_percent < 0.5 and c_rep == 0:
+```
+**Solution**: Add minus before the 0.5s.
+```python
+# CORRECT
+elif rep_percent < -0.5:
+elif rep_percent < -0.5 and c_rep > 0:
+elif rep_percent < -0.5 and c_rep == 0:
+```
+
+----
+#### **Reputation changing by wrong amount**
+[commit: 2e1434d](https://github.com/BobWritesCode/ci-Project3/commit/2e1434d41eca7bb3196f90a370affacbe8ac3c9b)\
+**What was meant to happy**:\
+When the players sales feedback was bad or good enough, they would get told their reputation was increase or decreased by 0.5.\
+**What was actually happening**:\
+Instead the player was being told their score was increasing or decreasing by whatever their current reputation actually was.\
+**Cause of problem**:
+```python
+# WRONG
+{gold('+' + str(stats['reputation']))}"
+```
+**Solution**:
+```python
+# CORRECT
+{gold('+ 0.5')}"
+```
+
+---
+#### **Division by 0 caused critical error**
+[commit: 28d4a1c](https://github.com/BobWritesCode/ci-Project3/commit/28d4a1c5c2ba1742b6d4c5156e3b1971d4df25e0?diff=split)\
+**What was meant to happy**:\
+Player would get a hidden repscore based on the sales performance and this would be used to determine if the player's reputation went up or down.\
+**What was actually happening**:\
+When there were no 0 sales. There was a equation that tried to divide by 0 and cause a critical error and teh programme to terminate.\
+**Cause of problem**:
+```python
+# WRONG
+rep_percent = rep_score / sold
+```
+**Solution**:
+```python
+# CORRECT
+rep_percent = (rep_score / opportunities) if opportunities != 0 else 0
+```
+
+---
+#### **Calculation error when seeing if a customer would pay high price.**
+[commit: 9027333](https://github.com/BobWritesCode/ci-Project3/commit/902733327e686175edc79df1654e700afe471bd9?diff=split)\
+**What was meant to happy**:\
+If was being sold higher then the customer would normally like to pay. There is essentially a random number generator to see if the customer would purchase.\
+**What was actually happening**:\
+No customer ever felt the product was overpriced.\
+**Cause of problem**:\
+The number to be compared would always be below 1.
+```python
+# WRONG
+if goto_1 and (price - osp) / max_markup 
+              < randrange(100):
+    will_buy = True
+```
+**Solution**:\
+Add multiply * 100 so the number would be between 0 and 100.
+```python
+# CORRECT
+if goto_1 and (
+              ((price - osp) / max_markup) * 100
+              < randrange(100)):
+    will_buy = True
+```
+
+---
+#### **After game completed you are taken back to game menu oppose to intentional main menu.**
+[commit: 76a61b5](https://github.com/BobWritesCode/ci-Project3/commit/76a61b506ea2e7bb2b419ae4415364f33ed4bbe5)\
+**What was meant to happy**:\
+When user reach end game, and finished the end game summary. The user was meant to be taken back main menu\
+**What was actually happening**:\
+User would be taken back to teh game menu.\
+**Cause of problem**:\
+The daily_menu() function would be called after the end_game function was over.
+```python
+# WRONG
+elif user_choice == '7':
+    result, stats = run_day(stats)
+    if result:
+        end_game(stats)
+    daily_menu(stats)
+```
+**Solution**:\
+Put the daily_menu() inside an else statement so only the end_game() or the daily_menu() would run, not both.
+```python
+# CORRECT
+elif user_choice == '7':
+    result, stats = run_day(stats)
+    if result:
+        end_game(stats)
+    else:
+        daily_menu(stats)
+```
+
+---
+#### **New leaderboard entries overwriting old.**
+[commit: bf89510](https://github.com/BobWritesCode/ci-Project3/commit/bf895102f08967ba7b16303115a260fd82875b15)\
+**What was meant to happy**:\
+IF a user scores high enough to secure a spot on the leaderboard of top 10 players. Then they would be inserted into teh correct position and other players moved down 1. With whoever is now 11th being deleted from the table.\
+**What was actually happening**:\
+Which ever place the player came 1st to 10th, they would just replace that player and the rest of the leaderboard would stay the same.\
+**Cause of problem**:\
+I used my save loop function but this would only replace the indicated row.
+```python
+# WRONG
+data_to_save = [
+    stats["name"],
+    stats["cash"]
+]
+worksheet = SHEET.worksheet("leaderboard")
+save_loop(row, data_to_save, len(data_to_save), worksheet)
+```
+**Solution**:\
+Change the code to insert into the table, pop the last item of the list and just save without using the save_loop() function.
+```python
+# CORRECT
+# Insert data of player into correct place
+data.insert(count - 1, [stats["name"], stats["cash"]])
+# Remove data for player who is no in 11th place.
+data.pop()
+# Update Google sheet
+SHEET.values_update(
+    'leaderboard!A1',
+    params={'valueInputOption': 'RAW'},
+    body={'values': data}
+    )
+```
+
+---
+#### **Player not added to top 10 if 10th place**
+[commit: 90edeaa](https://github.com/BobWritesCode/ci-Project3/commit/90edeaaae6b0306b7cdd70bd4e1c366b7b07205f)\
+**What was meant to happy**:\
+If a player makes 10th on the leader they replace who is currently 10th and the previous person is removed from teh leaderboard as they would be 11th on a top 10.\
+**What was actually happening**:\
+If a player scored enough to be 10th, nothing would happen.\
+**Cause of problem**:\
+Simply, the code only looked at row 1-10, where in python the first in a list is 0. For the spread sheet first is 1, and row 1 in the spreadsheet is the headings. The code only therefore look at the top 9 places.
+```python
+# WRONG
+for count, key in enumerate(data[1:10], 2):
+```
+**Solution**:\
+Have the code look at one more row to consider 10th place.
+```python
+# CORRECT
+for count, key in enumerate(data[1:11], 2):
+```
+
+---
+#### **Stock purchase showing incorrect values**
+[commit: 897097a](https://github.com/BobWritesCode/ci-Project3/commit/897097ac089d8f939f5738369e5bc375bd355d5b)\
+**What was meant to happy**:\
+The checkout basket would show quantity of items being purchased and also price, these .\
+**What was actually happening**:\
+The quantity and the price where always the same number.\
+**Cause of problem**:\
+A variable was declared and then immediately written over before being used.
+```python
+# WRONG
+text = (basket["portions"][count]
+        * basket["total_qty_r"][count])
+
+text = basket["total_qty_c"][count]
+```
+**Solution**:\
+Give variables 2 different names.
+```python
+# CORRECT
+text = (basket["portions"][count]
+        * basket["total_qty_r"][count])
+text2 = basket["total_qty_c"][count]
+```
+---
+
+#### **Multiple lines appearing after feedback**
+[commit: ](https://github.com/BobWritesCode/ci-Project3/commit/528da9a3b20c670ba178267e174cdeb28089011b)\
+**What was meant to happy**:\
+If there was no negative feedback for a location, then no line should appear.\
+**What was actually happening**:\
+During the feedback regardless if a location had negative feedback or not a line appeared.\
+**Cause of problem**:
+The code below basically is, print a line except all but the first location. There was no check to make sure the location had negative feedback.
+```python
+# WRONG
+if count[0] != 0:
+    print(constants.LINE)
+```
+**Solution**:\
+I added a variable called f_count. If there was any negative feedback to show f_count would go up by one and print a line where appropriate.
+```python
+# CORRECT
+# Variable to count total feedback
+t_count = 0
+
+for count in enumerate(data[0]):
+    f_count = 0
+    for key in data[5]:
+        if data[5][key][count[0]] > 0:
+
+            if f_count == 0:
+                text = data[2][count[0]]
+                dash = "-"
+                t_count += 1
+            else:
+                text = ""
+                dash = ""
+            if key == "value":
+                text2 = f"{txt_decline} Add more ingredients."
+            elif key == "cost":
+                text2 = f"{txt_decline} Overpriced!"
+
+            text3 = data[5][key][count[0]]
+            print(f'{text:<13}{dash:<3}{text3:<7}{"-":<3}{text2:<13}')
+            f_count += 1
+
+    if f_count != 0:
+        print(constants.LINE)
+```
+---
 
 ## Development
 
