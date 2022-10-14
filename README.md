@@ -2437,7 +2437,7 @@ Click 'Select a project', this may have an existing project name in place.
 
 Click 'NEW PROJECT'.
 
-![API ](./readme-content/deployment/api-new-project.png)
+![API New Project](./readme-content/deployment/api-new-project.png)
 
 Give the project a name.
 
@@ -2453,52 +2453,51 @@ From the project's dashboard, select 'APIs and services' and then 'Library'.
 
 Search for, and enable, Google Drive API.
 
-![API ](./readme-content/deployment/api-google-drive.png)
+![API Enable Google API](./readme-content/deployment/api-google-drive.png)
 
 ![API Search](./readme-content/deployment/api-enable.png)
 
 Click 'CREATE CREDENTIALS'.
 
-![API ](./readme-content/deployment/api-credentials.png)
+![API Create Credentials](./readme-content/deployment/api-credentials.png)
 
 Select 'Google Drive API' from the drop down list.
 
-![](./readme-content/deployment/api-cred-type.png)
+![API Select Google API](./readme-content/deployment/api-cred-type.png)
 
 Select 'Application data' from the first set of radio buttons.
 
-![API ](./readme-content/deployment/api-app-data.png)
+![API App Data](./readme-content/deployment/api-app-data.png)
 
 Select 'No, I', not using them' from the second set of radio buttons.
 
-![](./readme-content/deployment/api-engine.png)
+![API Radio Option](./readme-content/deployment/api-engine.png)
 
 Click 'DONE' and then enter a name and description for the service account details.
 
-![](./readme-content/deployment/api-account-details.png)
+![API Done](./readme-content/deployment/api-account-details.png)
 
 Select a role of 'Editor' from the options available.
 
-![API ](./readme-content/deployment/api-grant.png)
+![API Editor](./readme-content/deployment/api-grant.png)
 
 Click 'DONE' to create the service account.
 
 Click on the service account on the credentials page.
 
-![](./readme-content/deployment/api-cred-example.png)
-
+![API Service Account](./readme-content/deployment/api-cred-example.png)
 
 Select 'KEYS' from the menu bar.
 
-![](./readme-content/deployment/api-keys-menu.png)
+![API Keys Menu](./readme-content/deployment/api-keys-menu.png)
 
 Select 'Create new key' from the 'ADD KEY' menu.
 
-![API ](./readme-content/deployment/api-create-key.png)
+![API Keys Done](./readme-content/deployment/api-create-key.png)
 
 Select 'JSON' and click 'CREATE'.
 
-![API ](./readme-content/deployment/api-json.png)
+![API JOSN](./readme-content/deployment/api-json.png)
 
 
 The JSON file will be downloaded to your computer.
@@ -2522,60 +2521,60 @@ Click "New" and select "Create new app".
 
 Input a meaningful name for your app and choose the region best suited to your location.
 
-![](./readme-content/deployment/heoku-app-name.png)
+![Heroku Region](./readme-content/deployment/heoku-app-name.png)
 
 Select "Settings" from the tabs.
 
-![](./readme-content/deployment/heoku-settings-tab.png)
+![Heroku Settings](./readme-content/deployment/heoku-settings-tab.png)
 
 Click "Reveal Config Vars".
 
-![](./readme-content/deployment/heoku-config-vars.png)
+![Heroku Config](./readme-content/deployment/heoku-config-vars.png)
 
 Input PORT and 8000 as one config var and click add.
 
 Input CREDS and the content of your Google Sheet API creds file as another config var and click add.
 
-![](./readme-content/deployment/heoku-input-creds.png)
+![Heroku Creds](./readme-content/deployment/heoku-input-creds.png)
 
 Click "Add buildpack".
 
-![](./readme-content/deployment/heoku-add-build-pack.png)
+![Heroku  add buildpack](./readme-content/deployment/heoku-add-build-pack.png)
 
 Add "nodejs" and "python" from the list or search if necessary, remember to click save.
 
-![](./readme-content/deployment/heoku-select-buildpacks.png)
+![Heroku  nodjs python](./readme-content/deployment/heoku-select-buildpacks.png)
 
 Python must be the first buildpack. They can be dragged into the correct position if needed.
 
-![](./readme-content/deployment/heoku-correct-order-buildpacks.png)
+![Heroku order](./readme-content/deployment/heoku-correct-order-buildpacks.png)
 
 Select "Deploy" from the tabs.
 
-![](./readme-content/deployment/heroku-deploy-tab.png)
+![Heroku Deploy](./readme-content/deployment/heroku-deploy-tab.png)
 
 Select "GitHub - Connect to GitHub" from deployment methods.
 
-![](./readme-content/deployment/heoku-select-github.png)
+![Heroku GitHub connect](./readme-content/deployment/heoku-select-github.png)
 
 Click "Connect to GitHub" in the created section.
 
-![](./readme-content/deployment/heoku-connect-github.png)
+![Heroku GitHub Connect 2](./readme-content/deployment/heoku-connect-github.png)
 
 Search for the GitHub repository by name.
 
 Click to connect to the relevant repo.
 
-![](./readme-content/deployment/heoku-search-repo.png)
+![Heroku relevent repo](./readme-content/deployment/heoku-search-repo.png)
 
 Either click Enable Automatic Deploys for automatic deploys or Deploy Branch to deploy manually. Manually deployed branches will need re-deploying each time the repo is updated.
 
-![](./readme-content/deployment/heoku-branch-deploy.png)
+![Heroku Deploy](./readme-content/deployment/heoku-branch-deploy.png)
 
 Click View to view the deployed site.\
 *Note: It may take a moment to become available.*
 
-![](./readme-content/deployment/heoku-view.png)
+![Heroku View](./readme-content/deployment/heoku-view.png)
 
 ---
 
@@ -2583,7 +2582,52 @@ Click View to view the deployed site.\
 
 ### Content
 
+Unless specified all code written in the .py file was my own.
+
+Repo python essentials template provided by: [Code Institute](https://codeinstitute.net/)
+
+There were 2 blocks of code I did borrow for my project.
+
+To provide coloured text: [Code Grepper](https://www.codegrepper.com/code-examples/python/how+to+color+text+in+python+3).
+```python
+def colored(c_red, c_green, c_blue, text):
+    '''
+    Allows to change text colour
+    '''
+    return "\033[38;2;{};{};{}m{}\033[38;2;255;255;255m".format(
+        c_red, c_green, c_blue, text
+        )
+```
+
+And to save me time working out how to do it myself. I used Google to find this solution to turn columns numbers into spreadsheet notation letters.\
+CREDIT:
+[Sundar Nataraj on Stack Overflow](https://stackoverflow.com/questions/23861680/convert-spreadsheet-number-to-column-letter)
+```python
+  column_int = int(col)
+  start_index = 1
+  letter = ''
+  while column_int > 25 + start_index:
+      letter += chr(65 + int((column_int-start_index)/26) - 1)
+      column_int = column_int - (int((column_int-start_index)/26))*26
+  letter += chr(65 - start_index + (int(column_int)))
+```
+
 ### Media
+
+This project has no media to credit.
 
 ### Acknowledgements
 
+[Code Institute](https://codeinstitute.net/) for teaching my the essentials of Python, as well as using Google API, and deployment on to Heroku.
+
+[Rahul L](https://github.com/rahulkp220) for being my mentor during this project. Rahul taught me about modulating my code.
+
+All my testers!
+- ArcAnum (Internet tester)
+- Nick W (CI Student)
+- Emily K (CI Student)
+- Kristyna M (CI Student)
+- Rachel O (CI Student)
+- Kelly H (CI Student)
+
+![Credits](./readme-content/imgs/credits.png)
