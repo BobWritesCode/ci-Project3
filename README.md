@@ -177,7 +177,7 @@ I then created specific colour functions to have better readability, keep colour
 ```python
 def pink(text):
     '''
-    Changes to PINK if printed to termail
+    Changes to PINK if printed to terminal
     '''
     return colored(255, 105, 180, text)
 ```
@@ -322,7 +322,7 @@ This screen is very similar to purchase / upgrade carts with the same logic to c
 The purchase stock screen has 2 stages. Firstly the main screen which shows the user information like how many ingredients they have in stock and how many products that makes based on their current recipe. At this stage the user can currently choose how many products they wish to have in stock ready to sell. If they input a number before the current stock level, logic will work out the amount of products need to be purchased and then show the user a checkout screen.
 
 ```python
-def get_portions_avaliable(stats):
+def get_portions_available(stats):
     '''
     Return how many portions of hotdogs are available to sell
     based on current stock and recipe.
@@ -446,7 +446,7 @@ def save_loop(col, data, worksheet):
     '''
     Saves data[] to the correct row in Google.
     '''
-    # Coverts column number into letter notation used in spreadsheets
+    # Converts column number into letter notation used in spreadsheets
     # for columns. Example: 26 = Z, 27 = AA, 28 = AB...
     column_int = int(col)
     start_index = 1
@@ -2425,52 +2425,157 @@ On the "leaderboard" tab in cells A1 and B1 input "Company" and "score"
 
 **NOTE:** Google Sheets data works differently to most python objects. The 'list' of columns and rows starts at an index of 1.
 
-
+---
 ### API Credentials
 To allow access from the project to Google Sheets, credentials must be generated and provided.
 
-Navigate to the Google Cloud Platform
-Click 'Select a project', this may have an existing project name in place.
-Cloud select a project
-Click 'NEW PROJECT'.
-Cloud new project
-Give the project a name.
-Cloud project name
-Click 'CREATE'.
-Cloud create
-From the project's dashboard, select 'APIs and services' and then 'Library'.
-Cloud library menu
-Search for, and enable, Google Drive API.
-Cloud Google Drive API
-Cloud enable
-Click 'CREATE CREDENTIALS'.
-Cloud create credentials
-Select 'Google Drive API' from the drop down list.
-Cloud API selection
-Select 'Application data' from the first set of radio buttons.
-Cloud accessing app data
-Select 'No, I', not using them' from the second set of radio buttons.
-Cloud not using cloud functions
-Click 'DONE' and then enter a name and description for the service account details.
-Cloud service account details
-Select a role of 'Editor' from the options available.
-Cloud editor
-Click 'DONE' to create the service account.
-Click on the service account on the credentials page.
-Cloud edit service account
-Select 'KEYS' from the menu bar.
-Cloud keys
-Select 'Create new key' from the 'ADD KEY' menu.
-Cloud create key
-Select 'JSON' and click 'CREATE'.
-Cloud JSON option
-The JSON file will be downloaded to your computer. Copy the contents into a creds.json file within the repository. Make sure to add this file to the .gitignore file.
+Navigate to the [Google Cloud Platform](https://console.cloud.google.com/)
 
-#### API Credentials
+Click 'Select a project', this may have an existing project name in place.
+
+![API Select](./readme-content/deployment/api-select.png)
+
+Click 'NEW PROJECT'.
+
+![API ](./readme-content/deployment/api-new-project.png)
+
+Give the project a name.
+
+![API Name](./readme-content/deployment/api-name.png)
+
+Click 'CREATE'.
+
+![API Create](./readme-content/deployment/api-create.png)
+
+From the project's dashboard, select 'APIs and services' and then 'Library'.
+
+![API Library](./readme-content/deployment/api-library.png)
+
+Search for, and enable, Google Drive API.
+
+![API ](./readme-content/deployment/api-google-drive.png)
+
+![API Search](./readme-content/deployment/api-enable.png)
+
+Click 'CREATE CREDENTIALS'.
+
+![API ](./readme-content/deployment/api-credentials.png)
+
+Select 'Google Drive API' from the drop down list.
+
+![](./readme-content/deployment/api-cred-type.png)
+
+Select 'Application data' from the first set of radio buttons.
+
+![API ](./readme-content/deployment/api-app-data.png)
+
+Select 'No, I', not using them' from the second set of radio buttons.
+
+![](./readme-content/deployment/api-engine.png)
+
+Click 'DONE' and then enter a name and description for the service account details.
+
+![](./readme-content/deployment/api-account-details.png)
+
+Select a role of 'Editor' from the options available.
+
+![API ](./readme-content/deployment/api-grant.png)
+
+Click 'DONE' to create the service account.
+
+Click on the service account on the credentials page.
+
+![](./readme-content/deployment/api-cred-example.png)
+
+
+Select 'KEYS' from the menu bar.
+
+![](./readme-content/deployment/api-keys-menu.png)
+
+Select 'Create new key' from the 'ADD KEY' menu.
+
+![API ](./readme-content/deployment/api-create-key.png)
+
+Select 'JSON' and click 'CREATE'.
+
+![API ](./readme-content/deployment/api-json.png)
+
+
+The JSON file will be downloaded to your computer.
+
+Copy the contents into a creds.json file within the repository. 
+
+**EXTREMELY IMPORTANT:** Make sure to add this file to the .gitignore file. And do not share the contents of this file publicly.
+
+---
 
 ## Deployment
 
+---
 ### Heroku
+
+Navigate to your heroku dashboard
+
+Click "New" and select "Create new app".
+
+![](./readme-content/deployment/heoku-create-new-app.png)
+
+Input a meaningful name for your app and choose the region best suited to your location.
+
+![](./readme-content/deployment/heoku-app-name.png)
+
+Select "Settings" from the tabs.
+
+![](./readme-content/deployment/heoku-settings-tab.png)
+
+Click "Reveal Config Vars".
+
+![](./readme-content/deployment/heoku-config-vars.png)
+
+Input PORT and 8000 as one config var and click add.
+
+Input CREDS and the content of your Google Sheet API creds file as another config var and click add.
+
+![](./readme-content/deployment/heoku-input-creds.png)
+
+Click "Add buildpack".
+
+![](./readme-content/deployment/heoku-add-build-pack.png)
+
+Add "nodejs" and "python" from the list or search if necessary, remember to click save.
+
+![](./readme-content/deployment/heoku-select-buildpacks.png)
+
+Python must be the first buildpack. They can be dragged into the correct position if needed.
+
+![](./readme-content/deployment/heoku-correct-order-buildpacks.png)
+
+Select "Deploy" from the tabs.
+
+![](./readme-content/deployment/heroku-deploy-tab.png)
+
+Select "GitHub - Connect to GitHub" from deployment methods.
+
+![](./readme-content/deployment/heoku-select-github.png)
+
+Click "Connect to GitHub" in the created section.
+
+![](./readme-content/deployment/heoku-connect-github.png)
+
+Search for the GitHub repository by name.
+
+Click to connect to the relevant repo.
+
+![](./readme-content/deployment/heoku-search-repo.png)
+
+Either click Enable Automatic Deploys for automatic deploys or Deploy Branch to deploy manually. Manually deployed branches will need re-deploying each time the repo is updated.
+
+![](./readme-content/deployment/heoku-branch-deploy.png)
+
+Click View to view the deployed site.\
+*Note: It may take a moment to become available.*
+
+![](./readme-content/deployment/heoku-view.png)
 
 ---
 
