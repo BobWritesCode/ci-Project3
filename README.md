@@ -2327,39 +2327,144 @@ In the image below I have highlighted a red rectangle around the results. Left t
 
 ![PEP8 Results](./readme-content/testing/pep8-results.png)
 
-#### Other Python Testing
 ---
 
 ## Bugs
 
 ### Current
 
+I am unaware of any current unresolved bugs.
+
 ### Resolved
+
 ---
 
 ## Development
 
 The site was made using [GitHub](#GitHub) and [GitPod](#GitPod)
 
-### GitHub
+### GitHub - Create new repository from template
+
+[GitHub Website](https://github.com/)
+
+Sign in to GitHub.
+
+I used a template created by Code Institute that can be accessed [here](https://github.com/Code-Institute-Org/python-essentials-template) and is available for public use via the use this template button.
+
+- Click '**Use this template**'.
+
+![Use this template](./readme-content/deployment/use-this-template.png)
+
+- A new page will load.
+
+- Give your project a name, 
+
+- Provide a short description,
+
+- Decide if it will e available publicly or private,
+
+- There is no need to to tick 'Include all branches',
+
+- Click 'Create repository from template'.
+
+
+![Create new repository](./readme-content/deployment/create-new-repo.png)
+
 ---
 
-### GitPod
+### GitHub - Cloning 
 
-#### Cloning
+To clone using GitHib:
 
-#### Editing
+- Go to the project you wish to clone.
 
-### Working With Python
+- Option 1:  If you have the [Google Chrome GitPod extension](https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki), you can just click on the Green GitPod button 
 
+- Option 2: Click the 'Code' button. This open options for you to clone your preferred way.
 
-#### Packages
-
-#### Debugging
+![Create new repository](./readme-content/deployment/cloning.png)
 
 ### Google Sheets
 
 #### Creating Sheets
+
+This application uses **Google Sheets** to store data.
+
+Assuming you have a Google account and are signed in you can go straight to your [Google Sheets here](https://docs.google.com/spreadsheets/u/0/).
+
+Once you are on your Google Sheets dashboard you click the Google plus sign in the bottom right to create a new spreadsheet.
+
+![Google new spreadsheet button](./readme-content/deployment/google-new-spreadsheet.png)
+
+Once opened you can rename it by where it says 'Untitled spreadsheet' top right. Just click and give a new name.
+
+**IMPORTANT:** The name used must match the name called in the open() method.
+
+```python
+SHEET = GSPREAD_CLIENT.open('Hotdog_Tycoon_Data')
+```
+
+![Google untitled spreadsheet](./readme-content/deployment/google-untitled.png)
+
+![Google titled spreadsheet](./readme-content/deployment/google-titled.png)
+
+Now make sure you have two tabs called 'leaderboard' and 'user_data'.
+At the bottom of the page you will see a plus sign, a stack of lines, and a single tab named "Sheet1"
+- Click the plus sign to create a 2nd tab called "Sheet2"
+- Rename each tab by double clicking on its current name and name them 'leaderboard' and 'user_data'.
+
+![Google tabs 1](./readme-content/deployment/google-tabs-1.png)
+
+![Google tabs 2](./readme-content/deployment/google-tabs-2.png)
+
+![Google tabs named](./readme-content/deployment/google-tabs-named.png)
+
+On the "leaderboard" tab in cells A1 and B1 input "Company" and "score"
+
+![Google Cells](./readme-content/deployment/google-cells.png)
+
+**NOTE:** Google Sheets data works differently to most python objects. The 'list' of columns and rows starts at an index of 1.
+
+
+### API Credentials
+To allow access from the project to Google Sheets, credentials must be generated and provided.
+
+Navigate to the Google Cloud Platform
+Click 'Select a project', this may have an existing project name in place.
+Cloud select a project
+Click 'NEW PROJECT'.
+Cloud new project
+Give the project a name.
+Cloud project name
+Click 'CREATE'.
+Cloud create
+From the project's dashboard, select 'APIs and services' and then 'Library'.
+Cloud library menu
+Search for, and enable, Google Drive API.
+Cloud Google Drive API
+Cloud enable
+Click 'CREATE CREDENTIALS'.
+Cloud create credentials
+Select 'Google Drive API' from the drop down list.
+Cloud API selection
+Select 'Application data' from the first set of radio buttons.
+Cloud accessing app data
+Select 'No, I', not using them' from the second set of radio buttons.
+Cloud not using cloud functions
+Click 'DONE' and then enter a name and description for the service account details.
+Cloud service account details
+Select a role of 'Editor' from the options available.
+Cloud editor
+Click 'DONE' to create the service account.
+Click on the service account on the credentials page.
+Cloud edit service account
+Select 'KEYS' from the menu bar.
+Cloud keys
+Select 'Create new key' from the 'ADD KEY' menu.
+Cloud create key
+Select 'JSON' and click 'CREATE'.
+Cloud JSON option
+The JSON file will be downloaded to your computer. Copy the contents into a creds.json file within the repository. Make sure to add this file to the .gitignore file.
 
 #### API Credentials
 
