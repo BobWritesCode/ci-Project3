@@ -6,7 +6,7 @@ from math import floor
 import constants
 from utils import (cyan, red, clear_terminal, print_press_enter_to, green,
                    gold, pink, orange)
-from shared import (cost_to_make, get_portions_avaliable)
+from shared import (cost_to_make, get_portions_available)
 from save_load import (save_loop, save_data)
 
 # gspread constants
@@ -39,7 +39,7 @@ def run_day(stats):
         "cost buy": [],  # Commented high cost for area but still bought
         "cost": []  # "I won't pay that here"
     }
-    rep_score = 0  # Daily Repscore
+    rep_score = 0  # Daily reputation score
     potential_cust = 0  # Total count for all potential customers
     sold_out_text = 0
     rep_modifier = 1 + (stats["reputation"] / 4)
@@ -69,7 +69,7 @@ def run_day(stats):
     total_locations = len(open_loc_name)
     cust_chance = []
     product_cost = cost_to_make(stats)
-    portions = get_portions_avaliable(stats)
+    portions = get_portions_available(stats)
     footfall = constants.LOCATION_FOOTFALL
 
     for key in range(total_locations):
@@ -86,7 +86,7 @@ def run_day(stats):
 
             while cust_chance[key] * 100 >= randrange(0, 101):
 
-                # Set up varibles
+                # Set up variables
                 potential_cust += 1
                 will_buy = False
                 goto_1 = False
@@ -225,7 +225,7 @@ def sales_report(stats, data):
     # rep_score = data[6]
     # potential_cust = data[7]
 
-    # If sold out of prooduct during trading, show sold out message.
+    # If sold out of product during trading, show sold out message.
     if data[4]:
         print(data[4])
 
@@ -292,7 +292,7 @@ def sales_report(stats, data):
             print(constants.LINE)
 
     if t_count == 0:
-        print(green('\nNo feedback for improvment was given.'))
+        print(green('\nNo feedback for improvement was given.'))
 
     print_press_enter_to("Press Enter to see if any reputation update...\n")
 
@@ -319,14 +319,14 @@ def deduct_stock(stats, sold):
     return stats
 
 
-def rep_change(stats, rep_score, oppotunities):
+def rep_change(stats, rep_score, opportunities):
     '''
     Calculates if reputations needs to be changed after daily sales
     performance. Then updates player stats.
     '''
 
     # Calculate reputation score based on feedback vs sales opportunities
-    rep_percent = (rep_score / oppotunities) if oppotunities != 0 else 0
+    rep_percent = (rep_score / opportunities) if opportunities != 0 else 0
 
     # Current reputation
     c_rep = stats["reputation"]
@@ -418,7 +418,7 @@ def end_game(stats):
     text = gold(str(floor(percent * 100)) + "%")
     print(f'{text} Completion rating!')
 
-    print('\nI hope you are happy with what you have achieved becuase I am.')
+    print('\nI hope you are happy with what you have achieved because I am.')
     print('Let\'s see if you managed to secure a place on our leaderboard.')
 
     # Run function to see if player made top 10 and if so update leaderboard.

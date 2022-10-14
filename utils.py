@@ -41,7 +41,7 @@ def validate_input(value, max_value):
 
 def print_current_balance(stats):
     '''
-    Print cash statment
+    Print cash statement
     '''
     return f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}'
 
@@ -83,57 +83,57 @@ def print_go_back():
 
 def pink(text):
     '''
-    Changes to PINK if printed to termail
+    Changes to PINK if printed to terminal
     '''
-    return colored(255, 105, 180, text)
+    return coloured(255, 105, 180, text)
 
 
 def gold(text):
     '''
-    Changes to GOLD if printed to termail
+    Changes to GOLD if printed to terminal
     '''
-    return colored(255, 215, 0, text)
+    return coloured(255, 215, 0, text)
 
 
 def green(text):
     '''
-    Changes to GREEN if printed to termail
+    Changes to GREEN if printed to terminal
     '''
-    return colored(50, 205, 50, text)
+    return coloured(50, 205, 50, text)
 
 
 def cyan(text):
     '''
-    Changes to CYAN if printed to termail
+    Changes to CYAN if printed to terminal
     '''
-    return colored(0, 255, 255, text)
+    return coloured(0, 255, 255, text)
 
 
 def orange(text):
     '''
-    Changes to ORANGE if printed to termail
+    Changes to ORANGE if printed to terminal
     '''
-    return colored(255, 165, 0, text)
+    return coloured(255, 165, 0, text)
 
 
 def red(text):
     '''
-    Changes to RED if printed to termail
+    Changes to RED if printed to terminal
     '''
-    return colored(255, 0, 0, text)
+    return coloured(255, 0, 0, text)
 
 
 def yellow(text):
     '''
-    Changes to YELLOW if printed to termail
+    Changes to YELLOW if printed to terminal
     '''
-    return colored(255, 255, 0, text)
+    return coloured(255, 255, 0, text)
 
 
 # Credit:
 # https://www.codegrepper.com/code-examples
 # /python/how+to+color+text+in+python+3
-def colored(c_red, c_green, c_blue, text):
+def coloured(c_red, c_green, c_blue, text):
     '''
     Allows to change text colour
     '''

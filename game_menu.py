@@ -8,7 +8,7 @@ from utils import (cyan, clear_terminal, gold, pink, green, print_go_back,
                    print_current_balance,
                    validate_input, validate_yes_no, yellow)
 from save_load import (save_data)
-from shared import (cost_to_make, get_portions_avaliable)
+from shared import (cost_to_make, get_portions_available)
 import constants
 
 
@@ -46,7 +46,7 @@ def daily_menu(stats):
             print_error_message("No staff purchased yet.")
             continue
 
-        if (get_portions_avaliable(stats) == 0
+        if (get_portions_available(stats) == 0
                 and user_choice == '7'):
             # If both True
             print_error_message("You have no stock to sell.")
@@ -59,7 +59,7 @@ def daily_menu(stats):
     elif user_choice == '2':
         purchase_cart_menu(stats)
     elif user_choice == '3':
-        puchase_staff_menu(stats)
+        purchase_staff_menu(stats)
     elif user_choice == '4':
         purchase_stock_menu(stats)
     elif user_choice == '5':
@@ -91,7 +91,7 @@ def menu_string(stats, text_time_of_day):
     selling_price = "Base price: £{:.2f}".format(stats["selling_price"])
     recipe = "Cost: £{:.2f}".format(cost_to_make(stats))
     cash = "£{:.2f}".format(stats["cash"])
-    stock = f"Stock: {get_portions_avaliable(stats)}"
+    stock = f"Stock: {get_portions_available(stats)}"
 
     action_cart = ""
     action_staff = ""
@@ -161,11 +161,11 @@ def purchase_location(stats):
 
             if not purchase_loc_try(stats, count):
                 print(f'{str_part_1:<16}' + ' - '
-                      + f'{red("Not yet avaliable"):<53}')
+                      + f'{red("Not yet available"):<53}')
 
             elif not stats['location'][str(count)]['purchased']:
                 text = f'PURCHASE for £{loc_cost[count - 1]}'
-                print(f'{str_part_1:<16}' + ' - ' + f'{green("Avaliable"):<53}'
+                print(f'{str_part_1:<16}' + ' - ' + f'{green("Available"):<53}'
                       + ' - ' f'{cyan(text):<30}')
 
             else:
@@ -235,7 +235,7 @@ def purchase_cart_menu(stats):
         print('Each upgrade on a cart will produce better quality hotdogs.'
               + f' So you will sell {constants.CART_SELLING_INCREASE}% more'
               + ' for each level on top the base selling price without any'
-              + ' penelties at that \nlocation.')
+              + ' penalties at that \nlocation.')
         print(f'\n{pink("TIP")}: Each location will need a staff member'
               + ' before they sell any hotdogs.\n')
 
@@ -304,7 +304,7 @@ def purchase_cart_menu(stats):
     daily_menu(stats)
 
 
-def puchase_staff_menu(stats):
+def purchase_staff_menu(stats):
     '''
     Hire and train staff menu
     '''
@@ -335,7 +335,7 @@ def puchase_staff_menu(stats):
             elif staff_level == 0:
                 text3 = green(f'PURCHASE for £ {staff_price[staff_level]}')
             elif staff_level == 5:
-                text3 = gold('No traning required')
+                text3 = gold('No training required')
             else:
                 text3 = green(f'TRAIN for £{staff_price[staff_level]}')
 
@@ -394,7 +394,7 @@ def purchase_stock_menu(stats):
         print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}')
         print('You have enough ingredients to sell '
-              + f'{gold(get_portions_avaliable(stats))} hotdogs.\n')
+              + f'{gold(get_portions_available(stats))} hotdogs.\n')
 
         # Show current ingredients in stock
         print(f'{cyan("Current stock:")}')
@@ -527,7 +527,7 @@ def purchase_stock_menu(stats):
                 print_press_enter_to("Press Enter to continue...")
                 break
 
-            # Purchaser unsuccssgful
+            # Purchaser unsuccessful
             print(red('Purchase Aborted'))
             print_press_enter_to("Press Enter to continue...")
             break
@@ -598,6 +598,7 @@ def change_recipe_menu(stats):
 
         # Get user input to change recipe
         result = input(f'\n{orange("Enter change i.e. 3 4: ")}')
+        # Split string into a list
         result = result.split()
 
         # Validate user input
@@ -622,11 +623,11 @@ def change_recipe_menu(stats):
             continue
 
         # Update variables
-        stock_choosen = (constants.STOCK_OPTIONS[int(result[0])-1])
-        stats['recipe'][stock_choosen] = int(result[1])
+        stock_chosen = (constants.STOCK_OPTIONS[int(result[0])-1])
+        stats['recipe'][stock_chosen] = int(result[1])
 
         # Display ingredient being change and to what  new amount
-        print(green(f'Updated {stock_choosen.capitalize()} to '
+        print(green(f'Updated {stock_chosen.capitalize()} to '
                     + f'{result[1]} per serving.'))
 
         print_press_enter_to("Press Enter to continue...")

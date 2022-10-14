@@ -19,14 +19,14 @@ def save_data(stats, first_save):
     Save player data to database.
     The for loop looks through row 1 data from Google sheets.
     If it finds a match it updates that row. Else creates a new
-    coloumn with data.
+    column with data.
     '''
     # Do not run when character is set up.
     if not first_save:
         print(f'\n{cyan("Please do not close.")}')
         print(f'{gold("SAVING...")}')
 
-    # Set up vairables
+    # Set up variables
     data_to_save = []
     found = False
 
@@ -67,7 +67,7 @@ def save_loop(col, data, worksheet):
     '''
     Saves data[] to the correct row in Google.
     '''
-    # Coverts column number into letter notation used in spreadsheets
+    # Converts column number into letter notation used in spreadsheets
     # for columns. Example: 26 = Z, 27 = AA, 28 = AB...
     # CREDIT :
     # https://stackoverflow.com/questions/23861680/convert-spreadsheet
@@ -100,7 +100,7 @@ def convert_dict_to_array(data, data_to_save):
             # If key is a dict then loop function
             convert_dict_to_array(data[f'{key}'], data_to_save)
         else:
-            # If key is not a fict then append to table.
+            # If key is not a dict then append to table.
             data_to_save.append([data[f"{key}"]])
 
     return data_to_save

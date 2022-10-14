@@ -36,20 +36,20 @@ def cost_to_make(stats):
     return bun + sausage + onion + sauce
 
 
-def get_portions_avaliable(stats):
+def get_portions_available(stats):
     '''
-    Return how many portions of hotdogs are avaliable to sell
+    Return how many portions of hotdogs are available to sell
     based on current stock and recipe.
     '''
     # Max portions that can be sold in 1 part of the day
     max_por = 9999999
-    # Find out which ingrediant makes the least amount of hotdogs based
+    # Find out which ingredient makes the least amount of hotdogs based
     # on recipe.
     for key in constants.STOCK_OPTIONS:
         if stats["recipe"][key] > 0:
             # How many hotdogs this ingredient will make
             ing_max = stats[key] / stats["recipe"][key]
-            # Next, see if ing_max is smallest out of all ingredient, mearning
+            # Next, see if ing_max is smallest out of all ingredient, meaning
             # max hotdogs
             max_por = ing_max if ing_max < max_por else max_por
 
