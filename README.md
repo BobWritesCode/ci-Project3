@@ -24,10 +24,9 @@
   - [Brief](#brief)
     - [Hotdog Empire Tycoon](#hotdog-empire-tycoon-1)
   - [UX &#8722; User Experience Design](#ux--user-experience-design)
-    - [User Requirements](#user-requirements)
-      - [First Time User](#first-time-user)
-      - [Returning User](#returning-user)
-      - [Interested Party](#interested-party)
+    - [First Time User](#first-time-user)
+    - [Returning User](#returning-user)
+    - [Interested Party](#interested-party)
     - [Initial Concept](#initial-concept)
       - [Wireframes](#wireframes)
         - [Desktop](#desktop)
@@ -39,34 +38,31 @@
     - [Python Logic](#python-logic)
   - [Features](#features)
     - [Existing Features](#existing-features)
-      - [UX](#ux))
     - [Features Left to Implement](#features-left-to-implement)
   - [Data Model](#data-model)
   - [Technologies Used](#technologies-used)
     - [Python Packages](#python-packages)
+    - [VS Code Extensions](#vs-code-extensions)
     - [Other Tech](#other-tech)
-      - [VSCode Extensions](#vscode-extensions)
   - [Testing](#testing)
-    - [Python Testing](#python-testing)
-      - [Manual Python Testing](#manual-python-testing)
-        - [Manual Testing Documentation](#manual-testing-documentation)
-      - [PEP8 Testing](#pep8-testing)
-      - [Other Python Testing](#other-python-testing)
-    - [W3C Validator](#w3c-validator)
+    - [Extensive Testing](#self-extensive-testing)
+    - [Testers](#testers)
+    - [PEP8 Testing](#pep8-testing)
   - [Bugs](#bugs)
     - [Current](#current)
     - [Resolved](#resolved)
   - [Development](#development)
-    - [GitHub](#github)
+    - [GitHub - Create new repository from template](#github---create-new-repository-from-template)
+    - [GitHub - Cloning](github---cloning)
     - [GitPod](#gitpod)
-      - [Cloning](#cloning)
-      - [Editing](#editing)
+    - [Google Sheets](google-sheets)
+      - [Creating Sheets](creating-sheets)
     - [Working With Python](#working-with-python)
       - [Packages](#packages)
       - [Debugging](#debugging)
     - [Google Sheets](#google-sheets)
       - [Creating Sheets](#creating-sheets)
-      - [API Credentials](#api-credentials)
+    - [API Credentials](#api-credentials)
   - [Deployment](#deployment)
     - [Heroku](#heroku)
   - [Credits](#credits)
@@ -103,7 +99,7 @@ The goal of this site is to provide an interactive game where the user / player 
 
 Some example user stories which will affect the design
 
-#### First Time User
+### First Time User
 
 > *"As a person who like likes to play games, I would like something that provides some challenges but not overly difficult to learn."*
 >
@@ -119,7 +115,7 @@ Some example user stories which will affect the design
 >
 > *"I would the experience to be different each time I play."*
 
-#### Interested Party
+### Interested Party
 
 > *"As someone interested in how the application has been made, I am interested to see how user inputs have been validated and errors have been handled"*
 >
@@ -779,6 +775,8 @@ A Google Sheet was used to store users game data. No sensitive data is store in 
 ---
 
 ## Testing
+
+### Self Extensive Testing
 
 Full manual testing can be found [here](TESTING.md) *(Caution: It's a big one!)*
 
