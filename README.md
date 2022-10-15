@@ -5,8 +5,7 @@
 
 ## Live Site
 
-[Hotdog Empire Tycoon](
-  https://dashboard.heroku.com/apps/hotdog-empire-tycoon/)
+[Hotdog Empire Tycoon](https://hotdog-empire-tycoon.herokuapp.com/)
 
 ## Repository
 
