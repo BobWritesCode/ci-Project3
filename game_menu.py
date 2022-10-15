@@ -505,7 +505,7 @@ def purchase_stock_menu(stats):
             # Validate user input
             if not validate_yes_no(user_choice):
                 continue
-            if user_choice.lower() in ['y', 'yes']:
+            if user_choice.lower() in ['y', 'ye', 'yes']:
 
                 # Check if remaining cash will above 0 after purchase,
                 # if so continue, else loop
