@@ -1358,13 +1358,14 @@ CREDIT:
 
 ### Media
 
-This project has no media to credit.
+- [Hotdog image](https://www.clipartmax.com/middle/m2i8Z5N4N4G6K9i8_hot-dog-png-transparent-images-hot-dog-transparent-background/) used for Favicon.
+- [favicon.io](https://favicon.io/favicon-converter/) used to convert image into Favicon.
 
 ### Acknowledgements
 
-[Code Institute](https://codeinstitute.net/) for teaching my the essentials of Python, as well as using Google API, and deployment on to Heroku.
+- [Code Institute](https://codeinstitute.net/) for teaching my the essentials of Python, as well as using Google API, and deployment on to Heroku.
 
-[Rahul L](https://github.com/rahulkp220) for being my mentor during this project. Rahul taught me about modulating my code.
+- [Rahul L](https://github.com/rahulkp220) for being my mentor during this project. Rahul taught me about modulating my code.
 
 All my testers!
 - ArcAnum (Internet tester)
