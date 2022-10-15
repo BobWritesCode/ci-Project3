@@ -121,14 +121,20 @@ def create_user_name():
                                 + "than 20 characters")
             continue
 
-        print(f'\n{gold(user_name)} has been born!\n')
-        yes_no = input(orange('Are you happy with this name? (yes / no) '))
+        while True:
+            print(f'\n{gold(user_name)} has been born!\n')
 
-        if not validate_yes_no(yes_no):
-            continue
+            yes_no = input(orange('Are you happy with this name? (yes / no) '))
 
-        if yes_no.lower() in ['y', 'ye', 'yes']:
-            return user_name
+            if not validate_yes_no(yes_no):
+                continue
+
+            if yes_no.lower() in ['y', 'ye', 'yes']:
+                return user_name
+
+            if yes_no.lower() in ['n', 'no']:
+                clear_terminal()
+                break
 
 
 def create_user_id():
