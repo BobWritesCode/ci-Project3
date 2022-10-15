@@ -71,6 +71,7 @@ def main_menu():
         elif user_choice == '4':
             show_credits()
         elif user_choice == '0':
+            print_error_message("Invalid choice.")
             main()
 
 
