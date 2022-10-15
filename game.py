@@ -44,7 +44,7 @@ def run_day(stats):
     sold_out_text = 0
     rep_modifier = 1 + (stats["reputation"] / 4)
     prod_markup = constants.PRODUCT_VALUE_MAX_INCREASE
-
+    prod_cost = cost_to_make(stats)
     prod_value = (  # Product Value
         cost_to_make(stats) *
         prod_markup *
@@ -68,7 +68,6 @@ def run_day(stats):
 
     total_locations = len(open_loc_name)
     cust_chance = []
-    product_cost = cost_to_make(stats)
     portions = get_portions_available(stats)
     footfall = constants.LOCATION_FOOTFALL
 
@@ -144,9 +143,9 @@ def run_day(stats):
                     )
                     # Selling Price Modifier i.e 1 + (0.5*3) = 1.15
                     sell_price_mod = 1 + ((cart_sell_inc * cart_lvl) / 100)
-                    sales_value = (price * sell_price_mod) - product_cost
+                    sales_value = floor(price * sell_price_mod)
                     loc_sale_value[key] += sales_value
-                    stats["cash"] += sales_value
+                    stats["cash"] += sales_value - prod_cost
 
                     # Has product sold out?
                     if portions == 0:
@@ -236,21 +235,33 @@ def sales_report(stats, data):
 
     # Show sales report to user. Location, units sold, net profit.
     print(constants.LINE)
-    print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
+    print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value":<8}')
     print(constants.LINE)
-
     for count, key in enumerate(data[0]):
         print(f'{data[2][count]:<13}{"-":<3}'
               + f'{key:<8}{"-":<3}'
-              + f'{floor(data[3][count]*100)/100:<8}')
-
+              + f'£ {"{:.2f}".format(floor(data[3][count]*100)/100):<8}')
     print(constants.LINE)
 
-    # Totals
-    print(f'Total daily units sold: {green(data[1])}')
-    text = green(f'£{floor(total_sale_value*100)/100}')
-    print(f'Total daily sales value: {text} (var +/- £0.01)')
-    print('\nSales values are net profit (Sold price minus product cost).')
+    # Total units sold.
+    print(f'\n{"Total daily units sold:":<25} {green(data[1])}')
+
+    # Gross value sold.
+    gross = total_sale_value
+    text = green(f'+ £ {"{:.2f}".format(floor(gross*100)/100)}')
+    print(f'\n{"Total gross value sold:":<25} {text}')
+
+    # Gross product cost.
+    prod_cost = (cost_to_make(stats) * data[1])
+    text = red(f'- £ {"{:.2f}".format(floor(prod_cost*100)/100)}')
+    print(f'{"Production costs:":<25} {text}')
+
+    print(f'{"":<25} {"-----------"}')
+
+    # Net profit from sales
+    net = total_sale_value - prod_cost
+    text = gold(f'+ £ {"{:.2f}".format(floor(net*100)/100)}')
+    print(f'{"Net profit:":<25} {text}')
 
     # Get user input to continue.
     print_press_enter_to("Press Enter to see feedback..")
