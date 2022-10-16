@@ -30,7 +30,7 @@ def show_leaderboard_data():
 
     # Header
     print(f'{yellow("**************************************")}')
-    print(f'{cyan("Top 10 highscores for classic mode")}')
+    print(f'{cyan("Top 10 leaderboard for classic mode")}')
     print(f'{yellow("**************************************")}\n')
 
     # Show table headings
@@ -53,27 +53,29 @@ def main_menu():
     '''
     while True:
         clear_terminal()
+        # Display manu menu options.
         print(constants.MAIN_MENU_OPTIONS)
-        text = orange("Input choice (1-4): ")
-        user_choice = input(f'\n{text}')
 
+        # Get user input
+        user_choice = input(orange("\nInput choice (1-4): "))
+
+        # Validate user input
         if not validate_input(user_choice, 4):
             continue
 
+        # Depending on user input perform listed action(s).
         if user_choice == '1':
             new_game()
         elif user_choice == '2':
             stats = retrieve_save()
             if stats is not None:
                 daily_menu(stats)
-            main_menu()
         elif user_choice == '3':
             show_leaderboard_data()
         elif user_choice == '4':
             show_credits()
         elif user_choice == '0':
             print_error_message("Invalid choice.")
-            main()
 
 
 def new_game():
@@ -81,16 +83,32 @@ def new_game():
     Create new user and set up for a new game
     '''
     clear_terminal()
+
+    # Header
     print(cyan("Let\'s get you set up:"))
     print(constants.LINE)
+
+    # Heading text
     print('Welcome to your new game. The first thing we need to do is set '
           + 'you up with a\nnew account.')
+
+    # Run create_user_name() for user to choose a company name.
     user_name = create_user_name()
+
+    # Run create_user_id() to get a game ID.abs(x)
     user_id = create_user_id()
+
     data = [user_id, user_name]
+
+    # Run set_up_character() to set up users game data.
     stats = set_up_character(data, True)
+
+    # Save data
     save_data(stats, True)
+
     print_press_enter_to("Press Enter to continue...")
+
+    # Show user backstory.
     background_story(stats)
 
 
@@ -99,8 +117,13 @@ def background_story(stats):
     Tell the user the background story
     '''
     clear_terminal()
+
+    # Show backstory
     print(constants.BACKGROUND_STORY)
+
     print_press_enter_to("Press Enter to continue...")
+
+    # Move to game menu.
     daily_menu(stats)
 
 
@@ -112,27 +135,32 @@ def create_user_name():
         print(pink("\nChoose a name for your hotdog empire!"))
         print(f'\n{pink("Tip: ")}Must be more than 5 and less then 20 '
               + 'characters')
+
+        # Get user input to choose company name.
         user_name = input(f'\n{orange("Company name: ")}')
 
+        # Validate user has typed something.
         if not user_name:
             continue
 
+        # Validate length of name user has chosen.
         if len(user_name) < 5 or len(user_name) > 20:
             print_error_message("Company name must be least 5 and no more "
                                 + "than 20 characters")
             continue
 
         while True:
+            # Feedback user choice to them.
             print(f'\n{gold(user_name)} has been born!\n')
 
+            # Get user input to confirm to proceed with name.
             yes_no = input(orange('Are you happy with this name? (yes / no) '))
 
+            # Validate user input
             if not validate_yes_no(yes_no):
                 continue
-
             if yes_no.lower() in ['y', 'ye', 'yes']:
                 return user_name
-
             if yes_no.lower() in ['n', 'no']:
                 clear_terminal()
                 break
@@ -146,11 +174,14 @@ def create_user_id():
     user_id = ''
     print('\nPlease wait why your new user ID is created...')
 
+    # Create game ID
     while True:
         user_id = "".join(
             ascii_uppercase[randrange(0, 25)] for x in range(6)
             )
         user_data = SHEET.worksheet('user_data')
+        # Make sure game Id does not exist in database,
+        # If yes, create new ID.
         cell_list = user_data.findall(user_id)
         if len(cell_list) == 0:
             break
@@ -158,6 +189,7 @@ def create_user_id():
     clear_terminal()
     print(f'{cyan("User ID created")}')
     print(constants.LINE)
+    # Show user game ID.
     print(f'\nYour new user ID is: {green(user_id)}\n')
     print(f'{pink("Important: ")}Please keep this safe as this is how you '
           + 'can retrieve your progress.')

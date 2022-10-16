@@ -26,6 +26,7 @@ def run_day(stats):
     else:
         hour = 12  # Game time, hours
 
+    # Set variables.
     price = stats["selling_price"]  # Selling Price
     minute = 00  # Game time, minute
     cust_count = []  # Temp customer count for AM and PM
@@ -44,13 +45,19 @@ def run_day(stats):
     sold_out_text = 0
     rep_modifier = 1 + (stats["reputation"] / 4)
     prod_markup = constants.PRODUCT_VALUE_MAX_INCREASE
-    prod_cost = cost_to_make(stats)
+    prod_cost = cost_to_make(stats)  # Cost to make each hotdog.
     prod_value = (  # Product Value
         cost_to_make(stats) *
         prod_markup *
         rep_modifier
       )
+    portions = get_portions_available(stats)
+    cust_chance = []
+    footfall = constants.LOCATION_FOOTFALL
+    staff_foot_inc = constants.STAFF_FOOTFALL_INCREASE
 
+    # See what locations are available to sell products at.
+    # And set up lists used for sales report and feedback.
     for count, i in enumerate(constants.LOCATION_NAMES):
         if (
             stats["location"][f"{count+1}"]["purchased"] and
@@ -65,14 +72,11 @@ def run_day(stats):
             feedback["cost buy"].append(0)
             feedback["value"].append(0)
             feedback["value buy"].append(0)
-
     total_locations = len(open_loc_name)
-    cust_chance = []
-    portions = get_portions_available(stats)
-    footfall = constants.LOCATION_FOOTFALL
 
+    # Works out footfall bonus for each location based on staff level
+    # and reputation level.
     for key in range(total_locations):
-        staff_foot_inc = constants.STAFF_FOOTFALL_INCREASE
         staff_lvl = stats["location"][str(open_loc_num[key])]["staff_lvl"]
         staff_mod = 1 + ((staff_foot_inc * staff_lvl) / 100)
         cust_chance.append(
@@ -155,21 +159,23 @@ def run_day(stats):
             if portions == 0:
                 break
 
+        # If portions reaches 0 left, then move time forward
+        # to end of period.
         if portions == 0:
             sold_out_text = red(f'SOLD OUT at {hour}:{minute}')
             minute = 59
-
             if hour < 12:
                 hour = 11
             else:
                 hour = 16
 
+        # Move time 1 minute forward.
         minute += 1
-
         if minute == 60:
             minute = 00
             hour += 1
 
+        # When time reaches 12 noon.
         if hour == 12 and minute == 00:
             for i in range(total_locations):
                 sold += cust_count[i]
@@ -181,12 +187,14 @@ def run_day(stats):
                 potential_cust
             ]
             clear_terminal()
+
             # Header for sales report
-            text = cyan("12 noon time sales report:")
-            print(f'{text}')
+            print(cyan("12 noon time sales report:"))
+            # Run sales_report()
             stats = sales_report(stats, data)
             break
 
+        # When time reaches 5pm.
         if hour == 17:
             for i in range(total_locations):
                 sold += cust_count[i]
@@ -199,12 +207,15 @@ def run_day(stats):
             ]
             clear_terminal()
             # Header for sales report
-            text = cyan("End of day sales report:")
-            print(f'{text}')
+            print(cyan("End of day sales report:"))
+            # Run sales report.
             stats = sales_report(stats, data)
             break
 
+    # Move day forwards.
     stats["day"] += 0.5
+
+    # If gone pass last day, return false to go to end game.
     if stats["day"] == constants.LAST_DAY + 1:
         return True, stats
     return False, stats
@@ -277,43 +288,55 @@ def sales_report(stats, data):
     # Variable to count total feedback
     t_count = 0
 
+    # Print feedback for each location if any to share.
+    # Go through each location.
     for count in enumerate(data[0]):
         f_count = 0
         for key in data[5]:
+            # Is there any feedback for location.
             if data[5][key][count[0]] > 0:
 
+                # Print location
                 if f_count == 0:
                     text = data[2][count[0]]
                     dash = "-"
                     t_count += 1
+                # if location already printed once, do not print again.
                 else:
                     text = ""
                     dash = ""
 
+                # text2 = feedback
                 if key == "value":
                     text2 = f"{txt_decline} Add more ingredients."
                 elif key == "cost":
                     text2 = f"{txt_decline} Overpriced!"
 
+                # text3 = Amount of times feedback was given by customers.
                 text3 = data[5][key][count[0]]
+
+                # print text, text2, and text3 in a string.
                 print(f'{text:<13}{dash:<3}{text3:<7}{"-":<3}{text2:<13}')
                 f_count += 1
 
+        # If location had feedback to show, then print a line after location.
         if f_count != 0:
             print(constants.LINE)
 
+    # If no location had any feedback to give, show this message.
     if t_count == 0:
         print(green('\nNo feedback for improvement was given.'))
 
     print_press_enter_to("Press Enter to see if any reputation update...\n")
 
+    # run rep_change()
     rep_change(stats, data[6], data[7])
 
+    # Get user input to move on to next day.
     if (stats["day"] % 1) == 0:
         print_press_enter_to("Press Enter to continue to MID-DAY "
                              + "PREPARATION...")
         return stats
-
     print_press_enter_to("Press Enter to continue to NEXT DAY...")
     return stats
 

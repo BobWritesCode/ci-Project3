@@ -20,32 +20,36 @@ def daily_menu(stats):
     while True:
         clear_terminal()
 
+        # Converts the .5 or .0 into text.
         if (stats["day"] % 1) == 0:
             text_time_of_day = "Morning"
         else:
             text_time_of_day = "Afternoon"
 
+        # Creates and prints game menu text
         print(menu_string(stats, text_time_of_day))
+
+        # Get user input
         user_choice = input(orange(f'\n{"Input choice (0-8) : "}'))
 
+        # Validation of user input
         if not validate_input(user_choice, 8):
             continue
 
+        # If user wishes to start trading, make sure sure user has all the
+        # required elements to do so, or show error.
         if (not stats["location"]["1"]["purchased"]
                 and user_choice == '7'):
             print_error_message("No locations purchased yet.")
             continue
-
         if (stats["location"]["1"]["cart_lvl"] == 0
                 and user_choice == '7'):
             print_error_message("No carts purchased yet.")
             continue
-
         if (stats["location"]["1"]["staff_lvl"] == 0
                 and user_choice == '7'):
             print_error_message("No staff purchased yet.")
             continue
-
         if (get_portions_available(stats) == 0
                 and user_choice == '7'):
             # If both True
@@ -54,6 +58,7 @@ def daily_menu(stats):
 
         break
 
+    # Where to take user based on user input.
     if user_choice == '1':
         purchase_location(stats)
     elif user_choice == '2':
@@ -80,7 +85,9 @@ def daily_menu(stats):
         print(f'\n{pink("IMPORTANT: ")} Make sure you write down your '
               + 'Game ID as you will need it to return to this game.')
         print(f'\nGame ID: {gold(stats["user_id"])}')
+        # Save game.
         save_data(stats, False)
+        # After enter user is taken back to main menu.
         print_press_enter_to("\nPress Enter to go to main menu...")
 
 
@@ -88,34 +95,35 @@ def menu_string(stats, text_time_of_day):
     '''
     Doc string for daily game menu
     '''
+    # Set variables.
     selling_price = "Base price: £{:.2f}".format(stats["selling_price"])
     recipe = "Cost: £{:.2f}".format(cost_to_make(stats))
     cash = "£{:.2f}".format(stats["cash"])
     stock = f"Stock: {get_portions_available(stats)}"
-
     action_cart = ""
     action_staff = ""
     action_loc = ""
+    game_id = f'(Game ID : {cyan(stats["user_id"])})'
+    company_name = stats['name']
+    day = floor(stats["day"])
 
+    # If user has purchased location but no cart or staff, show warning.
     for key in stats["location"]:
         if (stats["location"][key]["purchased"]
                 and stats["location"][key]["cart_lvl"] == 0):
             action_cart = "ACTION REQUIRED"
             break
-
     for key in stats["location"]:
         if (stats["location"][key]["purchased"]
                 and stats["location"][key]["staff_lvl"] == 0):
             action_staff = "ACTION REQUIRED"
             break
 
+    # If user has not yet purchased location 1, show warning.
     if not stats["location"]["1"]["purchased"]:
         action_loc = "ACTION REQUIRED"
 
-    game_id = f'(Game ID : {cyan(stats["user_id"])})'
-    company_name = stats['name']
-    day = floor(stats["day"])
-
+    # Return string.
     return f"""{gold(company_name)} - {game_id}
 {constants.LINE}
 Current balance {green(cash)}
@@ -141,24 +149,31 @@ def purchase_location(stats):
     '''
     Purchase location menu for player
     '''
+    # Set variables
     loc_name = constants.LOCATION_NAMES
     loc_cost = constants.LOCATION_COSTS
 
     while True:
         clear_terminal()
+        # Header
         print(f'{cyan("Purchase hotdog pitch locations")}')
         print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}\n')
 
+        # Body
         print('Each location purchase means more customers to sell to. '
               + 'The better the location \nthe more potential customers.\n')
-
         print(f'{pink("TIP")}: Each location will need a cart and a staff '
               + 'member before they sell any \nhotdogs.\n')
 
+        # Create first part of string. Location number and name.
         for count, key in enumerate(loc_name, start=1):
             str_part_1 = f'{count}. {key}'
 
+            # Check to see if location before has been purchased.
+            # If not print "Not yet available".
+            # elif, print Available and location cost.
+            # else, print purchased.
             if not purchase_loc_try(stats, count):
                 print(f'{str_part_1:<16}' + ' - '
                       + f'{red("Not yet available"):<53}')
@@ -173,14 +188,21 @@ def purchase_location(stats):
                       + f'{gold("Purchased"):<52}')
 
         print_go_back()
+
+        # Get user input
         user_choice = input(f'\n{orange("Input choice: ")}')
 
+        # Validate user input
         if not validate_input(user_choice, 5):
             continue
 
+        # If user input is 0 go back to game menu.
         if int(user_choice) == 0:
             break
 
+        # If location Available then check have cash to purchase.
+        # elif location not available, display error.
+        # else, display error.
         if (not stats['location'][str(user_choice)]['purchased']
                 and purchase_loc_try(stats, int(user_choice))):
             remaining_cash = stats["cash"] - loc_cost[int(user_choice)-1]
@@ -192,6 +214,8 @@ def purchase_location(stats):
             continue
 
         # Check if remaining cash will remain >= 0
+        # If enough, purchase and show success message.
+        # else, display error.
         if remaining_cash >= 0:
             stats['location'][str(user_choice)]['purchased'] = True
             var_1 = loc_name[int(user_choice)-1]
@@ -208,7 +232,8 @@ def purchase_location(stats):
 
 def purchase_loc_try(stats, count):
     '''
-    Error check for buying location
+    Check to see if location before has been purchased.
+    Returns True or False.
     '''
     try:
         stats['location'][str(count - 1)]['purchased']
@@ -222,16 +247,20 @@ def purchase_cart_menu(stats):
     '''
     Purchase cart menu for player
     '''
-
+    # Set variables.
     loc_name = constants.LOCATION_NAMES
     cart_price = constants.CART_COSTS
 
     while True:
         clear_terminal()
+
+        # Header
         print(f'{cyan("Purchase or upgrade carts at your hotdog pitch ")}'
               + f'{cyan("locations")}')
         print(constants.LINE)
         print(f'Current balance {green(print_current_balance(stats))}\n')
+
+        # Heading text
         print('Each upgrade on a cart will produce better quality hotdogs.'
               + f' So you will sell {constants.CART_SELLING_INCREASE}% more'
               + ' for each level on top the base selling price without any'
@@ -239,15 +268,24 @@ def purchase_cart_menu(stats):
         print(f'\n{pink("TIP")}: Each location will need a staff member'
               + ' before they sell any hotdogs.\n')
 
+        # Body
+        # Print carts, levels, costs, or if available.
         for count, key in enumerate(loc_name, start=1):
             cart_level = stats['location'][str(count)]['cart_lvl']
+            # Create first part of string, index and location.
             str_part_1 = f'{count}. {key}'
 
+            # Shows cart level, if 0 then cart not yet purchased.
             if cart_level == 0:
                 str_part_2 = red('Not currently owned')
             else:
                 str_part_2 = cyan(f'Current level is {cart_level}')
 
+            # Check to see if location for cart has been purchased yet.
+            # If not, str_part_3 = purchase location first.
+            # If cart level 0, str_part_3 = purchase cart.
+            # If cart > 0 , show str_part_3 = cart
+            # If cart = 5. str_part_3 = no further upgrades.
             if not stats['location'][str(count)]['purchased']:
                 str_part_3 = red('Purchase location first')
             elif cart_level == 0:
@@ -257,6 +295,7 @@ def purchase_cart_menu(stats):
             else:
                 str_part_3 = green(f'UPGRADE for £{cart_price[cart_level]}')
 
+            # Print string based on above.
             print(
                 f'{str_part_1:<16}' + ' - ' +
                 f'{str_part_2:<23}' + ' - ' +
@@ -265,11 +304,14 @@ def purchase_cart_menu(stats):
 
         print_go_back()
 
+        # Get user input.
         result = input(f'\n{orange("Input choice (0-5): ")}')
 
+        # Validate user input.
         if not validate_input(result, 5):
             continue
 
+        # if user input = 0 go back to game menu.
         if int(result) == 0:
             break
 
@@ -292,6 +334,7 @@ def purchase_cart_menu(stats):
             stats['location'][str(result)]['cart_lvl'] = new_cart_lvl
             stats["cash"] = remaining_cash
             loc = int(result) - 1
+            # Print success message.
             print(green(f'Cart level {new_cart_lvl} purchased for ')
                   + green(f'{loc_name[loc]} for £{cart_price[cart_level]}.'))
             print(cyan(f'Remaining balance {print_current_balance(stats)}'))
@@ -308,28 +351,41 @@ def purchase_staff_menu(stats):
     '''
     Hire and train staff menu
     '''
-
+    # Set variables.
     loc_name = constants.LOCATION_NAMES
     staff_price = constants.STAFF_COSTS
 
     while True:
         clear_terminal()
+        # Header
         print(cyan("Hire and train staff for your hotdog pitch")
               + cyan("locations."))
         print(constants.LINE)
+        # Heading text
         print(f'Current balance {green(print_current_balance(stats))}\n')
         print('Better trained staff encourage returning customers meaning more'
               + ' footfall.\n')
         print(f'{pink("TIP")}: Each location will need a cart before they sell'
               + ' any hotdogs.\n')
 
+        # Body
+        # Print staff, levels, costs, or if available.
         for count, key in enumerate(loc_name, start=1):
             staff_level = stats['location'][str(count)]['staff_lvl']
+            # Create first part of string, index and location.
             text1 = f'{count}. {key}'
+
+            # Shows staff level, if 0 then staff not yet purchased.
             if staff_level == 0:
                 text2 = red('Vacant position')
             else:
                 text2 = cyan(f'Current level is {staff_level}')
+
+            # Check to see if location for staff has been purchased yet.
+            # If not, str_part_3 = purchase location first.
+            # If staff level 0, str_part_3 = purchase staff.
+            # If staff > 0 , show str_part_3 = staff
+            # If staff = 5. str_part_3 = no further upgrades.
             if not stats['location'][str(count)]['purchased']:
                 text3 = red('Purchase location first')
             elif staff_level == 0:
@@ -339,16 +395,20 @@ def purchase_staff_menu(stats):
             else:
                 text3 = green(f'TRAIN for £{staff_price[staff_level]}')
 
+            # Print string based on above.
             print(f'{text1:<16}' + ' - ' + f'{text2:<23}'
                   + ' - ' f'{text3:<18}')
 
         print_go_back()
 
+        # Get user input
         user_choice = input(f'\n{orange("Input choice (0-5): ")}')
 
+        # Validate user input
         if not validate_input(user_choice, 5):
             continue
 
+        # if user input = 0 go back to game manu.
         if int(user_choice) == 0:
             break
 
@@ -357,27 +417,29 @@ def purchase_staff_menu(stats):
             print_error_message("Purchase Land")
             continue
 
-        # Check if remaining cash < 0 after purchase, if
-        # so continue, else pass
+        # Check if staff is not already at max level.
         staff_level = stats['location'][str(user_choice)]['staff_lvl']
         if staff_level == 5:
             print_error_message("Already at max level.")
             continue
 
+        # Check if remaining cash < 0 after purchase, if
+        # so continue, else pass
         remaining_cash = stats["cash"] - staff_price[staff_level]
-        if remaining_cash < 0:
-            print_error_message("Not enough funds")
+        if remaining_cash >= 0:
+            new_staff_lvl = staff_level + 1
+            stats['location'][str(user_choice)]['staff_lvl'] = new_staff_lvl
+            stats["cash"] = remaining_cash
+            loc = int(user_choice) - 1
+            # Print success message.
+            print(green(f'Staff level {new_staff_lvl} purchased for')
+                  + f'{loc_name[loc]} for £{staff_price[staff_level]}.')
+            text = f'Remaining balance {print_current_balance(stats)}'
+            print(cyan(text))
+            print_press_enter_to("Press Enter to continue...")
             continue
 
-        new_staff_lvl = staff_level + 1
-        stats['location'][str(user_choice)]['staff_lvl'] = new_staff_lvl
-        stats["cash"] = remaining_cash
-        loc = int(user_choice) - 1
-        print(green(f'Staff level {new_staff_lvl} purchased for')
-              + green(f'{loc_name[loc]} for £{staff_price[staff_level]}.'))
-        text = f'Remaining balance {print_current_balance(stats)}'
-        print(cyan(text))
-        print_press_enter_to("Press Enter to continue...")
+        print_error_message("Not enough funds")
         continue
 
     daily_menu(stats)

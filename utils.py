@@ -41,14 +41,14 @@ def validate_input(value, max_value):
 
 def print_current_balance(stats):
     '''
-    Print cash statement
+    Print cash balance.
     '''
     return f'£{"{:.2f}".format(floor(stats["cash"]*100)/100)}'
 
 
 def print_error_message(data):
     '''
-    Function to provide appropriate error message
+    Function to provide error message received (data)
     '''
     if data:
         text = red(data)
@@ -70,8 +70,7 @@ def print_press_enter_to(text):
     '''
     Print "Press Enter....
     '''
-    text = orange(f'\n{text}')
-    input(f'{text}')
+    input(orange(f'\n{text}'))
 
 
 def print_go_back():
