@@ -498,7 +498,7 @@ data = highscore.get_all_values()
 
 # Go through current leaderboard entries and see if placed
 # higher than any of the current entries.
-for count, key in enumerate(data[1:10], 2):
+for count, key in enumerate(data[1:11], 2):
 
     # Player has placed higher then a player.
     if stats["cash"] > float(key[1]):
@@ -533,17 +533,18 @@ highscore = SHEET.worksheet('leaderboard')
 data = highscore.get_all_values()
 
 # Header
-print(f'{yellow("************************************")}')
-print(f'{cyan("Top 10 highscores for classic mode")}')
-print(f'{yellow("************************************")}\n')
+print(f'{yellow("**************************************")}')
+print(f'{cyan("Top 10 leaderboard for classic mode")}')
+print(f'{yellow("**************************************")}\n')
 
 # Show table headings
-print(f"{data[0][0]:<20}{ data[0][1]:<20}")
+print(f"#    {data[0][0]:<22}{ data[0][1]:<20}")
 print(constants.LINE)
 
 # Show top 10 with scores
-for key in data[1:10]:
-    print(f"{key[0]:<20}{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
+for index, key in enumerate(data[1:11], 1):
+    print(f"{str(index)+'.':<4} {key[0]:<22}"
+            + f'£ {"{:.2f}".format(float(key[1])):<20}')
 ```
 
 ![Leaderboard](./readme-content/imgs/view-leaderboard.png)
@@ -561,28 +562,40 @@ To pay homage to the original creator of the game that inspired this project and
 At the end of each trading session the user will get a report to show how well the day went. It nicely separates each locations performance, showing units sold and total net profit.
 
 ```python
-  # Add up total values from different locations.
-  total_sale_value = 0
-  for i in data[3]:
-      total_sale_value += i
+# Add up total values from different locations.
+total_sale_value = 0
+for i in data[3]:
+    total_sale_value += i
 
-  # Show sales report to user. Location, units sold, net profit.
-  print(constants.LINE)
-  print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value (£)":<8}')
-  print(constants.LINE)
-
-  for count, key in enumerate(data[0]):
-      print(f'{data[2][count]:<13}{"-":<3}'
+# Show sales report to user. Location, units sold, net profit.
+print(constants.LINE)
+print(f'{"Location":<13}{"-":<3}{"Units":<8}{"-":<3}{"Value":<8}')
+print(constants.LINE)
+for count, key in enumerate(data[0]):
+    print(f'{data[2][count]:<13}{"-":<3}'
             + f'{key:<8}{"-":<3}'
-            + f'{floor(data[3][count]*100)/100:<8}')
+            + f'£ {"{:.2f}".format(floor(data[3][count]*100)/100):<8}')
+print(constants.LINE)
 
-  print(constants.LINE)
-  
-  # Totals
-  print(f'Total daily units sold: {green(data[1])}')
-  text = green(f'£{floor(total_sale_value*100)/100}')
-  print(f'Total daily sales value: {text} (var +/- £0.01)')
-  print('\nSales values are net profit (Sold price minus product cost).')
+# Total units sold.
+print(f'\n{"Total daily units sold:":<25} {green(data[1])}')
+
+# Gross value sold.
+gross = total_sale_value
+text = green(f'+ £ {"{:.2f}".format(gross)}')
+print(f'\n{"Total gross value sold:":<25} {text}')
+
+# Gross product cost.
+prod_cost = (cost_to_make(stats) * data[1])
+text = red(f'- £ {"{:.2f}".format(prod_cost)}')
+print(f'{"Production costs:":<25} {text}')
+
+print(f'{"":<25} {"-----------"}')
+
+# Net profit from sales
+net = total_sale_value - prod_cost
+text = gold(f'+ £ {"{:.2f}".format(net)}')
+print(f'{"Net profit:":<25} {text}')
 ```
 
 ![Sales Report](./readme-content/imgs/sales-report.png)
@@ -1038,7 +1051,7 @@ text2 = basket["total_qty_c"][count]
 ---
 
 #### **Multiple lines appearing after feedback**
-[commit: ](https://github.com/BobWritesCode/ci-Project3/commit/528da9a3b20c670ba178267e174cdeb28089011b)\
+[commit: 528da9a](https://github.com/BobWritesCode/ci-Project3/commit/528da9a3b20c670ba178267e174cdeb28089011b)\
 **What was meant to happy**:\
 If there was no negative feedback for a location, then no line should appear.\
 **What was actually happening**:\
@@ -1083,6 +1096,25 @@ for count in enumerate(data[0]):
 ```
 ---
 
+#### **Hotdogs being sold lower than expected price**
+[commit: 3d17fe4](https://github.com/BobWritesCode/ci-Project3/commit/3d17fe49cec835b8e7bff42bac4a54eb357d090b)\
+**What was meant to happy**:\
+Each hotdog should be sold for the selling price plus an bonus modifiers.\
+**What was actually happening**:\
+The sum had `floor` applied, so hotdogs were being sold at a lower price.
+**Cause of problem**:
+```python
+# WRONG
+sales_value = floor(price * sell_price_mod)
+```
+**Solution**:\
+Multiply the sum being applying floor then dived by 100 after to get 2 decimal places.
+```python
+# CORRECT
+sales_value = floor((price * sell_price_mod)*100) / 100
+```
+
+---
 ## Development
 
 The site was made using [GitHub](#GitHub) and [GitPod](#GitPod)
