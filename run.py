@@ -40,7 +40,7 @@ def show_leaderboard_data():
     # Show top 10 with scores
     for index, key in enumerate(data[1:11], 1):
         print(f"{str(index)+'.':<4} {key[0]:<22}"
-              + "{'£ ' +'{:.2f}'.format(float(key[1])):<20}")
+              + f'£ {"{:.2f}".format(float(key[1])):<20}')
 
     # Get user input to exit to main menu.
     print_press_enter_to("Press Enter to return to main menu...")
