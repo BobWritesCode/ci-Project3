@@ -147,7 +147,7 @@ def run_day(stats):
                     )
                     # Selling Price Modifier i.e 1 + (0.5*3) = 1.15
                     sell_price_mod = 1 + ((cart_sell_inc * cart_lvl) / 100)
-                    sales_value = floor(price * sell_price_mod)
+                    sales_value = floor((price * sell_price_mod)*100) / 100
                     loc_sale_value[key] += sales_value
                     stats["cash"] += sales_value - prod_cost
 
@@ -259,19 +259,19 @@ def sales_report(stats, data):
 
     # Gross value sold.
     gross = total_sale_value
-    text = green(f'+ £ {"{:.2f}".format(floor(gross*100)/100)}')
+    text = green(f'+ £ {"{:.2f}".format(gross)}')
     print(f'\n{"Total gross value sold:":<25} {text}')
 
     # Gross product cost.
     prod_cost = (cost_to_make(stats) * data[1])
-    text = red(f'- £ {"{:.2f}".format(floor(prod_cost*100)/100)}')
+    text = red(f'- £ {"{:.2f}".format(prod_cost)}')
     print(f'{"Production costs:":<25} {text}')
 
     print(f'{"":<25} {"-----------"}')
 
     # Net profit from sales
     net = total_sale_value - prod_cost
-    text = gold(f'+ £ {"{:.2f}".format(floor(net*100)/100)}')
+    text = gold(f'+ £ {"{:.2f}".format(net)}')
     print(f'{"Net profit:":<25} {text}')
 
     # Get user input to continue.

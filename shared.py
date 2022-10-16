@@ -33,7 +33,7 @@ def cost_to_make(stats):
         constants.STOCK_COSTS['sauce'][1]
     )
 
-    return bun + sausage + onion + sauce
+    return floor((bun + sausage + onion + sauce) * 100) / 100
 
 
 def get_portions_available(stats):
