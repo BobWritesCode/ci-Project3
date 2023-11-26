@@ -863,7 +863,7 @@ I am unaware of any current unresolved bugs.
 ---
 #### **Player got negative rep unintentionally**
 [commit: b42ac68](https://github.com/BobWritesCode/ci-Project3/commit/b42ac6888bad7ec81c15ac594c7e462176dfcf1d)\
-**What was meant to happy**: When a player does bad at sales and gets too much negative feedback, they would lose reputation.\
+**What was meant to happen**: When a player does bad at sales and gets too much negative feedback, they would lose reputation.\
 **What was actually happening**: When player was not receiving enough negative feedback their reputation score lowered.\
 **Cause of problem**: The score range is from -1 (bad) to 1 (good). Where over 0.5 would give positive reputation and -0.5 would give negative. On the 3 lines of code I had forgot to make the bad score negative.
 ```python
@@ -883,7 +883,7 @@ elif rep_percent < -0.5 and c_rep == 0:
 ----
 #### **Reputation changing by wrong amount**
 [commit: 2e1434d](https://github.com/BobWritesCode/ci-Project3/commit/2e1434d41eca7bb3196f90a370affacbe8ac3c9b)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 When the players sales feedback was bad or good enough, they would get told their reputation was increase or decreased by 0.5.\
 **What was actually happening**:\
 Instead the player was being told their score was increasing or decreasing by whatever their current reputation actually was.\
@@ -901,7 +901,7 @@ Instead the player was being told their score was increasing or decreasing by wh
 ---
 #### **Division by 0 caused critical error**
 [commit: 28d4a1c](https://github.com/BobWritesCode/ci-Project3/commit/28d4a1c5c2ba1742b6d4c5156e3b1971d4df25e0?diff=split)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 Player would get a hidden repscore based on the sales performance and this would be used to determine if the player's reputation went up or down.\
 **What was actually happening**:\
 When there were no 0 sales. There was a equation that tried to divide by 0 and cause a critical error and teh programme to terminate.\
@@ -919,7 +919,7 @@ rep_percent = (rep_score / opportunities) if opportunities != 0 else 0
 ---
 #### **Calculation error when seeing if a customer would pay high price.**
 [commit: 9027333](https://github.com/BobWritesCode/ci-Project3/commit/902733327e686175edc79df1654e700afe471bd9?diff=split)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 If was being sold higher then the customer would normally like to pay. There is essentially a random number generator to see if the customer would purchase.\
 **What was actually happening**:\
 No customer ever felt the product was overpriced.\
@@ -944,7 +944,7 @@ if goto_1 and (
 ---
 #### **After game completed you are taken back to game menu oppose to intentional main menu.**
 [commit: 76a61b5](https://github.com/BobWritesCode/ci-Project3/commit/76a61b506ea2e7bb2b419ae4415364f33ed4bbe5)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 When user reach end game, and finished the end game summary. The user was meant to be taken back main menu\
 **What was actually happening**:\
 User would be taken back to teh game menu.\
@@ -973,7 +973,7 @@ elif user_choice == '7':
 ---
 #### **New leaderboard entries overwriting old.**
 [commit: bf89510](https://github.com/BobWritesCode/ci-Project3/commit/bf895102f08967ba7b16303115a260fd82875b15)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 IF a user scores high enough to secure a spot on the leaderboard of top 10 players. Then they would be inserted into teh correct position and other players moved down 1. With whoever is now 11th being deleted from the table.\
 **What was actually happening**:\
 Which ever place the player came 1st to 10th, they would just replace that player and the rest of the leaderboard would stay the same.\
@@ -1007,7 +1007,7 @@ SHEET.values_update(
 ---
 #### **Player not added to top 10 if 10th place**
 [commit: 90edeaa](https://github.com/BobWritesCode/ci-Project3/commit/90edeaaae6b0306b7cdd70bd4e1c366b7b07205f)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 If a player makes 10th on the leader they replace who is currently 10th and the previous person is removed from teh leaderboard as they would be 11th on a top 10.\
 **What was actually happening**:\
 If a player scored enough to be 10th, nothing would happen.\
@@ -1027,7 +1027,7 @@ for count, key in enumerate(data[1:11], 2):
 ---
 #### **Stock purchase showing incorrect values**
 [commit: 897097a](https://github.com/BobWritesCode/ci-Project3/commit/897097ac089d8f939f5738369e5bc375bd355d5b)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 The checkout basket would show quantity of items being purchased and also price, these .\
 **What was actually happening**:\
 The quantity and the price where always the same number.\
@@ -1052,7 +1052,7 @@ text2 = basket["total_qty_c"][count]
 
 #### **Multiple lines appearing after feedback**
 [commit: 528da9a](https://github.com/BobWritesCode/ci-Project3/commit/528da9a3b20c670ba178267e174cdeb28089011b)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 If there was no negative feedback for a location, then no line should appear.\
 **What was actually happening**:\
 During the feedback regardless if a location had negative feedback or not a line appeared.\
@@ -1098,7 +1098,7 @@ for count in enumerate(data[0]):
 
 #### **Hotdogs being sold lower than expected price**
 [commit: 3d17fe4](https://github.com/BobWritesCode/ci-Project3/commit/3d17fe49cec835b8e7bff42bac4a54eb357d090b)\
-**What was meant to happy**:\
+**What was meant to happen**:\
 Each hotdog should be sold for the selling price plus an bonus modifiers.\
 **What was actually happening**:\
 The sum had `floor` applied, so hotdogs were being sold at a lower price.
